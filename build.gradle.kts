@@ -4,4 +4,12 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.ksp) apply false
+}
+buildscript {
+    dependencies {
+        classpath(libs.hilt.android.gradle.plugin)
+        classpath(libs.kotlin.serialization)
+    }
 }

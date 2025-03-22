@@ -1,9 +1,9 @@
-package com.zero_one.martha.features.login
+package com.zero_one.martha.features.main.profile
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun LoginScreen() {
-    Text("Login page")
+fun ProfileScreen() {
+    Text("Profile")
 }

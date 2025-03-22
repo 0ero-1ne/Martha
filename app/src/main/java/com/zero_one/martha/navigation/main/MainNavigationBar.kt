@@ -17,8 +17,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.zero_one.martha.features.home.HomeRoute
-import com.zero_one.martha.features.profile.ProfileRoute
+import com.zero_one.martha.features.main.home.HomeRoute
+import com.zero_one.martha.features.main.profile.ProfileRoute
 
 data class TopLevelRoute<T : Any>(
     val name: String,

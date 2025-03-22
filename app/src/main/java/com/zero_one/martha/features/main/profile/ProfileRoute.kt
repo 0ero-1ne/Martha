@@ -1,4 +1,4 @@
-package com.zero_one.martha.features.profile
+package com.zero_one.martha.features.main.profile
 
 import kotlinx.serialization.Serializable
 
