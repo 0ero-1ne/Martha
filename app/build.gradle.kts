@@ -56,6 +56,12 @@ dependencies {
     implementation(libs.androidx.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
 
+    // datastore
+    implementation(libs.androidx.datastore)
+
+    // icons
+    implementation(libs.androidx.material.icons.extended)
+
     // hilt
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
@@ -67,6 +73,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
     implementation(platform(libs.okhttp.bom))
+    implementation(libs.retrofit.gson.converter)
 
     // test and debug
     testImplementation(libs.junit)
