@@ -1,4 +1,4 @@
-package com.zero_one.martha.features.auth.login
+package com.zero_one.martha.features.auth.signup
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,16 +31,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.zero_one.martha.ui.forms.login.LoginForm
-import com.zero_one.martha.ui.forms.login.rememberLoginFormState
+import com.zero_one.martha.ui.forms.signup.SignupForm
+import com.zero_one.martha.ui.forms.signup.rememberSignupFormState
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel,
-    onLoginClick: (email: String, password: String) -> Unit,
+fun SignupScreen(
+    viewModel: SignupViewModel,
     onNavigateToBack: () -> Unit,
-    onNavigateToSignupScreen: () -> Unit
+    onSignupClick: (email: String, password: String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember {SnackbarHostState()}
@@ -50,9 +49,7 @@ fun LoginScreen(
     Scaffold(
         topBar = {
             TopBar(
-                onNavigateToBack = {
-                    onNavigateToBack()
-                },
+                onNavigateToBack = onNavigateToBack,
             )
         },
         snackbarHost = {
@@ -78,19 +75,20 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            val formState = rememberLoginFormState()
+            val formState = rememberSignupFormState()
             val context = LocalContext.current
 
             LaunchedEffect(key1 = context) {
-                viewModel.loginValidationEvents.collect {event ->
+                viewModel.signupValidationEvents.collect {event ->
                     when (event) {
-                        is LoginViewModel.LoginValidationEvent.Success -> {
+                        is SignupViewModel.SignupValidationEvent.Success -> {
+                            onNavigateToBack()
                             onNavigateToBack()
                         }
 
-                        LoginViewModel.LoginValidationEvent.Error -> {
+                        SignupViewModel.SignupValidationEvent.Error -> {
                             scope.launch {
-                                snackbarHostState.showSnackbar(viewModel.loginErrorMessage)
+                                snackbarHostState.showSnackbar(viewModel.signupErrorMessage)
                             }
                         }
                     }
@@ -100,26 +98,21 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth(0.8f),
             ) {
-                if (viewModel.isLoginButtonPressed) {
+                if (viewModel.isSignupButtonPressed) {
                     CircularProgressIndicator()
                 }
-                LoginForm(state = formState)
+                SignupForm(state = formState)
                 Button(
                     onClick = {
                         keyboardController?.hide()
                         formState.validate()
 
                         if (formState.isValid) {
-                            onLoginClick(formState.email.value, formState.password.value)
+                            onSignupClick(formState.email.value, formState.password.value)
                         }
                     },
                 ) {
-                    Text("Login")
-                }
-                Button(
-                    onClick = onNavigateToSignupScreen,
-                ) {
-                    Text("Signup form")
+                    Text("Signup")
                 }
             }
         }

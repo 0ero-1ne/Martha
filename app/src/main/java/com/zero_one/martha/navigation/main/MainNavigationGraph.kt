@@ -1,5 +1,6 @@
 package com.zero_one.martha.navigation.main
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -11,6 +12,7 @@ import com.zero_one.martha.features.main.home.HomeScreen
 import com.zero_one.martha.features.main.home.HomeViewModel
 import com.zero_one.martha.features.main.profile.ProfileRoute
 import com.zero_one.martha.features.main.profile.ProfileScreen
+import com.zero_one.martha.features.main.profile.ProfileViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -26,13 +28,21 @@ fun NavGraphBuilder.mainNavigationGraph(
         composable<HomeRoute> {
             HomeScreen(
                 viewModel = viewModel<HomeViewModel>(),
+            )
+        }
+        composable<ProfileRoute> {
+            val viewModel = hiltViewModel<ProfileViewModel>()
+
+            ProfileScreen(
+                viewModel = viewModel,
+                onLogoutClick = viewModel::logout,
+                onNavigateToHomePage = {
+                    navController.navigate(HomeRoute)
+                },
                 onNavigateToLoginPage = {
                     rootNavController.navigate(LoginRoute)
                 },
             )
-        }
-        composable<ProfileRoute> {
-            ProfileScreen()
         }
     }
 }

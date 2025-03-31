@@ -1,4 +1,4 @@
-package com.zero_one.martha.ui.forms.login
+package com.zero_one.martha.ui.forms.signup
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -11,12 +11,12 @@ import com.zero_one.martha.ui.forms.fields.password.PasswordFieldState
 import com.zero_one.martha.ui.forms.fields.password.rememberPasswordFieldState
 
 @Stable
-class LoginFormState(
+class SignupFormState(
     val email: EmailFieldState,
     val password: PasswordFieldState
 ) {
     val isValid: Boolean by derivedStateOf {
-        email.isValid && password.loginValidate()
+        email.isValid && password.signupValidate()
     }
 
     fun validate() {
@@ -26,12 +26,11 @@ class LoginFormState(
 }
 
 @Composable
-fun rememberLoginFormState(): LoginFormState {
+fun rememberSignupFormState(): SignupFormState {
     val email = rememberEmailFieldState()
     val password = rememberPasswordFieldState()
 
     return remember {
-        LoginFormState(email, password)
+        SignupFormState(email, password)
     }
 }
-

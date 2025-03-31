@@ -1,4 +1,4 @@
-package com.zero_one.martha.data.source.datastore.user
+package com.zero_one.martha.data.source.datastore.user.tokens
 
 import androidx.datastore.core.Serializer
 import com.zero_one.martha.data.source.network.models.auth.AuthTokens
@@ -9,7 +9,7 @@ import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
 
-object TokensSerializer : Serializer<AuthTokens> {
+object TokensSerializer: Serializer<AuthTokens> {
     override val defaultValue: AuthTokens
         get() = AuthTokens("", "")
 
@@ -17,7 +17,7 @@ object TokensSerializer : Serializer<AuthTokens> {
         return try {
             Json.decodeFromString(
                 deserializer = AuthTokens.serializer(),
-                string = input.readBytes().toString(),
+                string = input.readBytes().decodeToString(),
             )
         } catch (error: SerializationException) {
             error.printStackTrace()

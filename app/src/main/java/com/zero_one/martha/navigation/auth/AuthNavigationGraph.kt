@@ -8,6 +8,9 @@ import androidx.navigation.navigation
 import com.zero_one.martha.features.auth.login.LoginRoute
 import com.zero_one.martha.features.auth.login.LoginScreen
 import com.zero_one.martha.features.auth.login.LoginViewModel
+import com.zero_one.martha.features.auth.signup.SignupRoute
+import com.zero_one.martha.features.auth.signup.SignupScreen
+import com.zero_one.martha.features.auth.signup.SignupViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,6 +27,23 @@ fun NavGraphBuilder.authNavigationGraph(
             LoginScreen(
                 viewModel = viewModel,
                 onLoginClick = viewModel::login,
+                onNavigateToBack = {
+                    rootNavController.popBackStack()
+                },
+                onNavigateToSignupScreen = {
+                    rootNavController.navigate(SignupRoute)
+                },
+            )
+        }
+
+        composable<SignupRoute> {
+            val viewModel = hiltViewModel<SignupViewModel>()
+            SignupScreen(
+                viewModel = viewModel,
+                onSignupClick = viewModel::signup,
+                onNavigateToBack = {
+                    rootNavController.navigateUp()
+                },
             )
         }
     }

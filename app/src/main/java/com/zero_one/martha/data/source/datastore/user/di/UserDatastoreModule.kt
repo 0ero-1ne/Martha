@@ -4,7 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import com.zero_one.martha.data.source.datastore.user.TokensSerializer
+import com.zero_one.martha.data.source.datastore.user.tokens.TokensManager
+import com.zero_one.martha.data.source.datastore.user.tokens.TokensSerializer
 import com.zero_one.martha.data.source.network.models.auth.AuthTokens
 import dagger.Module
 import dagger.Provides
@@ -30,5 +31,13 @@ object UserDatastoreModule {
         serializer = tokensSerializer,
     ) {
         context.dataStoreFile("tokens_store.pb")
+    }
+
+    @Provides
+    @Singleton
+    internal fun provideTokensManager(
+        tokensDataStore: DataStore<AuthTokens>
+    ): TokensManager {
+        return TokensManager(tokensDataStore)
     }
 }

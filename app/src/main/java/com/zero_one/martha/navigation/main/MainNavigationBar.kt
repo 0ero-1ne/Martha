@@ -20,7 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.zero_one.martha.features.main.home.HomeRoute
 import com.zero_one.martha.features.main.profile.ProfileRoute
 
-data class TopLevelRoute<T : Any>(
+data class TopLevelRoute<T: Any>(
     val name: String,
     val route: T,
     val selectedIcon: ImageVector,
@@ -33,7 +33,7 @@ fun MainNavigationBar(
 ) {
     val topLevelRoutes = listOf(
         TopLevelRoute("Home", HomeRoute, Icons.Filled.Home, Icons.Outlined.Home),
-        TopLevelRoute("Me", ProfileRoute(), Icons.Filled.Person, Icons.Outlined.Person),
+        TopLevelRoute("Me", ProfileRoute, Icons.Filled.Person, Icons.Outlined.Person),
     )
 
     NavigationBar {

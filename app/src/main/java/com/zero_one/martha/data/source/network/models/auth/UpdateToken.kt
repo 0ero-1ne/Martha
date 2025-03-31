@@ -4,10 +4,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AuthTokens(
-    @SerializedName("access_token")
-    val accessToken: String,
-
+data class UpdateToken(
     @SerializedName("refresh_token")
     val refreshToken: String
 )

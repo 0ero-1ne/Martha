@@ -56,6 +56,9 @@ dependencies {
     implementation(libs.androidx.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
 
+    // dotenv
+    implementation(libs.dotenv.kotlin)
+
     // datastore
     implementation(libs.androidx.datastore)
 
