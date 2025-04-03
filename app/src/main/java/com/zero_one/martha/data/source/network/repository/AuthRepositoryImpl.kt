@@ -2,15 +2,16 @@ package com.zero_one.martha.data.source.network.repository
 
 import android.util.Log
 import com.zero_one.martha.data.domain.repository.AuthRepository
+import com.zero_one.martha.data.source.datastore.user.UserManager
 import com.zero_one.martha.data.source.datastore.user.tokens.TokensManager
 import com.zero_one.martha.data.source.network.api.NetworkAPI
-import com.zero_one.martha.data.source.network.models.auth.AuthTokens
 import com.zero_one.martha.data.source.network.models.auth.AuthUser
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
+    private val api: NetworkAPI,
     private val tokensManager: TokensManager,
-    private val api: NetworkAPI
+    private val userManager: UserManager
 ): AuthRepository {
     override suspend fun login(authUser: AuthUser): String? {
         try {
@@ -52,34 +53,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun logout() {
-        tokensManager.setTokens(
-            AuthTokens(
-                accessToken = "",
-                refreshToken = "",
-            ),
-        )
+        tokensManager.removeTokens()
+        userManager.removeUser()
     }
-
-    // override suspend fun refresh(refreshToken: String): AuthTokens? {
-    //     try {
-    //         val response = api.refresh(
-    //             UpdateToken(
-    //                 refreshToken = refreshToken,
-    //             ),
-    //         )
-    //
-    //         if (response.isSuccessful && response.body() != null) {
-    //             tokensManager.setTokens(response.body()!!)
-    //             return AuthTokens(
-    //                 accessToken = response.body()!!.accessToken,
-    //                 refreshToken = response.body()!!.refreshToken,
-    //             )
-    //         }
-    //
-    //         return null
-    //     } catch (err: Exception) {
-    //         Log.e("AuthRepositoryImpl", "Refresh method", err)
-    //         return null
-    //     }
-    // }
 }

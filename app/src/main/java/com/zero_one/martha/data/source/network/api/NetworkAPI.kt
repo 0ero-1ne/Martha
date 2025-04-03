@@ -13,5 +13,5 @@ interface NetworkAPI {
     suspend fun refresh(refreshToken: UpdateToken): Response<AuthTokens?>
 
     // User
-    suspend fun getUserByToken(): Response<User?>
+    suspend fun getUser(): Response<User?>
 }

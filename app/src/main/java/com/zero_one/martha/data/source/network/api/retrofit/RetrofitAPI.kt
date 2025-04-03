@@ -23,5 +23,5 @@ interface RetrofitAPI: NetworkAPI {
 
     // User
     @GET(value = "users/single")
-    override suspend fun getUserByToken(): Response<User?>
+    override suspend fun getUser(): Response<User?>
 }

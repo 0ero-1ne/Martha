@@ -3,20 +3,27 @@ package com.zero_one.martha.data.source.network.repository
 import android.util.Log
 import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.data.domain.repository.UserRepository
+import com.zero_one.martha.data.source.datastore.user.UserManager
 import com.zero_one.martha.data.source.datastore.user.tokens.TokensManager
 import com.zero_one.martha.data.source.network.api.NetworkAPI
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val api: NetworkAPI,
-    private val tokensManager: TokensManager
+    private val tokensManager: TokensManager,
+    private val userManager: UserManager
 ): UserRepository {
-    override suspend fun getUserByToken(): User? {
+    override suspend fun getUser(): User? {
         try {
+            if (userManager.hasUser()) {
+                return userManager.getUser()
+            }
+
             if (tokensManager.hasTokens()) {
-                val userResult = api.getUserByToken()
+                val userResult = api.getUser()
                 if (userResult.isSuccessful && userResult.body() != null) {
-                    return networkUserToUser(userResult.body()!!)
+                    userManager.setUser(networkUserToUser(userResult.body()!!))
+                    return userManager.getUser()
                 }
             }
 
