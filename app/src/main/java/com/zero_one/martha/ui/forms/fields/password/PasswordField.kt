@@ -1,6 +1,7 @@
 package com.zero_one.martha.ui.forms.fields.password
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Visibility
@@ -17,12 +18,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.zero_one.martha.modifier.clearFocusOnKeyboardDismiss
 
 @Composable
 fun PasswordField(
     modifier: Modifier,
+    imeAction: ImeAction,
     state: PasswordFieldState = rememberPasswordFieldState()
 ) {
     var isPasswordVisible by remember {mutableStateOf(false)}
@@ -31,7 +35,8 @@ fun PasswordField(
         value = state.value,
         onValueChange = state::onValueChanged,
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clearFocusOnKeyboardDismiss(),
         leadingIcon = {
             Icon(Icons.Default.Password, "Password field icon")
         },
@@ -62,5 +67,8 @@ fun PasswordField(
                 )
             }
         },
+        keyboardOptions = KeyboardOptions(
+            imeAction = imeAction,
+        ),
     )
 }

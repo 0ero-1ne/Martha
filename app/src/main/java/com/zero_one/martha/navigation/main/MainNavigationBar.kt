@@ -2,8 +2,10 @@ package com.zero_one.martha.navigation.main
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocalLibrary
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.LocalLibrary
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -17,6 +19,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.zero_one.martha.features.main.catalog.CatalogRoute
 import com.zero_one.martha.features.main.home.HomeRoute
 import com.zero_one.martha.features.main.profile.ProfileRoute
 
@@ -32,8 +35,24 @@ fun MainNavigationBar(
     navController: NavHostController
 ) {
     val topLevelRoutes = listOf(
-        TopLevelRoute("Home", HomeRoute, Icons.Filled.Home, Icons.Outlined.Home),
-        TopLevelRoute("Me", ProfileRoute, Icons.Filled.Person, Icons.Outlined.Person),
+        TopLevelRoute(
+            "Home",
+            HomeRoute,
+            Icons.Filled.Home,
+            Icons.Outlined.Home,
+        ),
+        TopLevelRoute(
+            "Catalog",
+            CatalogRoute,
+            Icons.Filled.LocalLibrary,
+            Icons.Outlined.LocalLibrary,
+        ),
+        TopLevelRoute(
+            "Me",
+            ProfileRoute,
+            Icons.Filled.Person,
+            Icons.Outlined.Person,
+        ),
     )
 
     NavigationBar {

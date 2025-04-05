@@ -7,6 +7,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.zero_one.martha.features.auth.login.LoginRoute
+import com.zero_one.martha.features.main.catalog.CatalogRoute
+import com.zero_one.martha.features.main.catalog.CatalogScreen
+import com.zero_one.martha.features.main.catalog.CatalogViewModel
 import com.zero_one.martha.features.main.home.HomeRoute
 import com.zero_one.martha.features.main.home.HomeScreen
 import com.zero_one.martha.features.main.home.HomeViewModel
@@ -42,6 +45,13 @@ fun NavGraphBuilder.mainNavigationGraph(
                 onNavigateToLoginPage = {
                     rootNavController.navigate(LoginRoute)
                 },
+            )
+        }
+        composable<CatalogRoute> {
+            val viewModel = hiltViewModel<CatalogViewModel>()
+
+            CatalogScreen(
+                viewModel = viewModel,
             )
         }
     }

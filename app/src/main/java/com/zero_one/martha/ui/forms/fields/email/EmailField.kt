@@ -1,6 +1,7 @@
 package com.zero_one.martha.ui.forms.fields.email
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
@@ -10,18 +11,22 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import com.zero_one.martha.modifier.clearFocusOnKeyboardDismiss
 
 @Composable
 fun EmailField(
     modifier: Modifier,
+    imeAction: ImeAction,
     state: EmailFieldState = rememberEmailFieldState()
 ) {
     TextField(
         value = state.value,
         onValueChange = state::onValueChanged,
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clearFocusOnKeyboardDismiss(),
         leadingIcon = {
             Icon(Icons.Default.Email, "Email field icon")
         },
@@ -35,6 +40,9 @@ fun EmailField(
                 )
             }
         },
+        keyboardOptions = KeyboardOptions(
+            imeAction = imeAction,
+        ),
     )
 }
 
@@ -45,6 +53,7 @@ fun EmailFieldPreview(
 ) {
     EmailField(
         state = state,
-        modifier = Modifier
+        imeAction = ImeAction.Done,
+        modifier = Modifier,
     )
 }

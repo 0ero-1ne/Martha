@@ -1,5 +1,6 @@
 package com.zero_one.martha.data.source.network.di
 
+import com.google.gson.GsonBuilder
 import com.zero_one.martha.data.source.datastore.user.tokens.TokensManager
 import com.zero_one.martha.data.source.network.api.NetworkAPI
 import com.zero_one.martha.data.source.network.api.authenticator.TokensAuthenticator
@@ -61,7 +62,13 @@ object NetworkModule {
         return Retrofit
             .Builder()
             .baseUrl(dotenv.get("api_host", "https://www.temp.api.com"))
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(
+                GsonConverterFactory.create(
+                    GsonBuilder()
+                        .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+                        .create(),
+                ),
+            )
             .client(httpClient)
             .build()
             .create(RetrofitAPI::class.java)
