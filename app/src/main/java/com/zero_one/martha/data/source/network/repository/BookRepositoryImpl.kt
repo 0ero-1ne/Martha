@@ -12,19 +12,13 @@ class BookRepositoryImpl @Inject constructor(
     override suspend fun getBooks(): List<Book> {
         try {
             val booksResult = api.getBooks()
-            Log.d("BOOK_REPOSITORY before", "1")
 
             if (booksResult.isSuccessful && booksResult.body() != null) {
-                val books = booksResult.body()!!.map {book ->
+                return booksResult.body()!!.map {book ->
                     networkBookToBook(book)
                 }
-
-                Log.d("BOOK_REPOSITORY", books[0].title)
-                Log.d("BOOK_REPOSITORY books length", books.size.toString())
-                return books
             }
 
-            Log.d("BOOK_REPOSITORY after", "2")
             return emptyList()
         } catch (e: Exception) {
             Log.e("BookRepositoryImpl", "getBooks()", e)
@@ -33,7 +27,18 @@ class BookRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getBookById(id: UInt): Book {
-        TODO("Not yet implemented")
+        try {
+            val bookResult = api.getBookById(id)
+
+            if (bookResult.isSuccessful && bookResult.body() != null) {
+                return networkBookToBook(bookResult.body()!!)
+            }
+
+            return Book()
+        } catch (e: Exception) {
+            Log.e("BookRepositoryImpl", "getBookById()", e)
+            return Book()
+        }
     }
 
     private fun networkBookToBook(networkBook: com.zero_one.martha.data.source.network.models.Book): Book {

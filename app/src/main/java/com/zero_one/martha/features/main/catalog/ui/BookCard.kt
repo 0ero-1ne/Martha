@@ -1,6 +1,7 @@
 package com.zero_one.martha.features.main.catalog.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +19,8 @@ import com.zero_one.martha.data.domain.model.Book
 
 @Composable
 fun BookCard(
-    book: Book
+    book: Book,
+    onBookClick: (bookId: UInt) -> Unit
 ) {
     Box {
         Column {
@@ -30,7 +32,10 @@ fun BookCard(
                         bottom = 5.dp,
                     )
                     .clip(RoundedCornerShape(5.dp))
-                    .background(Color.Green),
+                    .background(Color.Green)
+                    .clickable {
+                        onBookClick(book.id)
+                    },
             )
             Text(
                 text = book.title,
