@@ -19,7 +19,8 @@ import com.zero_one.martha.features.main.catalog.ui.CustomSearchBar
 
 @Composable
 fun CatalogScreen(
-    viewModel: CatalogViewModel
+    viewModel: CatalogViewModel,
+    onBookClick: (bookId: UInt) -> Unit
 ) {
     if (viewModel.books == null) {
         CircularProgressIndicator()
@@ -47,6 +48,7 @@ fun CatalogScreen(
                 items(viewModel.books!!.size) {i ->
                     BookCard(
                         book = viewModel.books!![i],
+                        onBookClick = onBookClick,
                     )
                 }
             }

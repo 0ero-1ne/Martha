@@ -9,18 +9,12 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -31,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.ui.components.CustomTopBar
 import com.zero_one.martha.ui.forms.signup.SignupForm
 import com.zero_one.martha.ui.forms.signup.rememberSignupFormState
 import kotlinx.coroutines.launch
@@ -48,7 +43,7 @@ fun SignupScreen(
 
     Scaffold(
         topBar = {
-            TopBar(
+            CustomTopBar(
                 onNavigateToBack = onNavigateToBack,
             )
         },
@@ -117,24 +112,4 @@ fun SignupScreen(
             }
         }
     }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun TopBar(
-    onNavigateToBack: () -> Unit
-) {
-    TopAppBar(
-        title = {},
-        navigationIcon = {
-            IconButton(
-                onClick = onNavigateToBack,
-            ) {
-                Icon(
-                    Icons.AutoMirrored.Outlined.ArrowBack,
-                    "Navigate to back button",
-                )
-            }
-        },
-    )
 }
