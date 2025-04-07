@@ -2,6 +2,7 @@ package com.zero_one.martha.data.source.network.api.retrofit
 
 import com.zero_one.martha.data.source.network.api.NetworkAPI
 import com.zero_one.martha.data.source.network.models.Book
+import com.zero_one.martha.data.source.network.models.Chapter
 import com.zero_one.martha.data.source.network.models.User
 import com.zero_one.martha.data.source.network.models.auth.AuthTokens
 import com.zero_one.martha.data.source.network.models.auth.AuthUser
@@ -33,4 +34,8 @@ interface RetrofitAPI: NetworkAPI {
 
     @GET(value = "books/{id}")
     override suspend fun getBookById(@Path("id") id: UInt): Response<Book>
+
+    // Chapter
+    @GET(value = "chapters/book/{id}")
+    override suspend fun getChaptersByBookId(@Path("id") bookId: UInt): Response<List<Chapter>>
 }

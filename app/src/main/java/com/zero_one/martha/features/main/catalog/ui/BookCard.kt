@@ -40,6 +40,8 @@ fun BookCard(
             Text(
                 text = book.title,
                 style = MaterialTheme.typography.titleSmall,
+                maxLines = 2,
+                minLines = 1,
             )
         }
     }

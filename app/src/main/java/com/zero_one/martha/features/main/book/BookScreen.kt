@@ -51,6 +51,20 @@ fun BookScreen(
             }
 
             Text(viewModel.book!!.title)
+
+            if (viewModel.chapters == null) {
+                CircularProgressIndicator()
+                return@Scaffold
+            }
+
+            if (viewModel.chapters!!.isEmpty()) {
+                Text("No chapters")
+                return@Scaffold
+            }
+
+            viewModel.chapters!!.forEach {chapter ->
+                Text(chapter.title)
+            }
         }
     }
 }
