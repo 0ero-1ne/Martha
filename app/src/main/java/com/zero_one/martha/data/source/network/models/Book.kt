@@ -10,5 +10,8 @@ data class Book(
     val status: String = "",
     val year: Int = 0,
     val views: Int = 0,
-    val cover: String = ""
+    val cover: String = "",
+    val tags: List<Tag>? = null,
+    val authors: List<Author>? = null,
+    val comments: List<Comment>? = null
 )

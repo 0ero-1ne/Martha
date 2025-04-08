@@ -39,10 +39,6 @@ fun BookHeader(
                 .background(Color.Green),
         )
         Text(
-            modifier = Modifier
-                .padding(
-                    bottom = 10.dp,
-                ),
             text = book.title,
             style = MaterialTheme.typography.titleLarge,
         )

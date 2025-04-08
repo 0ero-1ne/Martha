@@ -4,6 +4,9 @@ import android.util.Log
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.source.network.api.NetworkAPI
+import com.zero_one.martha.data.source.network.models.Author
+import com.zero_one.martha.data.source.network.models.Comment
+import com.zero_one.martha.data.source.network.models.Tag
 import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(
@@ -50,6 +53,33 @@ class BookRepositoryImpl @Inject constructor(
             year = networkBook.year,
             views = networkBook.views,
             cover = networkBook.cover,
+            tags = networkBook.tags?.map {networkTagToTag(it)} ?: emptyList(),
+            authors = networkBook.authors?.map {networkAuthorToAuthor(it)} ?: emptyList(),
+            comments = networkBook.comments?.map {networkCommentToComment(it)} ?: emptyList(),
+        )
+    }
+
+    private fun networkTagToTag(networkTag: Tag): com.zero_one.martha.data.domain.model.Tag {
+        return com.zero_one.martha.data.domain.model.Tag(
+            title = networkTag.title,
+            id = networkTag.id,
+        )
+    }
+
+    private fun networkAuthorToAuthor(networkAuthor: Author): com.zero_one.martha.data.domain.model.Author {
+        return com.zero_one.martha.data.domain.model.Author(
+            id = networkAuthor.id,
+            fullname = networkAuthor.fullname,
+            biography = networkAuthor.biography,
+            image = networkAuthor.image,
+        )
+    }
+
+    private fun networkCommentToComment(networkComment: Comment): com.zero_one.martha.data.domain.model.Comment {
+        return com.zero_one.martha.data.domain.model.Comment(
+            id = networkComment.id,
+            text = networkComment.text,
+            userId = networkComment.userId,
         )
     }
 }

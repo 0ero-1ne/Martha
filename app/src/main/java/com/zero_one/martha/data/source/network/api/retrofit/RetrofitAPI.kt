@@ -32,7 +32,7 @@ interface RetrofitAPI: NetworkAPI {
     @GET(value = "books/")
     override suspend fun getBooks(): Response<List<Book>>
 
-    @GET(value = "books/{id}")
+    @GET(value = "books/{id}?withTags=true&withAuthors=true&withComments=true")
     override suspend fun getBookById(@Path("id") id: UInt): Response<Book>
 
     // Chapter

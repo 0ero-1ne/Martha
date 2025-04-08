@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.zero_one.martha.features.main.book.tabs.AboutTab
 import com.zero_one.martha.features.main.book.tabs.ChaptersTab
+import com.zero_one.martha.features.main.book.tabs.CommentsTab
 import com.zero_one.martha.features.main.book.ui.BookHeader
 import com.zero_one.martha.ui.components.CustomTopBar
 import kotlinx.coroutines.launch
@@ -130,7 +131,9 @@ fun BookScreen(
                             },
                         )
 
-                        2 -> Text("Comments")
+                        2 -> CommentsTab(
+                            comments = viewModel.book!!.comments,
+                        )
                     }
                 }
             }
