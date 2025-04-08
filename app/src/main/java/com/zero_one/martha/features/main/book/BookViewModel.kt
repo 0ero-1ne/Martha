@@ -24,6 +24,7 @@ class BookViewModel @Inject constructor(
 ): ViewModel() {
     var book: Book? by mutableStateOf(null)
     var chapters: List<Chapter>? by mutableStateOf(null)
+    var chaptersSortType: Boolean by mutableStateOf(true)
 
     init {
         viewModelScope.launch {
@@ -35,5 +36,9 @@ class BookViewModel @Inject constructor(
             book = bookRepository.getBookById(bookId)
             chapters = chapterRepository.getChaptersByBookId(bookId)
         }
+    }
+
+    fun changeSortType() {
+        chaptersSortType = !chaptersSortType
     }
 }
