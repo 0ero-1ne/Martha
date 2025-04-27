@@ -24,7 +24,11 @@ import com.zero_one.martha.features.main.book.ui.ChaptersListRow
 fun ChaptersTab(
     chapters: List<Chapter>,
     sortType: Boolean,
-    changeSortType: () -> Unit
+    changeSortType: () -> Unit,
+    onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit,
+    onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
+    onNavigateToLoginPage: () -> Unit,
+    isAuth: () -> Boolean,
 ) {
     val listState = rememberLazyListState()
     val sortedChapters = remember(sortType) {
@@ -65,7 +69,13 @@ fun ChaptersTab(
                 it.uuid
             },
         ) {chapter ->
-            ChaptersListRow(chapter)
+            ChaptersListRow(
+                chapter = chapter,
+                onNavigateToReader = onNavigateToReader,
+                onNavigateToPlayer = onNavigateToPlayer,
+                onNavigateToLoginPage = onNavigateToLoginPage,
+                isAuth = isAuth,
+            )
             if (sortedChapters.value.last() != chapter) {
                 HorizontalDivider()
             }

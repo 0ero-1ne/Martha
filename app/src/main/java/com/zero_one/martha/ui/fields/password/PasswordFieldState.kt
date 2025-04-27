@@ -1,4 +1,4 @@
-package com.zero_one.martha.ui.forms.fields.password
+package com.zero_one.martha.ui.fields.password
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable

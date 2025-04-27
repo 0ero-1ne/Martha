@@ -35,7 +35,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun BookScreen(
     viewModel: BookViewModel,
-    onNavigateToBack: () -> Unit
+    onNavigateToBack: () -> Unit,
+    onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit,
+    onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
+    onNavigateToLoginPage: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -129,10 +132,16 @@ fun BookScreen(
                             changeSortType = {
                                 viewModel.changeSortType()
                             },
+                            onNavigateToReader = onNavigateToReader,
+                            onNavigateToPlayer = onNavigateToPlayer,
+                            onNavigateToLoginPage = onNavigateToLoginPage,
+                            isAuth = viewModel::isAuth,
                         )
 
                         2 -> CommentsTab(
-                            comments = viewModel.book!!.comments,
+                            comments = viewModel.comments,
+                            onSaveComment = viewModel::saveComment,
+                            commentEvents = viewModel.commentValidationEvents,
                         )
                     }
                 }

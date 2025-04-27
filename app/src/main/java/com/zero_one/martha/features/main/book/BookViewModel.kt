@@ -9,10 +9,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.Chapter
+import com.zero_one.martha.data.domain.model.Comment
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.domain.repository.ChapterRepository
+import com.zero_one.martha.data.domain.repository.CommentRepository
+import com.zero_one.martha.data.source.datastore.user.UserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import kotlin.reflect.typeOf
 
@@ -20,25 +26,72 @@ import kotlin.reflect.typeOf
 class BookViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val bookRepository: BookRepository,
-    private val chapterRepository: ChapterRepository
+    private val chapterRepository: ChapterRepository,
+    private val commentRepository: CommentRepository,
+    private val userManager: UserManager
 ): ViewModel() {
     var book: Book? by mutableStateOf(null)
     var chapters: List<Chapter>? by mutableStateOf(null)
     var chaptersSortType: Boolean by mutableStateOf(true)
+    var comments: List<Comment>? by mutableStateOf(null)
+
+    private val commentValidationEventChannel = Channel<CommentValidationEvent>()
+    val commentValidationEvents = commentValidationEventChannel.receiveAsFlow()
 
     init {
         viewModelScope.launch {
             val bookId = savedStateHandle.toRoute<BookRoute>(
                 typeMap = mapOf(
-                    typeOf<UInt>() to BookIdNavType,
+                    typeOf<UInt>() to UIntNavType,
                 ),
             ).bookId
+
             book = bookRepository.getBookById(bookId)
             chapters = chapterRepository.getChaptersByBookId(bookId)
+            comments = commentRepository.getCommentsByBookId(bookId)
         }
     }
 
     fun changeSortType() {
         chaptersSortType = !chaptersSortType
+    }
+
+    fun saveComment(text: String) {
+        viewModelScope.launch {
+            val userId = userManager.getUser().id
+
+            if (userId == 0u) {
+                commentValidationEventChannel.send(CommentValidationEvent.Error)
+                return@launch
+            }
+
+            val comment = Comment(
+                bookId = book!!.id,
+                userId = userId,
+                text = text,
+            )
+
+            val result = commentRepository.saveComment(comment)
+            if (result.id == 0u) {
+                commentValidationEventChannel.send(CommentValidationEvent.Error)
+                return@launch
+            }
+
+            val mutable = comments!!.toMutableList()
+            mutable.add(0, result)
+            comments = mutable.toList()
+            commentValidationEventChannel.send(CommentValidationEvent.Success)
+        }
+    }
+
+    fun isAuth(): Boolean {
+        return runBlocking {
+            return@runBlocking userManager.hasUser()
+        }
+    }
+
+    sealed class CommentValidationEvent {
+        data object Success: CommentValidationEvent()
+        data object Error: CommentValidationEvent()
     }
 }

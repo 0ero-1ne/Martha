@@ -1,4 +1,4 @@
-package com.zero_one.martha.ui.forms.fields.password
+package com.zero_one.martha.ui.fields.password
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions

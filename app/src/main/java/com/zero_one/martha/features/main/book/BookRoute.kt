@@ -11,7 +11,7 @@ data class BookRoute(
     val bookId: UInt
 )
 
-val BookIdNavType = object: NavType<UInt>(
+val UIntNavType = object: NavType<UInt>(
     isNullableAllowed = false,
 ) {
     override fun get(bundle: Bundle, key: String): UInt {

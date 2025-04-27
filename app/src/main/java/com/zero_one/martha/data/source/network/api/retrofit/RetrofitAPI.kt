@@ -3,6 +3,7 @@ package com.zero_one.martha.data.source.network.api.retrofit
 import com.zero_one.martha.data.source.network.api.NetworkAPI
 import com.zero_one.martha.data.source.network.models.Book
 import com.zero_one.martha.data.source.network.models.Chapter
+import com.zero_one.martha.data.source.network.models.Comment
 import com.zero_one.martha.data.source.network.models.User
 import com.zero_one.martha.data.source.network.models.auth.AuthTokens
 import com.zero_one.martha.data.source.network.models.auth.AuthUser
@@ -35,7 +36,20 @@ interface RetrofitAPI: NetworkAPI {
     @GET(value = "books/{id}?withTags=true&withAuthors=true&withComments=true")
     override suspend fun getBookById(@Path("id") id: UInt): Response<Book>
 
+    @GET(value = "books/{id}?withChapters=true")
+    override suspend fun getBookForReader(@Path("id") id: UInt): Response<Book>
+
     // Chapter
     @GET(value = "chapters/book/{id}")
     override suspend fun getChaptersByBookId(@Path("id") bookId: UInt): Response<List<Chapter>>
+
+    @GET(value = "chapters/{id}")
+    override suspend fun getChapterById(@Path("id") chapterId: UInt): Response<Chapter>
+
+    // Comment
+    @GET(value = "comments/book/{id}")
+    override suspend fun getCommentsByBookId(@Path("id") bookId: UInt): Response<List<Comment>>
+
+    @POST(value = "comments/")
+    override suspend fun saveComment(@Body comment: Comment): Response<Comment>
 }

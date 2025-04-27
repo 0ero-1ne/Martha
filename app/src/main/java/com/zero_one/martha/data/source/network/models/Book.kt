@@ -13,5 +13,6 @@ data class Book(
     val cover: String = "",
     val tags: List<Tag>? = null,
     val authors: List<Author>? = null,
-    val comments: List<Comment>? = null
+    val comments: List<Comment>? = null,
+    val chapters: List<Chapter>? = null
 )

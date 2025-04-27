@@ -1,4 +1,4 @@
-package com.zero_one.martha.ui.forms.fields.email
+package com.zero_one.martha.ui.fields.email
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -25,7 +25,7 @@ class EmailFieldState(initialValue: String) {
     }
 
     fun onValueChanged(email: String) {
-        value = email
+        value = email.trim()
         error = null
     }
 

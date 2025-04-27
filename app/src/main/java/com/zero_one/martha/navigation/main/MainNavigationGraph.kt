@@ -7,10 +7,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.zero_one.martha.features.auth.login.LoginRoute
-import com.zero_one.martha.features.main.book.BookIdNavType
 import com.zero_one.martha.features.main.book.BookRoute
 import com.zero_one.martha.features.main.book.BookScreen
 import com.zero_one.martha.features.main.book.BookViewModel
+import com.zero_one.martha.features.main.book.UIntNavType
 import com.zero_one.martha.features.main.catalog.CatalogRoute
 import com.zero_one.martha.features.main.catalog.CatalogScreen
 import com.zero_one.martha.features.main.catalog.CatalogViewModel
@@ -20,6 +20,8 @@ import com.zero_one.martha.features.main.home.HomeViewModel
 import com.zero_one.martha.features.main.profile.ProfileRoute
 import com.zero_one.martha.features.main.profile.ProfileScreen
 import com.zero_one.martha.features.main.profile.ProfileViewModel
+import com.zero_one.martha.features.player.PlayerRoute
+import com.zero_one.martha.features.reader.ReaderRoute
 import kotlinx.serialization.Serializable
 import kotlin.reflect.typeOf
 
@@ -64,7 +66,7 @@ fun NavGraphBuilder.mainNavigationGraph(
         }
         composable<BookRoute>(
             typeMap = mapOf(
-                typeOf<UInt>() to BookIdNavType,
+                typeOf<UInt>() to UIntNavType,
             ),
         ) {
             val viewModel = hiltViewModel<BookViewModel>()
@@ -73,6 +75,25 @@ fun NavGraphBuilder.mainNavigationGraph(
                 viewModel = viewModel,
                 onNavigateToBack = {
                     navController.popBackStack()
+                },
+                onNavigateToReader = {bookId, chapterId ->
+                    rootNavController.navigate(
+                        ReaderRoute(
+                            bookId = bookId,
+                            chapterId = chapterId,
+                        ),
+                    )
+                },
+                onNavigateToPlayer = {bookId, chapterId ->
+                    rootNavController.navigate(
+                        PlayerRoute(
+                            bookId = bookId,
+                            chapterId = chapterId,
+                        ),
+                    )
+                },
+                onNavigateToLoginPage = {
+                    rootNavController.navigate(LoginRoute)
                 },
             )
         }

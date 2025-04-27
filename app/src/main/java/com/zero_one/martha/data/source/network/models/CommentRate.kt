@@ -4,12 +4,10 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Comment(
-    val id: UInt = 0u,
-    val text: String = "",
+data class CommentRate(
+    @SerializedName("comment_id")
+    val commentId: UInt = 0u,
     @SerializedName("user_id")
     val userId: UInt = 0u,
-    @SerializedName("book_id")
-    val bookId: UInt = 0u,
-    val rates: List<CommentRate>? = null
+    val rating: Boolean = false
 )

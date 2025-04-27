@@ -1,0 +1,80 @@
+package com.zero_one.martha.data.source.network.repository
+
+import android.util.Log
+import com.zero_one.martha.data.domain.model.Comment
+import com.zero_one.martha.data.domain.model.CommentRate
+import com.zero_one.martha.data.domain.repository.CommentRepository
+import com.zero_one.martha.data.source.network.api.NetworkAPI
+import javax.inject.Inject
+
+class CommentRepositoryImpl @Inject constructor(
+    private val api: NetworkAPI
+): CommentRepository {
+    override suspend fun getCommentsByBookId(bookId: UInt): List<Comment> {
+        try {
+            val commentsResult = api.getCommentsByBookId(bookId)
+
+            if (commentsResult.isSuccessful && commentsResult.body() != null) {
+                return commentsResult.body()!!.map {
+                    networkCommentToComment(it)
+                }
+            }
+
+            return emptyList()
+        } catch (e: Exception) {
+            Log.e("CommentRepositoryImpl", "getCommentsByBookId", e)
+            return emptyList()
+        }
+    }
+
+    override suspend fun saveComment(comment: Comment): Comment {
+        try {
+            val commentResult = api.saveComment(commentToNetworkComment(comment))
+
+            if (commentResult.isSuccessful && commentResult.body() != null) {
+                return networkCommentToComment(commentResult.body()!!)
+            }
+
+            return Comment()
+        } catch (e: Exception) {
+            Log.e("CommentRepositoryImpl", "saveComment", e)
+            return Comment()
+        }
+    }
+
+    private fun networkCommentToComment(comment: com.zero_one.martha.data.source.network.models.Comment): Comment {
+        return Comment(
+            id = comment.id,
+            bookId = comment.bookId,
+            userId = comment.userId,
+            text = comment.text,
+            rates = comment.rates?.map {networkCommentRateToCommentRate(it)},
+        )
+    }
+
+    private fun commentToNetworkComment(comment: Comment): com.zero_one.martha.data.source.network.models.Comment {
+        return com.zero_one.martha.data.source.network.models.Comment(
+            id = comment.id,
+            bookId = comment.bookId,
+            userId = comment.userId,
+            text = comment.text,
+            rates = comment.rates?.map {commentRateToNetwork(it)},
+        )
+    }
+
+    private fun networkCommentRateToCommentRate(commentRate: com.zero_one.martha.data.source.network.models.CommentRate): CommentRate {
+        return CommentRate(
+            commentId = commentRate.commentId,
+            userId = commentRate.userId,
+            rating = commentRate.rating,
+        )
+    }
+
+    private fun commentRateToNetwork(commentRate: CommentRate): com.zero_one.martha.data.source.network.models.CommentRate {
+        return com.zero_one.martha.data.source.network.models.CommentRate(
+            commentId = commentRate.commentId,
+            userId = commentRate.userId,
+            rating = commentRate.rating,
+        )
+    }
+}

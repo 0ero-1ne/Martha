@@ -5,10 +5,10 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import com.zero_one.martha.ui.forms.fields.email.EmailFieldState
-import com.zero_one.martha.ui.forms.fields.email.rememberEmailFieldState
-import com.zero_one.martha.ui.forms.fields.password.PasswordFieldState
-import com.zero_one.martha.ui.forms.fields.password.rememberPasswordFieldState
+import com.zero_one.martha.ui.fields.email.EmailFieldState
+import com.zero_one.martha.ui.fields.email.rememberEmailFieldState
+import com.zero_one.martha.ui.fields.password.PasswordFieldState
+import com.zero_one.martha.ui.fields.password.rememberPasswordFieldState
 
 @Stable
 class SignupFormState(
