@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -22,11 +23,6 @@ fun CatalogScreen(
     viewModel: CatalogViewModel,
     onBookClick: (bookId: UInt) -> Unit
 ) {
-    if (viewModel.books == null) {
-        CircularProgressIndicator()
-        return
-    }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
     ) {paddingValues ->
@@ -40,14 +36,20 @@ fun CatalogScreen(
             CustomSearchBar(
                 onSearch = {},
             )
+
+            if (viewModel.books == null) {
+                CircularProgressIndicator()
+                return@Column
+            }
+
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(120.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                items(viewModel.books!!.size) {i ->
+                items(viewModel.books!!, key = {it.uuid}) {book ->
                     BookCard(
-                        book = viewModel.books!![i],
+                        book = book,
                         onBookClick = onBookClick,
                     )
                 }

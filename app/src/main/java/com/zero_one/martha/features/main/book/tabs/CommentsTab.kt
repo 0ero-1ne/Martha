@@ -69,6 +69,7 @@ fun CommentsTab(
 
     comments.forEach {comment ->
         Text(comment.userId.toString())
+        Text(comment.user.username)
         Text(comment.text)
         Text("Upvotes = " + comment.rates?.count {it.rating})
         Text("Downvotes = " + comment.rates?.count {!it.rating})

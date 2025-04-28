@@ -9,5 +9,6 @@ data class CommentRate(
     val commentId: UInt = 0u,
     @SerializedName("user_id")
     val userId: UInt = 0u,
-    val rating: Boolean = false
+    val rating: Boolean = false,
+    val user: User = User()
 )

@@ -3,6 +3,7 @@ package com.zero_one.martha.data.source.network.repository
 import android.util.Log
 import com.zero_one.martha.data.domain.model.Comment
 import com.zero_one.martha.data.domain.model.CommentRate
+import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.data.domain.repository.CommentRepository
 import com.zero_one.martha.data.source.network.api.NetworkAPI
 import javax.inject.Inject
@@ -49,6 +50,12 @@ class CommentRepositoryImpl @Inject constructor(
             userId = comment.userId,
             text = comment.text,
             rates = comment.rates?.map {networkCommentRateToCommentRate(it)},
+            user = User(
+                id = comment.user.id,
+                username = comment.user.username,
+                email = comment.user.email,
+                image = comment.user.image,
+            ),
         )
     }
 
@@ -59,6 +66,12 @@ class CommentRepositoryImpl @Inject constructor(
             userId = comment.userId,
             text = comment.text,
             rates = comment.rates?.map {commentRateToNetwork(it)},
+            user = com.zero_one.martha.data.source.network.models.User(
+                id = comment.user.id,
+                username = comment.user.username,
+                email = comment.user.email,
+                image = comment.user.image,
+            ),
         )
     }
 
@@ -67,6 +80,12 @@ class CommentRepositoryImpl @Inject constructor(
             commentId = commentRate.commentId,
             userId = commentRate.userId,
             rating = commentRate.rating,
+            user = User(
+                id = commentRate.user.id,
+                username = commentRate.user.username,
+                email = commentRate.user.email,
+                image = commentRate.user.image,
+            ),
         )
     }
 
@@ -75,6 +94,12 @@ class CommentRepositoryImpl @Inject constructor(
             commentId = commentRate.commentId,
             userId = commentRate.userId,
             rating = commentRate.rating,
+            user = com.zero_one.martha.data.source.network.models.User(
+                id = commentRate.user.id,
+                username = commentRate.user.username,
+                email = commentRate.user.email,
+                image = commentRate.user.image,
+            ),
         )
     }
 }
