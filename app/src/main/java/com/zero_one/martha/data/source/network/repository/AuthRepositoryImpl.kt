@@ -19,7 +19,6 @@ class AuthRepositoryImpl @Inject constructor(
 
             if (response.isSuccessful && response.body() != null) {
                 tokensManager.setTokens(response.body()!!)
-                api.getUser()
                 return null
             }
 

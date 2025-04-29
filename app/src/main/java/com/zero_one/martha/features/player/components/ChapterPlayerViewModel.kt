@@ -74,7 +74,7 @@ class ChapterPlayerViewModel @Inject constructor(
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
-                if (isLoading.value && playbackState == Player.STATE_READY) {
+                if (isLoading.value && (playbackState == Player.STATE_READY || playbackState == Player.STATE_IDLE)) {
                     updateIsLoading(false)
                 }
             }

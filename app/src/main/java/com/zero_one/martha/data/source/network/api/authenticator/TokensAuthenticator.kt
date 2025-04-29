@@ -75,7 +75,7 @@ class TokensAuthenticator @Inject constructor(
             ),
         )
 
-        if (newTokens.code() == 401) {
+        if (!newTokens.isSuccessful) {
             return null
         }
 

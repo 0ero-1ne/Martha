@@ -10,6 +10,7 @@ import androidx.navigation.toRoute
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.Chapter
 import com.zero_one.martha.data.domain.repository.BookRepository
+import com.zero_one.martha.data.domain.repository.ChapterRepository
 import com.zero_one.martha.features.main.book.UIntNavType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,7 +20,8 @@ import kotlin.reflect.typeOf
 @HiltViewModel
 class ReaderViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val bookRepository: BookRepository
+    private val bookRepository: BookRepository,
+    private val chapterRepository: ChapterRepository,
 ): ViewModel() {
     var book: Book? by mutableStateOf(null)
     var currentChapter: Chapter? by mutableStateOf(null)
@@ -33,7 +35,7 @@ class ReaderViewModel @Inject constructor(
             )
 
             book = bookRepository.getBookForReader(params.bookId)
-            currentChapter = book!!.chapters.find {it.id == params.chapterId}
+            currentChapter = chapterRepository.getChapterById(params.chapterId)
         }
     }
 }

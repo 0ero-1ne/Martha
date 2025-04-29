@@ -13,7 +13,7 @@ import com.zero_one.martha.data.domain.model.Comment
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.domain.repository.ChapterRepository
 import com.zero_one.martha.data.domain.repository.CommentRepository
-import com.zero_one.martha.data.source.datastore.user.UserManager
+import com.zero_one.martha.data.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -28,7 +28,7 @@ class BookViewModel @Inject constructor(
     private val bookRepository: BookRepository,
     private val chapterRepository: ChapterRepository,
     private val commentRepository: CommentRepository,
-    private val userManager: UserManager
+    private val userRepository: UserRepository
 ): ViewModel() {
     var book: Book? by mutableStateOf(null)
     var chapters: List<Chapter>? by mutableStateOf(null)
@@ -58,7 +58,7 @@ class BookViewModel @Inject constructor(
 
     fun saveComment(text: String) {
         viewModelScope.launch {
-            val userId = userManager.getUser().id
+            val userId = userRepository.getUser()?.id
 
             if (userId == 0u) {
                 commentValidationEventChannel.send(CommentValidationEvent.Error)
@@ -67,7 +67,7 @@ class BookViewModel @Inject constructor(
 
             val comment = Comment(
                 bookId = book!!.id,
-                userId = userId,
+                userId = userId!!,
                 text = text,
             )
 
@@ -85,9 +85,11 @@ class BookViewModel @Inject constructor(
     }
 
     fun isAuth(): Boolean {
-        return runBlocking {
-            return@runBlocking userManager.hasUser()
+        val isAuth = runBlocking {
+            return@runBlocking userRepository.getUser()
         }
+
+        return !(isAuth == null || isAuth.id == 0u)
     }
 
     sealed class CommentValidationEvent {
