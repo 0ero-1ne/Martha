@@ -1,6 +1,7 @@
 package com.zero_one.martha.features.main.catalog
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ class CatalogViewModel @Inject constructor(
     private val bookRepository: BookRepository
 ): ViewModel() {
     var books: List<Book>? by mutableStateOf(null)
+    var columns: Int by mutableIntStateOf(3)
 
     init {
         viewModelScope.launch {
