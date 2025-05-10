@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -37,9 +36,9 @@ fun ReaderScreen(
     val reader = viewModel.reader.collectAsState()
 
     var isCounting = remember {true}
-    var pages = remember {mutableListOf<String>()}
-    var currentPage = remember {mutableStateOf("")}
-    var currentPageNumber = remember {mutableIntStateOf(0)}
+    val pages = remember {mutableListOf<String>()}
+    val currentPage = remember {mutableStateOf("")}
+    val currentPageNumber = remember {mutableIntStateOf(0)}
     val endLineIndex = remember {mutableIntStateOf(0)}
 
     LaunchedEffect(reader.value) {
@@ -156,7 +155,7 @@ fun ReaderScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .border(1.dp, Color.White)
-                    .onGloballyPositioned {it ->
+                    .onGloballyPositioned {
                         if (viewModel.maxLines > 0) {
                             return@onGloballyPositioned
                         }
@@ -173,8 +172,6 @@ fun ReaderScreen(
         }
     }
 }
-
-fun dpToInt(value: Dp): Int = value.toString().replace(".dp", "").toFloat().toInt()
 
 fun spToInt(value: TextUnit): Int = value.toString().replace(".sp", "").toFloat().toInt()
 

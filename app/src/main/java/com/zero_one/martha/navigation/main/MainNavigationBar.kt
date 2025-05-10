@@ -1,9 +1,11 @@
 package com.zero_one.martha.navigation.main
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalLibrary
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalLibrary
 import androidx.compose.material.icons.outlined.Person
@@ -19,6 +21,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.zero_one.martha.features.main.bookmarks.BookmarksRoute
 import com.zero_one.martha.features.main.catalog.CatalogRoute
 import com.zero_one.martha.features.main.home.HomeRoute
 import com.zero_one.martha.features.main.profile.ProfileRoute
@@ -35,6 +38,12 @@ fun MainNavigationBar(
     navController: NavHostController
 ) {
     val topLevelRoutes = listOf(
+        TopLevelRoute(
+            "Bookmarks",
+            BookmarksRoute,
+            Icons.Filled.Bookmarks,
+            Icons.Outlined.Bookmarks
+        ),
         TopLevelRoute(
             "Home",
             HomeRoute,

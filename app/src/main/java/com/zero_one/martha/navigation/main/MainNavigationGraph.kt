@@ -11,6 +11,9 @@ import com.zero_one.martha.features.main.book.BookRoute
 import com.zero_one.martha.features.main.book.BookScreen
 import com.zero_one.martha.features.main.book.BookViewModel
 import com.zero_one.martha.features.main.book.UIntNavType
+import com.zero_one.martha.features.main.bookmarks.BookmarksRoute
+import com.zero_one.martha.features.main.bookmarks.BookmarksScreen
+import com.zero_one.martha.features.main.bookmarks.BookmarksViewModel
 import com.zero_one.martha.features.main.catalog.CatalogRoute
 import com.zero_one.martha.features.main.catalog.CatalogScreen
 import com.zero_one.martha.features.main.catalog.CatalogViewModel
@@ -62,6 +65,13 @@ fun NavGraphBuilder.mainNavigationGraph(
                 onBookClick = {bookId ->
                     navController.navigate(BookRoute(bookId = bookId))
                 },
+            )
+        }
+        composable<BookmarksRoute> {
+            val viewModel = hiltViewModel<BookmarksViewModel>()
+
+            BookmarksScreen(
+                viewModel = viewModel
             )
         }
         composable<BookRoute>(

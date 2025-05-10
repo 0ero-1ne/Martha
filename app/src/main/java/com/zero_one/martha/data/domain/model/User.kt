@@ -9,5 +9,7 @@ data class User(
     val id: UInt = 0u,
     val email: String = "",
     val username: String = "",
-    val image: String = ""
+    val image: String = "",
+    val role: String = "user",
+    val savedBooks: MutableMap<String, MutableList<UInt>> = mutableMapOf()
 )

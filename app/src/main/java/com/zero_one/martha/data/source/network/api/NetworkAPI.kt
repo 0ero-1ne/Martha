@@ -17,6 +17,7 @@ interface NetworkAPI {
 
     // User
     suspend fun getUser(): Response<User?>
+    suspend fun updateUser(user: User): Response<User?>
 
     // Book
     suspend fun getBooks(): Response<List<Book>>

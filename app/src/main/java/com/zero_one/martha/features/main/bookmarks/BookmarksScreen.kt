@@ -1,0 +1,113 @@
+package com.zero_one.martha.features.main.bookmarks
+
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import com.zero_one.martha.features.main.bookmarks.components.BottomSheet
+import com.zero_one.martha.ui.components.CustomScrollableTabRow
+
+@Composable
+fun BookmarksScreen(
+    viewModel: BookmarksViewModel
+) {
+    val bookmarks = viewModel.bookmarks.collectAsState()
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+    ) {paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(
+                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
+                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
+                    bottom = paddingValues.calculateBottomPadding(),
+                )
+                .fillMaxSize(),
+        ) {
+            if (bookmarks.value == null) {
+                CircularProgressIndicator()
+                return@Column
+            }
+
+            val pageCount = remember {mutableIntStateOf(bookmarks.value!!.size)}
+            val pagerState = rememberPagerState {pageCount.intValue}
+            var showBottomSheet by remember {mutableStateOf(false)}
+
+            LaunchedEffect(bookmarks.value!!.size) {
+                pageCount.intValue = bookmarks.value!!.size
+            }
+
+            CustomScrollableTabRow(
+                pagerState = pagerState,
+                tabs = bookmarks.value!!.keys,
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            Button(
+                onClick = {
+                    showBottomSheet = true
+                },
+            ) {
+                Text("Open")
+            }
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .border(1.dp, Color.White),
+            ) {page ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top,
+                ) {
+                    val bookIds = bookmarks.value!![bookmarks.value!!.keys.elementAt(page)]
+
+                    if (bookIds!!.isEmpty()) {
+                        Text("Empty")
+                        return@HorizontalPager
+                    }
+
+                    Text(bookIds.joinToString(", "))
+                }
+            }
+
+            if (showBottomSheet) {
+                BottomSheet(
+                    onDismiss = {
+                        showBottomSheet = false
+                    },
+                    onAddNewFolder = viewModel::addNewFolder,
+                )
+            }
+        }
+    }
+}

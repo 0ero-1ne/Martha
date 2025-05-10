@@ -29,6 +29,9 @@ interface RetrofitAPI: NetworkAPI {
     @GET(value = "users/single")
     override suspend fun getUser(): Response<User?>
 
+    @POST(value = "users")
+    override suspend fun updateUser(@Body user: User): Response<User?>
+
     // Book
     @GET(value = "books/")
     override suspend fun getBooks(): Response<List<Book>>

@@ -29,7 +29,23 @@ class UserRepositoryImpl @Inject constructor(
 
             return null
         } catch (e: Exception) {
-            Log.e("UserRepositoryImpl", "getUserByToken method", e)
+            Log.e("UserRepositoryImpl", "getUser method", e)
+            return null
+        }
+    }
+
+    override suspend fun updateUser(user: User): User? {
+        try {
+            val updatedUserResult = api.updateUser(userToNetworkUser(user))
+
+            if (updatedUserResult.isSuccessful && updatedUserResult.body() != null) {
+                userManager.setUser(networkUserToUser(updatedUserResult.body()!!))
+                return userManager.getUser()
+            }
+
+            return null
+        } catch (e: Exception) {
+            Log.e("UserRepositoryImpl", "updateUser method", e)
             return null
         }
     }
@@ -40,6 +56,19 @@ class UserRepositoryImpl @Inject constructor(
             email = networkUser.email,
             username = networkUser.username,
             image = networkUser.image,
+            role = networkUser.role,
+            savedBooks = networkUser.savedBooks,
+        )
+    }
+
+    private fun userToNetworkUser(user: User): com.zero_one.martha.data.source.network.models.User {
+        return com.zero_one.martha.data.source.network.models.User(
+            id = user.id,
+            email = user.email,
+            username = user.username,
+            image = user.image,
+            role = user.role,
+            savedBooks = user.savedBooks,
         )
     }
 }
