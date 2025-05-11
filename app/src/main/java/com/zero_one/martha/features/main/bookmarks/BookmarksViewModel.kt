@@ -16,7 +16,7 @@ class BookmarksViewModel @Inject constructor(
     private val userManager: UserManager,
     private val userRepository: UserRepository
 ): ViewModel() {
-    private val _bookmarks: MutableStateFlow<MutableMap<String, MutableList<UInt>>?> =
+    private val _bookmarks: MutableStateFlow<Map<String, List<UInt>>?> =
         MutableStateFlow(null)
     val bookmarks = _bookmarks.asStateFlow()
 
@@ -30,9 +30,24 @@ class BookmarksViewModel @Inject constructor(
 
     fun addNewFolder(folderName: String): Boolean {
         if (!_bookmarks.value!!.containsKey(folderName)) {
-            _bookmarks.value!![folderName] = mutableListOf()
             _bookmarks.update {
-                _bookmarks.value
+                val newBookmarks = _bookmarks.value!!.toMutableMap()
+                newBookmarks[folderName] = listOf()
+                newBookmarks
+            }
+            updateUserBookmarks()
+            return true
+        }
+
+        return false
+    }
+
+    fun deleteFolder(folderName: String): Boolean {
+        if (_bookmarks.value!!.containsKey(folderName)) {
+            _bookmarks.update {
+                val newBookmarks = _bookmarks.value!!.toMutableMap()
+                newBookmarks.remove(folderName)
+                newBookmarks
             }
             updateUserBookmarks()
             return true

@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,13 +31,12 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.zero_one.martha.features.main.bookmarks.components.BottomSheet
 import com.zero_one.martha.ui.components.CustomScrollableTabRow
+import kotlinx.coroutines.launch
 
 @Composable
 fun BookmarksScreen(
     viewModel: BookmarksViewModel
 ) {
-    val bookmarks = viewModel.bookmarks.collectAsState()
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
     ) {paddingValues ->
@@ -49,6 +49,9 @@ fun BookmarksScreen(
                 )
                 .fillMaxSize(),
         ) {
+            val bookmarks = viewModel.bookmarks.collectAsState()
+            val scope = rememberCoroutineScope()
+
             if (bookmarks.value == null) {
                 CircularProgressIndicator()
                 return@Column
@@ -57,14 +60,16 @@ fun BookmarksScreen(
             val pageCount = remember {mutableIntStateOf(bookmarks.value!!.size)}
             val pagerState = rememberPagerState {pageCount.intValue}
             var showBottomSheet by remember {mutableStateOf(false)}
+            var pages by remember {mutableStateOf(bookmarks.value!!.keys)}
 
-            LaunchedEffect(bookmarks.value!!.size) {
+            LaunchedEffect(bookmarks.value!!) {
                 pageCount.intValue = bookmarks.value!!.size
+                pages = bookmarks.value!!.keys
             }
 
             CustomScrollableTabRow(
                 pagerState = pagerState,
-                tabs = bookmarks.value!!.keys,
+                tabs = pages,
             )
 
             Spacer(Modifier.height(10.dp))
@@ -102,10 +107,18 @@ fun BookmarksScreen(
 
             if (showBottomSheet) {
                 BottomSheet(
+                    pages = pages,
+                    currentTab = pagerState.currentPage,
                     onDismiss = {
                         showBottomSheet = false
                     },
                     onAddNewFolder = viewModel::addNewFolder,
+                    onDeleteFolder = viewModel::deleteFolder,
+                    onScrollToFirstTab = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(0)
+                        }
+                    },
                 )
             }
         }
