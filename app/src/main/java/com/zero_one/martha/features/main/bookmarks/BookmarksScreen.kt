@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.features.main.bookmarks.components.BottomSheet
 import com.zero_one.martha.ui.components.CustomScrollableTabRow
 import kotlinx.coroutines.launch
@@ -49,6 +50,13 @@ fun BookmarksScreen(
                 )
                 .fillMaxSize(),
         ) {
+            val user = viewModel.user.collectAsState(User())
+
+            if (user.value.id == 0u) {
+                Text("No user")
+                return@Scaffold
+            }
+
             val bookmarks = viewModel.bookmarks.collectAsState()
             val scope = rememberCoroutineScope()
 
@@ -94,14 +102,7 @@ fun BookmarksScreen(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top,
                 ) {
-                    val bookIds = bookmarks.value!![bookmarks.value!!.keys.elementAt(page)]
-
-                    if (bookIds!!.isEmpty()) {
-                        Text("Empty")
-                        return@HorizontalPager
-                    }
-
-                    Text(bookIds.joinToString(", "))
+                    Text(bookmarks.value!!.keys.elementAt(page))
                 }
             }
 

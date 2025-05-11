@@ -34,7 +34,7 @@ fun NavGraphBuilder.readerNavigationGraph(
             ReaderScreen(
                 viewModel = viewModel,
                 onNavigateToBack = {
-                    rootNavController.popBackStack()
+                    rootNavController.navigateUp()
                 },
             )
         }

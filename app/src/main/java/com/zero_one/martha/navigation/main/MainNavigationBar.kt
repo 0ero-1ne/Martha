@@ -42,7 +42,7 @@ fun MainNavigationBar(
             "Bookmarks",
             BookmarksRoute,
             Icons.Filled.Bookmarks,
-            Icons.Outlined.Bookmarks
+            Icons.Outlined.Bookmarks,
         ),
         TopLevelRoute(
             "Home",

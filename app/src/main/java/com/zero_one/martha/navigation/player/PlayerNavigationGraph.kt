@@ -35,7 +35,7 @@ fun NavGraphBuilder.playerNavigationGraph(
                 viewModel = viewModel,
                 chapterPlayerViewModel = chapterPlayerViewModel,
                 onNavigateToBack = {
-                    rootNavController.popBackStack()
+                    rootNavController.navigateUp()
                 },
             )
         }

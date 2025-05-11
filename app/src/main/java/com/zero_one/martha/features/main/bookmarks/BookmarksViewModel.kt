@@ -16,6 +16,8 @@ class BookmarksViewModel @Inject constructor(
     private val userManager: UserManager,
     private val userRepository: UserRepository
 ): ViewModel() {
+    val user = userManager.getUserFlow()
+
     private val _bookmarks: MutableStateFlow<Map<String, List<UInt>>?> =
         MutableStateFlow(null)
     val bookmarks = _bookmarks.asStateFlow()

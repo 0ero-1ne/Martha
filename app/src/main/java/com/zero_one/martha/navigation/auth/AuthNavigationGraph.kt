@@ -28,7 +28,7 @@ fun NavGraphBuilder.authNavigationGraph(
                 viewModel = viewModel,
                 onLoginClick = viewModel::login,
                 onNavigateToBack = {
-                    rootNavController.popBackStack()
+                    rootNavController.navigateUp()
                 },
                 onNavigateToSignupScreen = {
                     rootNavController.navigate(SignupRoute)

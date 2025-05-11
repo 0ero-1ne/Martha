@@ -71,7 +71,7 @@ fun NavGraphBuilder.mainNavigationGraph(
             val viewModel = hiltViewModel<BookmarksViewModel>()
 
             BookmarksScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
             )
         }
         composable<BookRoute>(
@@ -84,7 +84,7 @@ fun NavGraphBuilder.mainNavigationGraph(
             BookScreen(
                 viewModel = viewModel,
                 onNavigateToBack = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 },
                 onNavigateToReader = {bookId, chapterId ->
                     rootNavController.navigate(

@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,9 +27,8 @@ fun CustomScrollableTabRow(
     tabs: Set<String>
 ) {
     val scope = rememberCoroutineScope()
-    var previousTabIndex by remember {mutableIntStateOf(0)}
-    var targetTabIndex by remember {mutableIntStateOf(0)}
-
+    var previousTabIndex by rememberSaveable {mutableIntStateOf(0)}
+    var targetTabIndex by rememberSaveable {mutableIntStateOf(0)}
     val selectedTabIndex = remember {
         derivedStateOf {pagerState.currentPage}
     }
