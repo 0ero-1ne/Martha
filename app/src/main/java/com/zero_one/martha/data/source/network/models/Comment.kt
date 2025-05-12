@@ -11,6 +11,6 @@ data class Comment(
     val userId: UInt = 0u,
     @SerializedName("book_id")
     val bookId: UInt = 0u,
-    val rates: List<CommentRate>? = null,
+    val rates: List<CommentRate> = listOf(),
     val user: User = User()
 )

@@ -33,7 +33,7 @@ interface RetrofitAPI: NetworkAPI {
     override suspend fun updateUser(@Body user: User): Response<User?>
 
     // Book
-    @GET(value = "books/")
+    @GET(value = "books")
     override suspend fun getBooks(): Response<List<Book>>
 
     @GET(value = "books/{id}?withTags=true&withAuthors=true&withComments=true")
@@ -53,6 +53,6 @@ interface RetrofitAPI: NetworkAPI {
     @GET(value = "comments/book/{id}")
     override suspend fun getCommentsByBookId(@Path("id") bookId: UInt): Response<List<Comment>>
 
-    @POST(value = "comments/")
+    @POST(value = "comments")
     override suspend fun saveComment(@Body comment: Comment): Response<Comment>
 }

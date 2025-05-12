@@ -30,6 +30,10 @@ class CommentRepositoryImpl @Inject constructor(
 
     override suspend fun saveComment(comment: Comment): Comment {
         try {
+            Log.d(
+                "Comment data",
+                "Text = ${comment.text} UserId = ${comment.userId} BookId = ${comment.bookId}",
+            )
             val commentResult = api.saveComment(commentToNetworkComment(comment))
 
             if (commentResult.isSuccessful && commentResult.body() != null) {
@@ -49,7 +53,7 @@ class CommentRepositoryImpl @Inject constructor(
             bookId = comment.bookId,
             userId = comment.userId,
             text = comment.text,
-            rates = comment.rates?.map {networkCommentRateToCommentRate(it)},
+            rates = comment.rates.map {networkCommentRateToCommentRate(it)},
             user = User(
                 id = comment.user.id,
                 username = comment.user.username,
@@ -65,7 +69,7 @@ class CommentRepositoryImpl @Inject constructor(
             bookId = comment.bookId,
             userId = comment.userId,
             text = comment.text,
-            rates = comment.rates?.map {commentRateToNetwork(it)},
+            rates = comment.rates.map {commentRateToNetwork(it)},
             user = com.zero_one.martha.data.source.network.models.User(
                 id = comment.user.id,
                 username = comment.user.username,

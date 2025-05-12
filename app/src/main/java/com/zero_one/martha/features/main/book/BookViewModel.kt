@@ -58,17 +58,18 @@ class BookViewModel @Inject constructor(
 
     fun saveComment(text: String) {
         viewModelScope.launch {
-            val userId = userRepository.getUser()?.id
+            val user = userRepository.getUser()
 
-            if (userId == 0u) {
+            if (user?.id == 0u) {
                 commentValidationEventChannel.send(CommentValidationEvent.Error)
                 return@launch
             }
 
             val comment = Comment(
                 bookId = book!!.id,
-                userId = userId!!,
+                userId = user!!.id,
                 text = text,
+                user = user,
             )
 
             val result = commentRepository.saveComment(comment)
