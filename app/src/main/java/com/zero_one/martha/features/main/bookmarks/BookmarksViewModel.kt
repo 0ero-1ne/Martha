@@ -26,7 +26,7 @@ class BookmarksViewModel @Inject constructor(
         .onStart {init()}
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(100),
+            started = SharingStarted.WhileSubscribed(),
             initialValue = null,
         )
 
