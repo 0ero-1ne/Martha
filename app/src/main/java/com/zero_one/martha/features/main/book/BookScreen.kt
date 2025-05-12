@@ -18,16 +18,22 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.features.main.book.tabs.AboutTab
 import com.zero_one.martha.features.main.book.tabs.ChaptersTab
 import com.zero_one.martha.features.main.book.tabs.CommentsTab
 import com.zero_one.martha.features.main.book.ui.BookHeader
+import com.zero_one.martha.features.main.book.ui.BottomSheetBookmarks
 import com.zero_one.martha.ui.components.CustomTopBar
 import kotlinx.coroutines.launch
 
@@ -82,8 +88,15 @@ fun BookScreen(
                 return@Scaffold
             }
 
+            val user = viewModel.user.collectAsState(User())
+            var showBottomSheet by remember {mutableStateOf(false)}
+
             BookHeader(
                 book = viewModel.book!!,
+                folderName = viewModel.bookmarkFolderName,
+                onOpenBottomSheet = {
+                    showBottomSheet = true
+                },
             )
 
             PrimaryTabRow(
@@ -145,6 +158,18 @@ fun BookScreen(
                         )
                     }
                 }
+            }
+
+            if (showBottomSheet) {
+                BottomSheetBookmarks(
+                    onDismiss = {
+                        showBottomSheet = false
+                    },
+                    bookmarks = user.value.savedBooks.keys,
+                    onSaveBookInBookmarks = viewModel::saveBookInBookmarks,
+                    onRemoveBookFromBookmarks = viewModel::onRemoveBookFromBookmarks,
+                    currentFolderName = viewModel.bookmarkFolderName,
+                )
             }
         }
     }

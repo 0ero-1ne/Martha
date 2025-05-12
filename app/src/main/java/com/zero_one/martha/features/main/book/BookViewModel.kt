@@ -14,6 +14,7 @@ import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.domain.repository.ChapterRepository
 import com.zero_one.martha.data.domain.repository.CommentRepository
 import com.zero_one.martha.data.domain.repository.UserRepository
+import com.zero_one.martha.data.source.datastore.user.UserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -28,12 +29,15 @@ class BookViewModel @Inject constructor(
     private val bookRepository: BookRepository,
     private val chapterRepository: ChapterRepository,
     private val commentRepository: CommentRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userManager: UserManager
 ): ViewModel() {
+    var user = userManager.getUserFlow()
     var book: Book? by mutableStateOf(null)
     var chapters: List<Chapter>? by mutableStateOf(null)
     var chaptersSortType: Boolean by mutableStateOf(true)
     var comments: List<Comment>? by mutableStateOf(null)
+    var bookmarkFolderName by mutableStateOf("")
 
     private val commentValidationEventChannel = Channel<CommentValidationEvent>()
     val commentValidationEvents = commentValidationEventChannel.receiveAsFlow()
@@ -49,6 +53,12 @@ class BookViewModel @Inject constructor(
             book = bookRepository.getBookById(bookId)
             chapters = chapterRepository.getChaptersByBookId(bookId)
             comments = commentRepository.getCommentsByBookId(bookId)
+
+            userManager.getUser().savedBooks.forEach {(key, value) ->
+                if (value.contains(book!!.id)) {
+                    bookmarkFolderName = key
+                }
+            }
         }
     }
 
@@ -91,6 +101,40 @@ class BookViewModel @Inject constructor(
         }
 
         return !(isAuth == null || isAuth.id == 0u)
+    }
+
+    fun saveBookInBookmarks(folderName: String) {
+        viewModelScope.launch {
+            val user = userManager.getUser()
+            val bookmarks = user.savedBooks as MutableMap
+            if (!bookmarks[folderName]!!.contains(book!!.id)) {
+                bookmarks[folderName]!!.add(book!!.id)
+            }
+            bookmarkFolderName = folderName
+
+            userManager.setUser(
+                user.copy(
+                    savedBooks = bookmarks,
+                ),
+            )
+        }
+    }
+
+    fun onRemoveBookFromBookmarks(folderName: String) {
+        viewModelScope.launch {
+            val user = userManager.getUser()
+            val bookmarks = user.savedBooks as MutableMap
+            if (bookmarks[folderName]!!.contains(book!!.id)) {
+                bookmarks[folderName]!!.remove(book!!.id)
+            }
+            bookmarkFolderName = ""
+
+            userManager.setUser(
+                user.copy(
+                    savedBooks = bookmarks.toMap(),
+                ),
+            )
+        }
     }
 
     sealed class CommentValidationEvent {

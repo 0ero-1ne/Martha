@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +25,9 @@ import com.zero_one.martha.data.domain.model.Book
 
 @Composable
 fun BookHeader(
-    book: Book
+    book: Book,
+    folderName: String,
+    onOpenBottomSheet: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -51,5 +54,10 @@ fun BookHeader(
             text = book.title,
             style = MaterialTheme.typography.titleLarge,
         )
+        Button(
+            onClick = onOpenBottomSheet,
+        ) {
+            Text(folderName.ifEmpty {"Add"})
+        }
     }
 }

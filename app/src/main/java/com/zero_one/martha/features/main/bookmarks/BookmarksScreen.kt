@@ -102,7 +102,10 @@ fun BookmarksScreen(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top,
                 ) {
+                    val folderString = bookmarks.value!!.keys.elementAt(page)
+                    val bookIds = bookmarks.value!![folderString]!!.joinToString(", ")
                     Text(bookmarks.value!!.keys.elementAt(page))
+                    Text(bookIds)
                 }
             }
 
