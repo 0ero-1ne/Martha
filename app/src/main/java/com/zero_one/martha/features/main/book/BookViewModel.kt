@@ -107,8 +107,10 @@ class BookViewModel @Inject constructor(
         viewModelScope.launch {
             val user = userManager.getUser()
             val bookmarks = user.savedBooks as MutableMap
-            if (!bookmarks[folderName]!!.contains(book!!.id)) {
-                bookmarks[folderName]!!.add(book!!.id)
+            val list = bookmarks[folderName]!!.toMutableList()
+            if (!list.contains(book!!.id)) {
+                list.add(book!!.id)
+                bookmarks[folderName] = list
             }
             bookmarkFolderName = folderName
 
@@ -117,6 +119,8 @@ class BookViewModel @Inject constructor(
                     savedBooks = bookmarks,
                 ),
             )
+
+            userRepository.updateUser(userManager.getUser())
         }
     }
 
@@ -124,8 +128,10 @@ class BookViewModel @Inject constructor(
         viewModelScope.launch {
             val user = userManager.getUser()
             val bookmarks = user.savedBooks as MutableMap
-            if (bookmarks[folderName]!!.contains(book!!.id)) {
-                bookmarks[folderName]!!.remove(book!!.id)
+            val list = bookmarks[folderName]!!.toMutableList()
+            if (list.contains(book!!.id)) {
+                list.remove(book!!.id)
+                bookmarks[folderName] = list
             }
             bookmarkFolderName = ""
 
@@ -134,6 +140,8 @@ class BookViewModel @Inject constructor(
                     savedBooks = bookmarks.toMap(),
                 ),
             )
+
+            userRepository.updateUser(userManager.getUser())
         }
     }
 

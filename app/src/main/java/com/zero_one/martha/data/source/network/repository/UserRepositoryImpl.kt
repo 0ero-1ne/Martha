@@ -51,24 +51,42 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     private fun networkUserToUser(networkUser: com.zero_one.martha.data.source.network.models.User): User {
+        val bookmarksMap = mutableMapOf<String, List<UInt>>()
+        networkUser.savedBooks.forEach {(key, value) ->
+            val listOfIds = value
+                .removeSurrounding("[", "]")
+                .split(",")
+                .map {
+                    it.trim().toUIntOrNull() ?: 0u
+                }
+                .toList()
+            bookmarksMap[key] = listOfIds
+        }
+
         return User(
             id = networkUser.id,
             email = networkUser.email,
             username = networkUser.username,
             image = networkUser.image,
             role = networkUser.role,
-            savedBooks = networkUser.savedBooks,
+            savedBooks = bookmarksMap,
         )
     }
 
     private fun userToNetworkUser(user: User): com.zero_one.martha.data.source.network.models.User {
+        val bookmarksMap = mutableMapOf<String, String>()
+        user.savedBooks.forEach {(key, value) ->
+            val stringOfIds = value.joinToString(", ")
+            bookmarksMap[key] = "[$stringOfIds]"
+        }
+
         return com.zero_one.martha.data.source.network.models.User(
             id = user.id,
             email = user.email,
             username = user.username,
             image = user.image,
             role = user.role,
-            savedBooks = user.savedBooks,
+            savedBooks = bookmarksMap,
         )
     }
 }

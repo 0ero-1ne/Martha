@@ -11,5 +11,5 @@ data class User(
     val image: String = "",
     val role: String = "user",
     @SerializedName("saved_books")
-    val savedBooks: Map<String, MutableList<UInt>> = mapOf()
+    val savedBooks: Map<String, String> = mapOf()
 )
