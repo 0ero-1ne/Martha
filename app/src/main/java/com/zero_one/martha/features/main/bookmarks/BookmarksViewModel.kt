@@ -20,13 +20,13 @@ class BookmarksViewModel @Inject constructor(
 ): ViewModel() {
     val user = userManager.getUserFlow()
 
-    private val _bookmarks: MutableStateFlow<Map<String, List<UInt>>?> =
+    private val _bookmarks: MutableStateFlow<Map<String, MutableList<UInt>>?> =
         MutableStateFlow(null)
     val bookmarks = _bookmarks
         .onStart {init()}
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(1000),
+            started = SharingStarted.WhileSubscribed(100),
             initialValue = null,
         )
 

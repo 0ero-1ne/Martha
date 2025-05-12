@@ -27,7 +27,8 @@ import com.zero_one.martha.data.domain.model.Book
 fun BookHeader(
     book: Book,
     folderName: String,
-    onOpenBottomSheet: () -> Unit
+    onOpenBottomSheet: () -> Unit,
+    isAuth: () -> Boolean
 ) {
     Column(
         modifier = Modifier
@@ -55,9 +56,11 @@ fun BookHeader(
             style = MaterialTheme.typography.titleLarge,
         )
         Button(
+            enabled = isAuth(),
             onClick = onOpenBottomSheet,
         ) {
-            Text(folderName.ifEmpty {"Add"})
+            val text = if (!isAuth()) "Not auth" else folderName
+            Text(text.ifEmpty {"Add"})
         }
     }
 }

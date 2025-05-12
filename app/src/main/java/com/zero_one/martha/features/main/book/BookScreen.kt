@@ -97,6 +97,7 @@ fun BookScreen(
                 onOpenBottomSheet = {
                     showBottomSheet = true
                 },
+                isAuth = viewModel::isAuth,
             )
 
             PrimaryTabRow(

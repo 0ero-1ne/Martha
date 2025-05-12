@@ -51,15 +51,18 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     private fun networkUserToUser(networkUser: com.zero_one.martha.data.source.network.models.User): User {
-        val bookmarksMap = mutableMapOf<String, List<UInt>>()
+        val bookmarksMap = mutableMapOf<String, MutableList<UInt>>()
         networkUser.savedBooks.forEach {(key, value) ->
-            val listOfIds = value
+            var listOfIds = value
                 .removeSurrounding("[", "]")
                 .split(",")
                 .map {
                     it.trim().toUIntOrNull() ?: 0u
                 }
-                .toList()
+                .toMutableList()
+            if (listOfIds.size == 1 && listOfIds[0] == 0u) {
+                listOfIds = mutableListOf()
+            }
             bookmarksMap[key] = listOfIds
         }
 
@@ -69,14 +72,17 @@ class UserRepositoryImpl @Inject constructor(
             username = networkUser.username,
             image = networkUser.image,
             role = networkUser.role,
-            savedBooks = bookmarksMap,
+            savedBooks = bookmarksMap.toMap(),
         )
     }
 
     private fun userToNetworkUser(user: User): com.zero_one.martha.data.source.network.models.User {
         val bookmarksMap = mutableMapOf<String, String>()
         user.savedBooks.forEach {(key, value) ->
-            val stringOfIds = value.joinToString(", ")
+            val stringOfIds =
+                if (value.isEmpty() || (value.size == 1 && value[0] == 0u))
+                    ""
+                else value.joinToString(", ")
             bookmarksMap[key] = "[$stringOfIds]"
         }
 
