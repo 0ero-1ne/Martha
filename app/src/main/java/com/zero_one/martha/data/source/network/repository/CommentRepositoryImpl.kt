@@ -47,6 +47,16 @@ class CommentRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteComment(commentId: UInt): Boolean {
+        try {
+            val commentResult = api.deleteComment(commentId)
+            return commentResult.isSuccessful
+        } catch (e: Exception) {
+            Log.e("CommentRepositoryImpl", "deleteComment", e)
+            return false
+        }
+    }
+
     private fun networkCommentToComment(comment: com.zero_one.martha.data.source.network.models.Comment): Comment {
         return Comment(
             id = comment.id,

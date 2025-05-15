@@ -10,6 +10,7 @@ import com.zero_one.martha.data.source.network.models.auth.AuthUser
 import com.zero_one.martha.data.source.network.models.auth.UpdateToken
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -55,4 +56,7 @@ interface RetrofitAPI: NetworkAPI {
 
     @POST(value = "comments")
     override suspend fun saveComment(@Body comment: Comment): Response<Comment>
+
+    @DELETE(value = "comments/{id}")
+    override suspend fun deleteComment(@Path("id") commentId: UInt): Response<String>
 }

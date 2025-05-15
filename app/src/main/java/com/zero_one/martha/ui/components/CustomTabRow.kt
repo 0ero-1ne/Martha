@@ -3,8 +3,8 @@ package com.zero_one.martha.ui.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,12 +17,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.zero_one.martha.modifier.smoothTabIndicatorOffset
 import kotlinx.coroutines.launch
 
 @Composable
-fun CustomScrollableTabRow(
+fun CustomTabRow(
     pagerState: PagerState,
     tabs: Set<String>
 ) {
@@ -45,15 +44,13 @@ fun CustomScrollableTabRow(
         }
     }
 
-    ScrollableTabRow(
-        edgePadding = 0.dp,
+    TabRow(
         selectedTabIndex = selectedTabIndex.value,
         modifier = Modifier
             .fillMaxWidth(),
         indicator = {tabPositions ->
             TabRowDefaults.PrimaryIndicator(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .smoothTabIndicatorOffset(
                         previousTabPosition = tabPositions[previousTabIndex],
                         newTabPosition = tabPositions[targetTabIndex],

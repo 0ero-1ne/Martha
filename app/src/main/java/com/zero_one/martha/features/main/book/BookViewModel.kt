@@ -95,6 +95,19 @@ class BookViewModel @Inject constructor(
         }
     }
 
+    fun deleteComment(commentId: UInt) {
+        viewModelScope.launch {
+            val deleteResult = commentRepository.deleteComment(commentId)
+            if (deleteResult) {
+                val mutable = comments!!.toMutableList()
+                mutable.removeIf {
+                    it.id == commentId
+                }
+                comments = mutable.toList()
+            }
+        }
+    }
+
     fun isAuth(): Boolean {
         val isAuth = runBlocking {
             return@runBlocking userRepository.getUser()

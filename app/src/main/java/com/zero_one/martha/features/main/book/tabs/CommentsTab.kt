@@ -1,13 +1,22 @@
 package com.zero_one.martha.features.main.book.tabs
 
 import android.util.Log
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.zero_one.martha.data.domain.model.Comment
@@ -20,7 +29,10 @@ import kotlinx.coroutines.flow.Flow
 fun CommentsTab(
     comments: List<Comment>?,
     onSaveComment: (String) -> Unit,
-    commentEvents: Flow<BookViewModel.CommentValidationEvent>
+    onDeleteComment: (UInt) -> Unit,
+    commentEvents: Flow<BookViewModel.CommentValidationEvent>,
+    isAuth: () -> Boolean,
+    userId: UInt,
 ) {
     val formState = rememberCommentFormState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -48,8 +60,10 @@ fun CommentsTab(
                 formState.validate()
 
                 if (formState.isValid) {
-                    keyboardController?.hide()
-                    onSaveComment(formState.comment.value.trim())
+                    if (isAuth()) {
+                        keyboardController?.hide()
+                        onSaveComment(formState.comment.value.trim())
+                    }
                 }
             },
         ) {
@@ -67,12 +81,29 @@ fun CommentsTab(
         return
     }
 
-    comments.forEach {comment ->
-        Text(comment.userId.toString())
-        Text(comment.user.username)
-        Text(comment.text)
-        Text("Upvotes = " + comment.rates?.count {it.rating})
-        Text("Downvotes = " + comment.rates?.count {!it.rating})
-        HorizontalDivider()
+    LazyColumn {
+        items(comments, key = {it.uuid}) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(),
+            ) {
+                Text(it.userId.toString())
+                Text(it.user.username)
+                Text(it.text)
+                Text("Upvotes = " + it.rates.count {it.rating})
+                Text("Downvotes = " + it.rates.count {!it.rating})
+                if (userId == it.userId) {
+                    Button(
+                        onClick = {
+                            onDeleteComment(it.id)
+                        },
+                    ) {
+                        Icon(Icons.Filled.Delete, "Delete comment")
+                    }
+                }
+                HorizontalDivider()
+            }
+        }
     }
 }

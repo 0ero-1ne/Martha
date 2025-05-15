@@ -68,8 +68,11 @@ fun BottomSheet(
                                     scope.launch {
                                         if (currentTab == pages.indexOf(it)) {
                                             onScrollToFirstTab()
-                                            delay(100)
                                         }
+                                        if (currentTab == pages.indexOf(pages.last())) {
+                                            onScrollToFirstTab()
+                                        }
+                                        delay(100)
                                         onDeleteFolder(it)
                                     }
                                 },
