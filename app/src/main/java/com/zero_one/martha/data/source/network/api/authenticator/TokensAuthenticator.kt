@@ -1,10 +1,10 @@
 package com.zero_one.martha.data.source.network.api.authenticator
 
+import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.data.source.datastore.user.tokens.TokensManager
 import com.zero_one.martha.data.source.network.api.retrofit.RetrofitAPI
 import com.zero_one.martha.data.source.network.models.auth.AuthTokens
 import com.zero_one.martha.data.source.network.models.auth.UpdateToken
-import io.github.cdimascio.dotenv.Dotenv
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.OkHttpClient
@@ -17,8 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
 class TokensAuthenticator @Inject constructor(
-    private val tokensManager: TokensManager,
-    private val dotenv: Dotenv
+    private val tokensManager: TokensManager
 ): Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         return runBlocking {
@@ -54,7 +53,7 @@ class TokensAuthenticator @Inject constructor(
     private suspend fun getUpdatedToken(refreshToken: String): AuthTokens? {
         val retrofit = Retrofit
             .Builder()
-            .baseUrl(dotenv.get("api_host", "https://www.temp.api.com"))
+            .baseUrl(BuildConfig.API_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(
                 OkHttpClient()

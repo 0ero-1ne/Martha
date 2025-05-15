@@ -1,6 +1,7 @@
 package com.zero_one.martha.data.source.network.di
 
 import com.google.gson.GsonBuilder
+import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.data.source.datastore.user.tokens.TokensManager
 import com.zero_one.martha.data.source.network.api.NetworkAPI
 import com.zero_one.martha.data.source.network.api.authenticator.TokensAuthenticator
@@ -10,7 +11,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.github.cdimascio.dotenv.Dotenv
 import okhttp3.Authenticator
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -26,10 +26,9 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideTokensAuthenticator(
-        tokensManager: TokensManager,
-        dotenv: Dotenv
+        tokensManager: TokensManager
     ): Authenticator {
-        return TokensAuthenticator(tokensManager, dotenv)
+        return TokensAuthenticator(tokensManager)
     }
 
     @Provides
@@ -56,12 +55,11 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideNetworkAPI(
-        httpClient: OkHttpClient,
-        dotenv: Dotenv
+        httpClient: OkHttpClient
     ): NetworkAPI {
         return Retrofit
             .Builder()
-            .baseUrl(dotenv.get("api_host", "https://www.temp.api.com"))
+            .baseUrl(BuildConfig.API_URL)
             .addConverterFactory(
                 GsonConverterFactory.create(
                     GsonBuilder()

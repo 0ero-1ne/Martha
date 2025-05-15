@@ -22,7 +22,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "API_URL", "\"http://192.168.173.94:8080/api/\"")
+            buildConfigField("String", "STORAGE_URL", "\"http://192.168.173.94:8081/\"")
+        }
         release {
+            buildConfigField("String", "API_URL", "\"http://192.168.173.94:8080/api/\"")
+            buildConfigField("String", "STORAGE_URL", "\"http://192.168.173.94:8081/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -39,6 +45,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -66,9 +73,6 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.dash)
     implementation(libs.androidx.media3.ui)
-
-    // dotenv
-    implementation(libs.dotenv.kotlin)
 
     // datastore
     implementation(libs.androidx.datastore)

@@ -1,5 +1,6 @@
 package com.zero_one.martha.features.player
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.features.player.components.ChapterPlayerActions
 import com.zero_one.martha.features.player.components.ChapterPlayerViewModel
 import com.zero_one.martha.features.player.ui.AudioSlider
@@ -62,11 +64,14 @@ fun PlayerScreen(
                 totalDuration = playerState.totalDuration,
             )
 
+            val chapterUri = "${BuildConfig.STORAGE_URL}audios/${viewModel.currentChapter!!.audio}"
+            Log.d("URI chapter", "URI = $chapterUri")
+
             PlayerControls(
                 onAction = chapterPlayerViewModel::onAction,
                 isLoading = isLoading,
                 playerState = playerState.state,
-                uri = viewModel.currentChapter!!.audio.toUri(),
+                uri = chapterUri.toUri(),
             )
         }
     }
