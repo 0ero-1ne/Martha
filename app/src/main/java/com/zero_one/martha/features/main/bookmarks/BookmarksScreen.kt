@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +66,7 @@ fun BookmarksScreen(
                 return@Column
             }
 
+            var userId by rememberSaveable {mutableStateOf("")}
             val pageCount = remember {mutableIntStateOf(bookmarks.value!!.size)}
             val pagerState = rememberPagerState {pageCount.intValue}
             var showBottomSheet by remember {mutableStateOf(false)}
@@ -73,6 +75,17 @@ fun BookmarksScreen(
             LaunchedEffect(bookmarks.value!!) {
                 pageCount.intValue = bookmarks.value!!.size
                 pages = bookmarks.value!!.keys
+            }
+
+            LaunchedEffect(user.value) {
+                if (userId == "") {
+                    userId = user.value.id.toString()
+                }
+
+                if (user.value.id.toString() != userId && user.value.id != 0u) {
+                    userId = user.value.id.toString()
+                    pagerState.animateScrollToPage(0)
+                }
             }
 
             CustomScrollableTabRow(
