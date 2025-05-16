@@ -47,6 +47,21 @@ class CommentRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateComment(comment: Comment): Comment {
+        try {
+            val commentResult = api.updateComment(commentToNetworkComment(comment), comment.id)
+
+            if (commentResult.isSuccessful && commentResult.body() != null) {
+                return networkCommentToComment(commentResult.body()!!)
+            }
+
+            return Comment()
+        } catch (e: Exception) {
+            Log.e("CommentRepositoryImpl", "updateComment", e)
+            return Comment()
+        }
+    }
+
     override suspend fun deleteComment(commentId: UInt): Boolean {
         try {
             val commentResult = api.deleteComment(commentId)

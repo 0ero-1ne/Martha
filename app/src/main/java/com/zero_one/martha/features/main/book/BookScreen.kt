@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +31,6 @@ import com.zero_one.martha.features.main.book.ui.BottomSheetBookmarks
 import com.zero_one.martha.ui.components.CustomTabRow
 import com.zero_one.martha.ui.components.CustomTopBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookScreen(
     viewModel: BookViewModel,
@@ -127,6 +125,7 @@ fun BookScreen(
                         2 -> CommentsTab(
                             comments = viewModel.comments,
                             onSaveComment = viewModel::saveComment,
+                            onUpdateComment = viewModel::updateComment,
                             onDeleteComment = viewModel::deleteComment,
                             commentEvents = viewModel.commentValidationEvents,
                             isAuth = viewModel::isAuth,

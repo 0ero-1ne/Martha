@@ -31,5 +31,6 @@ interface NetworkAPI {
     // Comment
     suspend fun getCommentsByBookId(bookId: UInt): Response<List<Comment>>
     suspend fun saveComment(comment: Comment): Response<Comment>
+    suspend fun updateComment(comment: Comment, id: UInt): Response<Comment>
     suspend fun deleteComment(commentId: UInt): Response<String>
 }

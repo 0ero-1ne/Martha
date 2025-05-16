@@ -13,6 +13,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface RetrofitAPI: NetworkAPI {
@@ -56,6 +57,12 @@ interface RetrofitAPI: NetworkAPI {
 
     @POST(value = "comments")
     override suspend fun saveComment(@Body comment: Comment): Response<Comment>
+
+    @PUT(value = "comments/{id}")
+    override suspend fun updateComment(
+        @Body comment: Comment,
+        @Path("id") id: UInt
+    ): Response<Comment>
 
     @DELETE(value = "comments/{id}")
     override suspend fun deleteComment(@Path("id") commentId: UInt): Response<String>

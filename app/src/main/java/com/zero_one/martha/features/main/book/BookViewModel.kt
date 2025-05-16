@@ -104,7 +104,37 @@ class BookViewModel @Inject constructor(
                     it.id == commentId
                 }
                 comments = mutable.toList()
+                commentValidationEventChannel.send(CommentValidationEvent.Success)
+                return@launch
             }
+            commentValidationEventChannel.send(CommentValidationEvent.Error)
+        }
+    }
+
+    fun updateComment(commentId: UInt, text: String) {
+        viewModelScope.launch {
+            var comment = comments!!.find {
+                it.id == commentId
+            }
+            comment = comment!!.copy(
+                text = text,
+            )
+
+            val updateCommentResult = commentRepository.updateComment(comment)
+            if (updateCommentResult.id != 0u) {
+                val mutable = comments!!.toMutableList()
+                mutable.forEachIndexed {index, value ->
+                    if (value.id == updateCommentResult.id) {
+                        mutable[index] = value.copy(
+                            text = updateCommentResult.text,
+                        )
+                    }
+                }
+                comments = mutable.toList()
+                commentValidationEventChannel.send(CommentValidationEvent.Success)
+                return@launch
+            }
+            commentValidationEventChannel.send(CommentValidationEvent.Error)
         }
     }
 
