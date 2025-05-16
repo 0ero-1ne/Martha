@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -35,6 +36,7 @@ fun CatalogScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
     ) {paddingValues ->
+        val books = viewModel.books.collectAsState()
         Column(
             modifier = Modifier
                 .padding(
@@ -43,7 +45,7 @@ fun CatalogScreen(
                 ),
         ) {
             CustomSearchBar(
-                onSearch = {},
+                onSearch = viewModel::search,
             )
             Row(
                 modifier = Modifier
@@ -75,17 +77,40 @@ fun CatalogScreen(
                 }
             }
 
-            if (viewModel.books == null) {
+            if (books.value == null) {
                 CircularProgressIndicator()
                 return@Column
+            }
+
+            if (viewModel.searching) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+                return@Scaffold
+            }
+
+            if (books.value!!.isEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text("No books by query")
+                }
+                return@Scaffold
             }
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(viewModel.columns),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier.fillMaxSize(),
             ) {
-                items(viewModel.books!!, key = {it.uuid}) {book ->
+                items(books.value!!, key = {it.uuid}) {book ->
                     BookCard(
                         book = book,
                         onBookClick = onBookClick,

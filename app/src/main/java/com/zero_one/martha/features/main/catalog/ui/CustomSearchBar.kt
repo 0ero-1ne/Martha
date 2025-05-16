@@ -57,15 +57,15 @@ fun CustomSearchBar(
             singleLine = true,
             interactionSource = interactionSource,
             onValueChange = {value ->
-                query = value.trim()
+                query = value
             },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search,
             ),
             keyboardActions = KeyboardActions(
-                onAny = {
+                onSearch = {
                     focusManager.clearFocus()
-                    onSearch(query)
+                    onSearch(query.trim())
                 },
             ),
             textStyle = TextStyle(
@@ -88,7 +88,7 @@ fun CustomSearchBar(
                         IconButton(
                             onClick = {
                                 query = ""
-                                onSearch(query)
+                                onSearch(query.trim())
                             },
                         ) {
                             Icon(Icons.Outlined.Close, "Clear query icon")

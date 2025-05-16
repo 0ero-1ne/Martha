@@ -15,6 +15,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface RetrofitAPI: NetworkAPI {
     // Auth
@@ -43,6 +44,9 @@ interface RetrofitAPI: NetworkAPI {
 
     @GET(value = "books/{id}?withChapters=true")
     override suspend fun getBookForReader(@Path("id") id: UInt): Response<Book>
+
+    @GET(value = "books")
+    override suspend fun getBooksByQuery(@Query("query") query: String): Response<List<Book>>
 
     // Chapter
     @GET(value = "chapters/book/{id}")

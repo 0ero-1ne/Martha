@@ -9,7 +9,7 @@ data class User(
     val email: String = "",
     val username: String = "",
     val image: String = "",
-    val role: String = "user",
+    val role: String = "guest",
     @SerializedName("saved_books")
     val savedBooks: Map<String, String> = mapOf()
 )

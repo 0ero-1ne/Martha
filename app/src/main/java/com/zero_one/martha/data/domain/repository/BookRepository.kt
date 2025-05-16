@@ -6,4 +6,5 @@ interface BookRepository {
     suspend fun getBooks(): List<Book>
     suspend fun getBookById(id: UInt): Book
     suspend fun getBookForReader(id: UInt): Book
+    suspend fun getBooksByQuery(query: String): List<Book>
 }

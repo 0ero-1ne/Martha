@@ -10,6 +10,6 @@ data class User(
     val email: String = "",
     val username: String = "",
     val image: String = "",
-    val role: String = "user",
+    val role: String = "guest",
     var savedBooks: Map<String, MutableList<UInt>> = mapOf()
 )

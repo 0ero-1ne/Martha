@@ -60,6 +60,23 @@ class BookRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getBooksByQuery(query: String): List<Book> {
+        try {
+            val booksResult = api.getBooksByQuery(query)
+
+            if (booksResult.isSuccessful && booksResult.body() != null) {
+                return booksResult.body()!!.map {
+                    networkBookToBook(it)
+                }
+            }
+
+            return emptyList()
+        } catch (e: Exception) {
+            Log.e("BookRepositoryImpl", "getBooksByQuery", e)
+            return emptyList()
+        }
+    }
+
     private fun networkBookToBook(networkBook: com.zero_one.martha.data.source.network.models.Book): Book {
         return Book(
             id = networkBook.id,

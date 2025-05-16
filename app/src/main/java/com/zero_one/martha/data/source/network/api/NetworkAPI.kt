@@ -23,6 +23,7 @@ interface NetworkAPI {
     suspend fun getBooks(): Response<List<Book>>
     suspend fun getBookById(id: UInt): Response<Book>
     suspend fun getBookForReader(id: UInt): Response<Book>
+    suspend fun getBooksByQuery(query: String): Response<List<Book>>
 
     // Chapter
     suspend fun getChaptersByBookId(bookId: UInt): Response<List<Chapter>>
