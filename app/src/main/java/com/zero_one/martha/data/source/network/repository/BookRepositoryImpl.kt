@@ -3,6 +3,7 @@ package com.zero_one.martha.data.source.network.repository
 import android.util.Log
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.Chapter
+import com.zero_one.martha.data.domain.model.Filters
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.source.network.api.NetworkAPI
 import com.zero_one.martha.data.source.network.models.Author
@@ -60,9 +61,12 @@ class BookRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getBooksByQuery(query: String): List<Book> {
+    override suspend fun getBooksByQuery(query: String, filters: Filters): List<Book> {
         try {
-            val booksResult = api.getBooksByQuery(query)
+            val booksResult = api.getBooksByQuery(
+                query = query,
+                tags = filters.tags.joinToString(","),
+            )
 
             if (booksResult.isSuccessful && booksResult.body() != null) {
                 return booksResult.body()!!.map {

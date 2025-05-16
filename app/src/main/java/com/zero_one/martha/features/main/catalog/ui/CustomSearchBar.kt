@@ -19,10 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -37,9 +34,10 @@ import com.zero_one.martha.modifier.clearFocusOnKeyboardDismiss
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomSearchBar(
-    onSearch: (query: String) -> Unit
+    onSearch: (query: String) -> Unit,
+    onValueChange: (String) -> Unit,
+    query: String,
 ) {
-    var query by remember {mutableStateOf("")}
     val interactionSource = remember {MutableInteractionSource()}
     val focusManager = LocalFocusManager.current
 
@@ -56,9 +54,7 @@ fun CustomSearchBar(
             value = query,
             singleLine = true,
             interactionSource = interactionSource,
-            onValueChange = {value ->
-                query = value
-            },
+            onValueChange = onValueChange,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search,
             ),
@@ -87,8 +83,8 @@ fun CustomSearchBar(
                     if (query.isNotBlank())
                         IconButton(
                             onClick = {
-                                query = ""
-                                onSearch(query.trim())
+                                onValueChange("")
+                                onSearch("")
                             },
                         ) {
                             Icon(Icons.Outlined.Close, "Clear query icon")

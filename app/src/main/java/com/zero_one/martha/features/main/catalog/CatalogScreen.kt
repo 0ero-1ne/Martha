@@ -2,6 +2,7 @@ package com.zero_one.martha.features.main.catalog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -9,17 +10,25 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -27,7 +36,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.zero_one.martha.features.main.catalog.ui.BookCard
 import com.zero_one.martha.features.main.catalog.ui.CustomSearchBar
+import com.zero_one.martha.features.main.catalog.ui.FiltersMenu
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogScreen(
     viewModel: CatalogViewModel,
@@ -37,6 +48,13 @@ fun CatalogScreen(
         modifier = Modifier.fillMaxSize(),
     ) {paddingValues ->
         val books = viewModel.books.collectAsState()
+        val tags = viewModel.tags.collectAsState()
+        val tagFilters = viewModel.tagFilters.collectAsState()
+        var query by remember {mutableStateOf("")}
+
+        var showFiltersMenu by remember {mutableStateOf(false)}
+        val filterMenuState = rememberModalBottomSheetState()
+
         Column(
             modifier = Modifier
                 .padding(
@@ -44,8 +62,28 @@ fun CatalogScreen(
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
                 ),
         ) {
+            if (showFiltersMenu) {
+                FiltersMenu(
+                    tags = tags.value,
+                    onDismiss = {
+                        showFiltersMenu = false
+                    },
+                    onAddTagFilter = viewModel::onAddTagFilter,
+                    onRemoveTagFilter = viewModel::onRemoveTagFilter,
+                    tagFilters = tagFilters,
+                    onApplyFilters = {
+                        viewModel.search(query)
+                    },
+                    state = filterMenuState,
+                )
+            }
+            
             CustomSearchBar(
                 onSearch = viewModel::search,
+                query = query,
+                onValueChange = {
+                    query = it
+                },
             )
             Row(
                 modifier = Modifier
@@ -74,6 +112,20 @@ fun CatalogScreen(
                         modifier = Modifier.padding(end = 5.dp),
                     )
                     Text("Tiles: ${viewModel.columns}")
+                }
+                Box(modifier = Modifier.width(10.dp))
+                Row(
+                    modifier = Modifier
+                        .clickable {
+                            showFiltersMenu = true
+                        },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.FilterAlt,
+                        contentDescription = "Open filter menu",
+                        modifier = Modifier.padding(end = 5.dp),
+                    )
+                    Text("Filters")
                 }
             }
 

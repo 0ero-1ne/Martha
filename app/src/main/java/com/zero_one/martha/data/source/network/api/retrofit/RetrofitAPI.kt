@@ -4,6 +4,7 @@ import com.zero_one.martha.data.source.network.api.NetworkAPI
 import com.zero_one.martha.data.source.network.models.Book
 import com.zero_one.martha.data.source.network.models.Chapter
 import com.zero_one.martha.data.source.network.models.Comment
+import com.zero_one.martha.data.source.network.models.Tag
 import com.zero_one.martha.data.source.network.models.User
 import com.zero_one.martha.data.source.network.models.auth.AuthTokens
 import com.zero_one.martha.data.source.network.models.auth.AuthUser
@@ -46,7 +47,10 @@ interface RetrofitAPI: NetworkAPI {
     override suspend fun getBookForReader(@Path("id") id: UInt): Response<Book>
 
     @GET(value = "books")
-    override suspend fun getBooksByQuery(@Query("query") query: String): Response<List<Book>>
+    override suspend fun getBooksByQuery(
+        @Query("query") query: String,
+        @Query("tags") tags: String
+    ): Response<List<Book>>
 
     // Chapter
     @GET(value = "chapters/book/{id}")
@@ -70,4 +74,8 @@ interface RetrofitAPI: NetworkAPI {
 
     @DELETE(value = "comments/{id}")
     override suspend fun deleteComment(@Path("id") commentId: UInt): Response<String>
+
+    // Tag
+    @GET(value = "tags")
+    override suspend fun getTags(): Response<List<Tag>>
 }

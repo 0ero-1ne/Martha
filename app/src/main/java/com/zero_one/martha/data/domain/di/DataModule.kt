@@ -4,11 +4,13 @@ import com.zero_one.martha.data.domain.repository.AuthRepository
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.domain.repository.ChapterRepository
 import com.zero_one.martha.data.domain.repository.CommentRepository
+import com.zero_one.martha.data.domain.repository.TagRepository
 import com.zero_one.martha.data.domain.repository.UserRepository
 import com.zero_one.martha.data.source.network.repository.AuthRepositoryImpl
 import com.zero_one.martha.data.source.network.repository.BookRepositoryImpl
 import com.zero_one.martha.data.source.network.repository.ChapterRepositoryImpl
 import com.zero_one.martha.data.source.network.repository.CommentRepositoryImpl
+import com.zero_one.martha.data.source.network.repository.TagRepositoryImpl
 import com.zero_one.martha.data.source.network.repository.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -43,4 +45,9 @@ abstract class DataModule {
     abstract fun bindCommentRepository(
         commentRepositoryImpl: CommentRepositoryImpl
     ): CommentRepository
+
+    @Binds
+    abstract fun bindTagRepository(
+        tagRepositoryImpl: TagRepositoryImpl
+    ): TagRepository
 }

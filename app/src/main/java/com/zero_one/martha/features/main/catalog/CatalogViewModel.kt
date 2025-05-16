@@ -7,7 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zero_one.martha.data.domain.model.Book
+import com.zero_one.martha.data.domain.model.Filters
+import com.zero_one.martha.data.domain.model.Tag
 import com.zero_one.martha.data.domain.repository.BookRepository
+import com.zero_one.martha.data.domain.repository.TagRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,10 +21,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CatalogViewModel @Inject constructor(
-    private val bookRepository: BookRepository
+    private val bookRepository: BookRepository,
+    private val tagRepository: TagRepository,
 ): ViewModel() {
     private val _books: MutableStateFlow<List<Book>?> = MutableStateFlow(null)
     val books = _books.asStateFlow()
+
+    private val _tags: MutableStateFlow<List<Tag>> = MutableStateFlow(listOf())
+    val tags = _tags.asStateFlow()
+
+    private val _tagFilters: MutableStateFlow<List<String>> = MutableStateFlow(listOf())
+    val tagFilters = _tagFilters.asStateFlow()
+
     var searching by mutableStateOf(false)
 
     var columns: Int by mutableIntStateOf(3)
@@ -31,16 +42,45 @@ class CatalogViewModel @Inject constructor(
             _books.update {
                 bookRepository.getBooks()
             }
+            _tags.update {
+                tagRepository.getTags()
+            }
         }
     }
 
     fun search(query: String) {
         viewModelScope.launch {
             searching = true
-            val booksList = bookRepository.getBooksByQuery(query.lowercase())
+            val filters = Filters(
+                tags = _tagFilters.value,
+            )
+            val booksList = bookRepository.getBooksByQuery(
+                query = query.lowercase(),
+                filters = filters,
+            )
             delay(1000)
             _books.update {booksList}
             searching = false
+        }
+    }
+
+    fun onAddTagFilter(tag: String) {
+        _tagFilters.update {
+            val list = it.toMutableList()
+            if (!list.contains(tag)) {
+                list.add(tag)
+            }
+            list.toList()
+        }
+    }
+
+    fun onRemoveTagFilter(tag: String) {
+        _tagFilters.update {
+            val list = it.toMutableList()
+            if (list.contains(tag)) {
+                list.remove(tag)
+            }
+            list.toList()
         }
     }
 }
