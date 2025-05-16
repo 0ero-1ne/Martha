@@ -39,6 +39,7 @@ fun CommentsTab(
     commentEvents: Flow<BookViewModel.CommentValidationEvent>,
     isAuth: () -> Boolean,
     userId: UInt,
+    userRole: String
 ) {
     val formState = rememberCommentFormState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -105,7 +106,7 @@ fun CommentsTab(
                 Text(it.text)
                 Text("Upvotes = " + it.rates.count {it.rating})
                 Text("Downvotes = " + it.rates.count {!it.rating})
-                if (userId == it.userId) {
+                if (userId == it.userId || userRole == "moderator" || userRole == "admin") {
                     Button(
                         onClick = {
                             onDeleteComment(it.id)

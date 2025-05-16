@@ -130,6 +130,7 @@ fun BookScreen(
                             commentEvents = viewModel.commentValidationEvents,
                             isAuth = viewModel::isAuth,
                             userId = user.value.id,
+                            userRole = user.value.role,
                         )
                     }
                 }
