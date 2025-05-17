@@ -93,8 +93,9 @@ class UserRepositoryImpl @Inject constructor(
     private fun networkSavedBookToSavedBook(network: com.zero_one.martha.data.source.network.models.SavedBook): SavedBook {
         return SavedBook(
             bookId = network.bookId,
-            chapterId = network.chapterId,
+            readerChapter = network.readerChapter,
             page = network.page,
+            audioChapter = network.audioChapter,
             audio = network.audio,
         )
     }
@@ -102,8 +103,9 @@ class UserRepositoryImpl @Inject constructor(
     private fun savedBookToNetworkSavedBook(savedBook: SavedBook): com.zero_one.martha.data.source.network.models.SavedBook {
         return com.zero_one.martha.data.source.network.models.SavedBook(
             bookId = savedBook.bookId,
-            chapterId = savedBook.chapterId,
+            readerChapter = savedBook.readerChapter,
             page = savedBook.page,
+            audioChapter = savedBook.audioChapter,
             audio = savedBook.audio,
         )
     }

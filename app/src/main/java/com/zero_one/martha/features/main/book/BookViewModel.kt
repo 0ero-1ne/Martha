@@ -159,7 +159,6 @@ class BookViewModel @Inject constructor(
                 list.add(
                     SavedBook(
                         bookId = book!!.id,
-                        chapterId = 1u,
                     ),
                 )
                 bookmarks[folderName] = list

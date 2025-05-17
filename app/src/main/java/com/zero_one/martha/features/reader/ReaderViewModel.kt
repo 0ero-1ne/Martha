@@ -79,9 +79,9 @@ class ReaderViewModel @Inject constructor(
             }
 
             Log.d("Current chapter id", currentChapter!!.id.toString())
-            Log.d("Saved chapter id", savedBook.chapterId.toString())
+            Log.d("Saved chapter id", savedBook.readerChapter.toString())
 
-            if (currentChapter!!.id == savedBook.chapterId) {
+            if (currentChapter!!.id == savedBook.readerChapter) {
                 currentPage = savedBook.page
             }
 
@@ -109,16 +109,11 @@ class ReaderViewModel @Inject constructor(
         }
     }
 
-    fun destroy() {
+    private fun saveCurrentPosition() {
         viewModelScope.launch {
-            bufferedReader?.close()
             val bookmarks = userManager.getUser().savedBooks.toMutableMap()
 
-            if (folderName == "Ended") {
-                return@launch
-            }
-
-            if (currentChapter!!.id < savedBook.chapterId) {
+            if (folderName == "Ended" || currentChapter!!.id < savedBook.readerChapter) {
                 return@launch
             }
 
@@ -128,22 +123,24 @@ class ReaderViewModel @Inject constructor(
 
             savedBook = savedBook.copy(
                 bookId = book!!.id,
-                chapterId = currentChapter!!.id,
-                page = currentPage,
+                readerChapter = currentChapter!!.id,
+                page = if (savedBook.page > currentPage) savedBook.page else currentPage,
             )
 
-            if (currentPage == _pages.value.size - 1 && currentChapter!!.id == book!!.chapters.maxBy {it.id}.id) {
-                bookmarks["Ended"]!!.add(savedBook)
-            } else {
-                bookmarks["Reading"]!!.add(savedBook)
-            }
+            bookmarks["Reading"]!!.add(savedBook)
 
             userManager.setUser(
                 userManager.getUser().copy(
                     savedBooks = bookmarks.toMap(),
                 ),
             )
+        }
+    }
 
+    fun destroy() {
+        viewModelScope.launch {
+            bufferedReader?.close()
+            saveCurrentPosition()
             userRepository.updateUser(userManager.getUser())
         }
     }

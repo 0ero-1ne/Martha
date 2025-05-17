@@ -3,7 +3,8 @@ package com.zero_one.martha.features.player.components
 import android.net.Uri
 
 sealed interface ChapterPlayerActions {
-    data class Play(val uri: Uri): ChapterPlayerActions
+    data class Init(val uri: Uri): ChapterPlayerActions
+    data object Play: ChapterPlayerActions
     data object Release: ChapterPlayerActions
     data object Pause: ChapterPlayerActions
     data object Resume: ChapterPlayerActions

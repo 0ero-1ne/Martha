@@ -1,6 +1,7 @@
 package com.zero_one.martha.features.reader
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -35,6 +36,13 @@ fun ReaderScreen(
     viewModel: ReaderViewModel,
     onNavigateToBack: () -> Unit
 ) {
+    BackHandler(
+        onBack = {
+            viewModel.destroy()
+            onNavigateToBack()
+        },
+    )
+    
     val reader = viewModel.reader.collectAsState()
     val pages = viewModel.pages.collectAsState()
 

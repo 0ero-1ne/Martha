@@ -1,6 +1,5 @@
 package com.zero_one.martha.features.player.ui
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,8 +23,7 @@ import com.zero_one.martha.features.player.components.ChapterPlayerState
 fun PlayerControls(
     onAction: (ChapterPlayerActions) -> Unit,
     playerState: ChapterPlayerState,
-    isLoading: Boolean,
-    uri: Uri
+    isLoading: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -57,9 +55,10 @@ fun PlayerControls(
             onClick = {
                 when (playerState) {
                     ChapterPlayerState.PLAYING -> onAction(ChapterPlayerActions.Pause)
-                    ChapterPlayerState.ENDED, ChapterPlayerState.IDLE -> onAction(
-                        ChapterPlayerActions.Play(uri),
-                    )
+                    ChapterPlayerState.ENDED, ChapterPlayerState.IDLE -> {
+                        onAction(ChapterPlayerActions.SeekTo(0L))
+                        onAction(ChapterPlayerActions.Play)
+                    }
 
                     ChapterPlayerState.PAUSED -> onAction(
                         ChapterPlayerActions.Resume,

@@ -2,6 +2,9 @@ package com.zero_one.martha.features.player.components
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
@@ -24,6 +27,8 @@ class ChapterPlayerViewModel @Inject constructor(
 ): ViewModel() {
     private var chapterPlayer: ExoPlayer? = null
     private var listener: Player.Listener? = null
+
+    var isInit by mutableStateOf(false)
 
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState = _playerState.asStateFlow()
@@ -49,7 +54,8 @@ class ChapterPlayerViewModel @Inject constructor(
 
     fun onAction(action: ChapterPlayerActions) {
         when (action) {
-            is ChapterPlayerActions.Play -> init(action.uri)
+            is ChapterPlayerActions.Init -> init(action.uri)
+            is ChapterPlayerActions.Play -> resume()
             is ChapterPlayerActions.Pause -> pause()
             is ChapterPlayerActions.Resume -> resume()
             is ChapterPlayerActions.SeekTo -> seekTo(action.position)
@@ -92,7 +98,7 @@ class ChapterPlayerViewModel @Inject constructor(
                 addMediaItem(MediaItem.fromUri(uri))
                 setPlaybackSpeed(1F)
                 prepare()
-                playWhenReady = true
+                isInit = true
             }
     }
 
@@ -127,6 +133,7 @@ class ChapterPlayerViewModel @Inject constructor(
     }
 
     private fun release() {
+        chapterPlayer?.pause()
         chapterPlayer?.apply {
             listener?.let {removeListener(it)}
             this.release()

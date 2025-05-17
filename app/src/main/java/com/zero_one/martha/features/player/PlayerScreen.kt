@@ -1,11 +1,13 @@
 package com.zero_one.martha.features.player
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,6 +44,20 @@ fun PlayerScreen(
                     bottom = paddingValues.calculateBottomPadding(),
                 ),
         ) {
+            val playerState by chapterPlayerViewModel.playerState.collectAsState()
+            val isLoading by chapterPlayerViewModel.isLoading.collectAsState()
+            val sliderPosition by chapterPlayerViewModel.sliderPosition.collectAsState()
+
+            Button(
+                onClick = {
+                    chapterPlayerViewModel.onAction(ChapterPlayerActions.Pause)
+                    viewModel.destroy(sliderPosition)
+                    onNavigateToBack()
+                },
+            ) {
+                Text("Back")
+            }
+
             if (viewModel.currentChapter == null) {
                 CircularProgressIndicator()
                 return@Scaffold
@@ -52,10 +68,6 @@ fun PlayerScreen(
                 return@Scaffold
             }
 
-            val playerState by chapterPlayerViewModel.playerState.collectAsState()
-            val isLoading by chapterPlayerViewModel.isLoading.collectAsState()
-            val sliderPosition by chapterPlayerViewModel.sliderPosition.collectAsState()
-
             AudioSlider(
                 value = sliderPosition,
                 onValueChange = {
@@ -65,13 +77,27 @@ fun PlayerScreen(
             )
 
             val chapterUri = "${BuildConfig.STORAGE_URL}audios/${viewModel.currentChapter!!.audio}"
-            Log.d("URI chapter", "URI = $chapterUri")
+            if (!chapterPlayerViewModel.isInit) {
+                chapterPlayerViewModel.onAction(ChapterPlayerActions.Init(chapterUri.toUri()))
+                if (chapterPlayerViewModel.isInit) {
+                    chapterPlayerViewModel.onAction(ChapterPlayerActions.SeekTo(viewModel.timeState))
+                }
+            }
+
+            Log.d("Player state", playerState.state.toString())
+
+            BackHandler(
+                onBack = {
+                    chapterPlayerViewModel.onAction(ChapterPlayerActions.Pause)
+                    viewModel.destroy(sliderPosition)
+                    onNavigateToBack()
+                },
+            )
 
             PlayerControls(
                 onAction = chapterPlayerViewModel::onAction,
                 isLoading = isLoading,
                 playerState = playerState.state,
-                uri = chapterUri.toUri(),
             )
         }
     }
