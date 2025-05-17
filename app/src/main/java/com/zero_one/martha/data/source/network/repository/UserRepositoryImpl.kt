@@ -1,6 +1,7 @@
 package com.zero_one.martha.data.source.network.repository
 
 import android.util.Log
+import com.zero_one.martha.data.domain.model.SavedBook
 import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.data.domain.repository.UserRepository
 import com.zero_one.martha.data.source.datastore.user.UserManager
@@ -51,19 +52,12 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     private fun networkUserToUser(networkUser: com.zero_one.martha.data.source.network.models.User): User {
-        val bookmarksMap = mutableMapOf<String, MutableList<UInt>>()
+        val savedBooks = mutableMapOf<String, MutableList<SavedBook>>()
         networkUser.savedBooks.forEach {(key, value) ->
-            var listOfIds = value
-                .removeSurrounding("[", "]")
-                .split(",")
-                .map {
-                    it.trim().toUIntOrNull() ?: 0u
-                }
-                .toMutableList()
-            if (listOfIds.size == 1 && listOfIds[0] == 0u) {
-                listOfIds = mutableListOf()
+            val listOfSavedBooks = value.map {
+                networkSavedBookToSavedBook(it)
             }
-            bookmarksMap[key] = listOfIds
+            savedBooks[key] = listOfSavedBooks.toMutableList()
         }
 
         return User(
@@ -72,18 +66,18 @@ class UserRepositoryImpl @Inject constructor(
             username = networkUser.username,
             image = networkUser.image,
             role = networkUser.role,
-            savedBooks = bookmarksMap.toMap(),
+            savedBooks = savedBooks.toMap(),
         )
     }
 
     private fun userToNetworkUser(user: User): com.zero_one.martha.data.source.network.models.User {
-        val bookmarksMap = mutableMapOf<String, String>()
+        val savedBooks =
+            mutableMapOf<String, List<com.zero_one.martha.data.source.network.models.SavedBook>>()
         user.savedBooks.forEach {(key, value) ->
-            val stringOfIds =
-                if (value.isEmpty() || (value.size == 1 && value[0] == 0u))
-                    ""
-                else value.joinToString(", ")
-            bookmarksMap[key] = "[$stringOfIds]"
+            val listOfSavedBooks = value.map {
+                savedBookToNetworkSavedBook(it)
+            }
+            savedBooks[key] = listOfSavedBooks
         }
 
         return com.zero_one.martha.data.source.network.models.User(
@@ -92,7 +86,26 @@ class UserRepositoryImpl @Inject constructor(
             username = user.username,
             image = user.image,
             role = user.role,
-            savedBooks = bookmarksMap,
+            savedBooks = savedBooks.toMap(),
         )
     }
+
+    private fun networkSavedBookToSavedBook(network: com.zero_one.martha.data.source.network.models.SavedBook): SavedBook {
+        return SavedBook(
+            bookId = network.bookId,
+            chapterId = network.chapterId,
+            page = network.page,
+            audio = network.audio,
+        )
+    }
+
+    private fun savedBookToNetworkSavedBook(savedBook: SavedBook): com.zero_one.martha.data.source.network.models.SavedBook {
+        return com.zero_one.martha.data.source.network.models.SavedBook(
+            bookId = savedBook.bookId,
+            chapterId = savedBook.chapterId,
+            page = savedBook.page,
+            audio = savedBook.audio,
+        )
+    }
+
 }

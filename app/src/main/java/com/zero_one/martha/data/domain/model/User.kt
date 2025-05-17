@@ -11,5 +11,5 @@ data class User(
     val username: String = "",
     val image: String = "",
     val role: String = "guest",
-    var savedBooks: Map<String, MutableList<UInt>> = mapOf()
+    var savedBooks: Map<String, MutableList<SavedBook>> = mutableMapOf()
 )

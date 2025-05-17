@@ -1,13 +1,13 @@
 package com.zero_one.martha.features.reader
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -15,9 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -34,33 +36,28 @@ fun ReaderScreen(
     onNavigateToBack: () -> Unit
 ) {
     val reader = viewModel.reader.collectAsState()
+    val pages = viewModel.pages.collectAsState()
 
-    var isCounting = remember {true}
-    val pages = remember {mutableListOf<String>()}
-    val currentPage = remember {mutableStateOf("")}
-    val currentPageNumber = remember {mutableIntStateOf(0)}
-    val endLineIndex = remember {mutableIntStateOf(0)}
+    var isCounting by remember {mutableStateOf(true)}
+    var currentPage by remember {mutableStateOf("")}
+    var endLineIndex by remember {mutableIntStateOf(0)}
 
     LaunchedEffect(reader.value) {
         if (reader.value != null) {
-            currentPage.value = reader.value!!.replace("\n\n", "\n")
+            currentPage = reader.value!!.replace("\n\n", "\n")
         }
     }
 
     LaunchedEffect(
-        endLineIndex.intValue,
+        endLineIndex,
     ) {
         if (reader.value != null) {
-            val newPage = currentPage.value.substring(0, endLineIndex.intValue)
+            val newPage = currentPage.substring(0, endLineIndex)
             if (newPage.isNotEmpty()) {
-                pages.add(newPage.replace("\n\n", "\n"))
-                Log.d("New page", pages.last())
+                viewModel.addPage(newPage.replace("\n\n", "\n"))
             }
 
-            currentPage.value =
-                currentPage
-                    .value
-                    .substring(endLineIndex.intValue, currentPage.value.lastIndex + 1)
+            currentPage = currentPage.substring(endLineIndex, currentPage.lastIndex + 1)
         }
     }
 
@@ -83,49 +80,11 @@ fun ReaderScreen(
         ) {
             Button(
                 onClick = {
+                    viewModel.destroy()
                     onNavigateToBack()
                 },
             ) {
                 Text("Back")
-            }
-
-            Text(
-                isCounting.let {
-                    if (!it) {
-                        "Pages: ${pages.size}"
-                    } else {
-                        "Pages: ?"
-                    }
-                },
-            )
-            Text("Current page = ${currentPageNumber.intValue}")
-            Button(
-                onClick = {
-                    if (currentPageNumber.intValue > 0) {
-                        currentPageNumber.intValue--
-                    }
-                    currentPage.value = pages[currentPageNumber.intValue]
-                },
-            ) {
-                Text("Prev")
-            }
-            Button(
-                onClick = {
-                    if (currentPageNumber.intValue < pages.size - 1) {
-                        currentPageNumber.intValue++
-                    }
-                    currentPage.value = pages[currentPageNumber.intValue]
-                },
-            ) {
-                Text("Next")
-            }
-            Button(
-                enabled = reader.value != null,
-                onClick = {
-                    // viewModel.currentPage = reader.value!!.size - 1
-                },
-            ) {
-                Text("Last page")
             }
 
             if (viewModel.bufferedReader == null) {
@@ -133,42 +92,77 @@ fun ReaderScreen(
                 return@Column
             }
 
-            Text(
-                text = currentPage.value,
-                style = textStyle,
-                color = if (isCounting) Color.Transparent else Color.Unspecified,
-                maxLines = if (viewModel.maxLines > 0) viewModel.maxLines else Int.MAX_VALUE,
-                onTextLayout = {
-                    if (it.didOverflowHeight || it.hasVisualOverflow) {
-                        endLineIndex.intValue = it.getLineEnd(
-                            lineIndex = viewModel.maxLines - 1,
-                        )
-                    } else {
-                        if (currentPage.value.trim().isNotEmpty() && isCounting) {
-                            pages.add(currentPage.value)
-                            Log.d("New page", pages.last())
-                            isCounting = false
-                            currentPage.value = pages[currentPageNumber.intValue]
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .border(1.dp, Color.White)
-                    .onGloballyPositioned {
-                        if (viewModel.maxLines > 0) {
-                            return@onGloballyPositioned
-                        }
-
-                        viewModel.maxLines = with(localDensity) {
-                            getMaxLines(it.size.height.toSp(), viewModel.fontSize.intValue)
-                        }
-
-                        if (viewModel.maxLines > 0) {
-                            viewModel.loadPages()
+            if (isCounting) {
+                Text(
+                    text = currentPage,
+                    style = textStyle,
+                    color = Color.Transparent,
+                    maxLines = if (viewModel.maxLines > 0) viewModel.maxLines else Int.MAX_VALUE,
+                    onTextLayout = {
+                        if (it.didOverflowHeight || it.hasVisualOverflow) {
+                            endLineIndex = it.getLineEnd(
+                                lineIndex = viewModel.maxLines - 1,
+                            )
+                        } else {
+                            if (currentPage.trim().isNotEmpty() && isCounting) {
+                                viewModel.addPage(currentPage)
+                                isCounting = false
+                            }
                         }
                     },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            top = 10.dp,
+                            start = 5.dp,
+                            end = 5.dp,
+                        )
+                        .onGloballyPositioned {
+                            if (viewModel.maxLines > 0) {
+                                return@onGloballyPositioned
+                            }
+
+                            viewModel.maxLines = with(localDensity) {
+                                getMaxLines(it.size.height.toSp(), viewModel.fontSize.intValue)
+                            }
+
+                            if (viewModel.maxLines > 0) {
+                                viewModel.loadPages()
+                            }
+                        },
+                )
+                return@Scaffold
+            }
+
+            val pagerState = rememberPagerState(
+                pageCount = {
+                    pages.value.size
+                },
+                initialPage = viewModel.currentPage,
             )
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = 10.dp,
+                    ),
+            ) {page ->
+                viewModel.currentPage = pagerState.currentPage
+                Text(
+                    text = pages.value[page],
+                    style = textStyle,
+                    color = Color.Unspecified,
+                    maxLines = viewModel.maxLines,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            start = 5.dp,
+                            end = 5.dp,
+                        ),
+                )
+            }
         }
     }
 }

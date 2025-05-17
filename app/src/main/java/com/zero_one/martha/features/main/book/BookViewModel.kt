@@ -10,6 +10,7 @@ import androidx.navigation.toRoute
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.Chapter
 import com.zero_one.martha.data.domain.model.Comment
+import com.zero_one.martha.data.domain.model.SavedBook
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.domain.repository.ChapterRepository
 import com.zero_one.martha.data.domain.repository.CommentRepository
@@ -55,8 +56,10 @@ class BookViewModel @Inject constructor(
             comments = commentRepository.getCommentsByBookId(bookId)
 
             userManager.getUser().savedBooks.forEach {(key, value) ->
-                if (value.contains(book!!.id)) {
-                    bookmarkFolderName = key
+                value.forEach {
+                    if (it.bookId == book!!.id) {
+                        bookmarkFolderName = key
+                    }
                 }
             }
         }
@@ -151,10 +154,17 @@ class BookViewModel @Inject constructor(
             val user = userManager.getUser()
             val bookmarks = user.savedBooks as MutableMap
             val list = bookmarks[folderName]!!.toMutableList()
-            if (!list.contains(book!!.id)) {
-                list.add(book!!.id)
+
+            if (list.none {it.bookId == book!!.id}) {
+                list.add(
+                    SavedBook(
+                        bookId = book!!.id,
+                        chapterId = 1u,
+                    ),
+                )
                 bookmarks[folderName] = list
             }
+
             bookmarkFolderName = folderName
 
             userManager.setUser(
@@ -167,15 +177,35 @@ class BookViewModel @Inject constructor(
         }
     }
 
+    fun onReplaceBookmark(oldFolderName: String, newFolderName: String) {
+        viewModelScope.launch {
+            val user = userManager.getUser()
+            val bookmarks = user.savedBooks as MutableMap
+            val list = bookmarks[oldFolderName]!!.toMutableList()
+            val savedBook = list.filter {it.bookId == book!!.id}.elementAt(0)
+            list.removeIf {it.bookId == book!!.id}
+            bookmarks[oldFolderName] = list
+            bookmarks[newFolderName]!!.add(savedBook)
+            userManager.setUser(
+                user.copy(
+                    savedBooks = bookmarks.toMap(),
+                ),
+            )
+            bookmarkFolderName = newFolderName
+
+            userRepository.updateUser(userManager.getUser())
+        }
+    }
+
     fun onRemoveBookFromBookmarks(folderName: String) {
         viewModelScope.launch {
             val user = userManager.getUser()
             val bookmarks = user.savedBooks as MutableMap
             val list = bookmarks[folderName]!!.toMutableList()
-            if (list.contains(book!!.id)) {
-                list.remove(book!!.id)
-                bookmarks[folderName] = list
+            list.removeIf {
+                it.bookId == book!!.id
             }
+            bookmarks[folderName] = list
             bookmarkFolderName = ""
 
             userManager.setUser(

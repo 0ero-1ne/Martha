@@ -11,5 +11,5 @@ data class User(
     val image: String = "",
     val role: String = "guest",
     @SerializedName("saved_books")
-    val savedBooks: Map<String, String> = mapOf()
+    val savedBooks: Map<String, List<SavedBook>> = mapOf()
 )

@@ -21,6 +21,7 @@ fun BottomSheetBookmarks(
     currentFolderName: String,
     onSaveBookInBookmarks: (String) -> Unit,
     onRemoveBookFromBookmarks: (String) -> Unit,
+    onReplaceBookmark: (String, String) -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -39,9 +40,10 @@ fun BottomSheetBookmarks(
                         )
                         .clickable {
                             if (currentFolderName.isNotEmpty()) {
-                                onRemoveBookFromBookmarks(currentFolderName)
+                                onReplaceBookmark(currentFolderName, it)
+                            } else {
+                                onSaveBookInBookmarks(it)
                             }
-                            onSaveBookInBookmarks(it)
                             onDismiss()
                         },
                 ) {

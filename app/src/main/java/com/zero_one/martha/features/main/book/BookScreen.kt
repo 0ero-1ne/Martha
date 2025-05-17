@@ -14,6 +14,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +40,8 @@ fun BookScreen(
     onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
     onNavigateToLoginPage: () -> Unit
 ) {
+    val user = viewModel.user.collectAsState(User())
+
     Scaffold(
         topBar = {
             CustomTopBar(
@@ -77,7 +80,17 @@ fun BookScreen(
                 return@Scaffold
             }
 
-            val user = viewModel.user.collectAsState(User())
+            LaunchedEffect(user.value) {
+                val bookmarks = user.value.savedBooks
+                var folderName = ""
+                bookmarks.forEach {(key, value) ->
+                    if (value.any {it.bookId == viewModel.book!!.id}) {
+                        folderName = key
+                    }
+                }
+                viewModel.bookmarkFolderName = folderName
+            }
+
             var showBottomSheet by remember {mutableStateOf(false)}
 
             BookHeader(
@@ -144,6 +157,7 @@ fun BookScreen(
                     bookmarks = user.value.savedBooks.keys,
                     onSaveBookInBookmarks = viewModel::saveBookInBookmarks,
                     onRemoveBookFromBookmarks = viewModel::onRemoveBookFromBookmarks,
+                    onReplaceBookmark = viewModel::onReplaceBookmark,
                     currentFolderName = viewModel.bookmarkFolderName,
                 )
             }

@@ -2,6 +2,7 @@ package com.zero_one.martha.features.main.bookmarks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zero_one.martha.data.domain.model.SavedBook
 import com.zero_one.martha.data.domain.repository.UserRepository
 import com.zero_one.martha.data.source.datastore.user.UserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,7 @@ class BookmarksViewModel @Inject constructor(
 ): ViewModel() {
     val user = userManager.getUserFlow()
 
-    private val _bookmarks: MutableStateFlow<Map<String, MutableList<UInt>>?> =
+    private val _bookmarks: MutableStateFlow<Map<String, MutableList<SavedBook>>?> =
         MutableStateFlow(null)
     val bookmarks = _bookmarks
         .onStart {init()}
@@ -47,7 +48,7 @@ class BookmarksViewModel @Inject constructor(
             _bookmarks.update {
                 val newBookmarks = _bookmarks.value!!.toMutableMap()
                 newBookmarks[folderName] = mutableListOf()
-                newBookmarks
+                newBookmarks.toMap()
             }
             updateUserBookmarks()
             return true
