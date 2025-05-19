@@ -47,7 +47,12 @@ class PlayerViewModel @Inject constructor(
             )
 
             book = bookRepository.getBookForReader(params.bookId)
-            currentChapter = chapterRepository.getChapterById(params.chapterId)
+            currentChapter = if (book!!.chapters.isNotEmpty()) {
+                chapterRepository.getChapterById(book!!.chapters.minBy {it.id}.id)
+            } else {
+                chapterRepository.getChapterById(params.chapterId)
+            }
+
             userManager.getUser().savedBooks.forEach {(key, savedBooks) ->
                 val hasBookmark =
                     savedBooks.filter {it.bookId == book!!.id}

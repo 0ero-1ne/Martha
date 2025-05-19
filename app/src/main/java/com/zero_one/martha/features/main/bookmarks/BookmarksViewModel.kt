@@ -2,12 +2,15 @@ package com.zero_one.martha.features.main.bookmarks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.SavedBook
+import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.domain.repository.UserRepository
 import com.zero_one.martha.data.source.datastore.user.UserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -17,9 +20,13 @@ import javax.inject.Inject
 @HiltViewModel
 class BookmarksViewModel @Inject constructor(
     private val userManager: UserManager,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val bookRepository: BookRepository
 ): ViewModel() {
     val user = userManager.getUserFlow()
+
+    private val _books = MutableStateFlow<MutableList<Book>>(mutableListOf())
+    val books = _books.asStateFlow()
 
     private val _bookmarks: MutableStateFlow<Map<String, MutableList<SavedBook>>?> =
         MutableStateFlow(null)
@@ -39,6 +46,11 @@ class BookmarksViewModel @Inject constructor(
         viewModelScope.launch {
             _bookmarks.update {
                 userManager.getUser().savedBooks
+            }
+            _bookmarks.value!!.values.forEach {savedBooks ->
+                savedBooks.forEach {
+                    loadBook(it.bookId)
+                }
             }
         }
     }
@@ -80,6 +92,17 @@ class BookmarksViewModel @Inject constructor(
                 ),
             )
             userRepository.updateUser(userManager.getUser())
+        }
+    }
+
+    private fun loadBook(bookId: UInt) {
+        viewModelScope.launch {
+            val book = bookRepository.getBookById(bookId)
+            if (!_books.value.any {it.id == bookId}) {
+                val list = _books.value.toMutableList()
+                list.add(book)
+                _books.update {list}
+            }
         }
     }
 }

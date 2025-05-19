@@ -1,6 +1,5 @@
 package com.zero_one.martha.features.main.bookmarks
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,17 +26,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.features.main.bookmarks.components.BottomSheet
+import com.zero_one.martha.features.main.bookmarks.components.SavedBookItem
 import com.zero_one.martha.ui.components.CustomScrollableTabRow
 import kotlinx.coroutines.launch
 
 @Composable
 fun BookmarksScreen(
-    viewModel: BookmarksViewModel
+    viewModel: BookmarksViewModel,
+    onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit,
+    onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -52,6 +54,7 @@ fun BookmarksScreen(
                 .fillMaxSize(),
         ) {
             val user = viewModel.user.collectAsState(User())
+            val books = viewModel.books.collectAsState()
 
             if (user.value.id == 0u) {
                 Text("No user")
@@ -106,8 +109,8 @@ fun BookmarksScreen(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .border(1.dp, Color.White),
+                    .fillMaxSize(),
+                pageSpacing = 5.dp,
             ) {page ->
                 Column(
                     modifier = Modifier
@@ -116,9 +119,15 @@ fun BookmarksScreen(
                     verticalArrangement = Arrangement.Top,
                 ) {
                     val folderString = bookmarks.value!!.keys.elementAt(page)
-                    val bookIds = bookmarks.value!![folderString]!!.joinToString(", ")
-                    Text(bookmarks.value!!.keys.elementAt(page))
-                    Text(bookIds)
+                    bookmarks.value!![folderString]!!.forEach {savedBook ->
+                        SavedBookItem(
+                            book = books.value.firstOrNull {it.id == savedBook.bookId} ?: Book(),
+                            savedBook = savedBook,
+                            onNavigateToReader = onNavigateToReader,
+                            onNavigateToPlayer = onNavigateToPlayer,
+                            onBookClick = {},
+                        )
+                    }
                 }
             }
 

@@ -64,7 +64,7 @@ fun PlayerScreen(
             }
 
             if (viewModel.currentChapter!!.id == 0U) {
-                Text("Read chapter error")
+                Text("Sorry, but book still has ho any chapters")
                 return@Scaffold
             }
 

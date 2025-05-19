@@ -72,6 +72,22 @@ fun NavGraphBuilder.mainNavigationGraph(
 
             BookmarksScreen(
                 viewModel = viewModel,
+                onNavigateToReader = {bookId, chapterId ->
+                    rootNavController.navigate(
+                        ReaderRoute(
+                            bookId = bookId,
+                            chapterId = chapterId,
+                        ),
+                    )
+                },
+                onNavigateToPlayer = {bookId, chapterId ->
+                    rootNavController.navigate(
+                        PlayerRoute(
+                            bookId = bookId,
+                            chapterId = chapterId,
+                        ),
+                    )
+                },
             )
         }
         composable<BookRoute>(

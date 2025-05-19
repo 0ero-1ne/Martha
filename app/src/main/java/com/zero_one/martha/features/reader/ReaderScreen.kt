@@ -42,7 +42,7 @@ fun ReaderScreen(
             onNavigateToBack()
         },
     )
-    
+
     val reader = viewModel.reader.collectAsState()
     val pages = viewModel.pages.collectAsState()
 
