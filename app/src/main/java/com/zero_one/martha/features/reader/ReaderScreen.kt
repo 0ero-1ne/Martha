@@ -1,6 +1,7 @@
 package com.zero_one.martha.features.reader
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +21,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -62,15 +65,18 @@ fun ReaderScreen(
     val reader = viewModel.reader.collectAsState()
     val pages = viewModel.pages.collectAsState()
 
-    var menuState by remember {mutableStateOf(true)}
+    var menuState by remember {mutableStateOf(false)}
+    var chaptersExpanded by remember {mutableStateOf(false)}
     var isCounting by remember {mutableStateOf(true)}
     var currentPage by remember {mutableStateOf("")}
     var endLineIndex by remember {mutableIntStateOf(0)}
 
     LaunchedEffect(reader.value) {
+        Log.d("Reader value update", "Reader value update")
         if (reader.value != null) {
             currentPage = reader.value!!.replace("\n\n", "\n")
         }
+        isCounting = true
     }
 
     LaunchedEffect(
@@ -135,6 +141,24 @@ fun ReaderScreen(
                                     color = Color.Black,
                                 ),
                             )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    viewModel.book.let {
+                        if (it == null)
+                            CircularProgressIndicator()
+                        else {
+                            IconButton(
+                                onClick = {
+                                    chaptersExpanded = !chaptersExpanded
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Menu,
+                                    contentDescription = "More chapters",
+                                    tint = Color.Black,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -203,6 +227,7 @@ fun ReaderScreen(
                 initialPage = viewModel.currentPage,
             )
             val interactionSource = remember {MutableInteractionSource()}
+            viewModel.clearReader()
 
             HorizontalPager(
                 state = pagerState,

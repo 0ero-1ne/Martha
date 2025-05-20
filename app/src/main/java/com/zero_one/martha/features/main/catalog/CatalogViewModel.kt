@@ -12,7 +12,6 @@ import com.zero_one.martha.data.domain.model.Tag
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.domain.repository.TagRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -58,7 +57,6 @@ class CatalogViewModel @Inject constructor(
                 query = query.lowercase(),
                 filters = filters,
             )
-            delay(1000)
             _books.update {booksList}
             searching = false
         }

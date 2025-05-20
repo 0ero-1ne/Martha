@@ -1,5 +1,6 @@
 package com.zero_one.martha.features.main.bookmarks
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zero_one.martha.data.domain.model.Book
@@ -81,6 +82,24 @@ class BookmarksViewModel @Inject constructor(
         }
 
         return false
+    }
+
+    fun onDeleteBookmark(savedBook: SavedBook) {
+        viewModelScope.launch {
+            val mutable = _bookmarks.value!!.toMutableMap()
+            mutable.forEach {(key, value) ->
+                if (value.contains(savedBook)) {
+                    val newList = value.toMutableList()
+                    newList.remove(savedBook)
+                    mutable[key] = newList
+                }
+            }
+            Log.d("Mutable", mutable.values.joinToString(","))
+            _bookmarks.update {
+                mutable.toMap()
+            }
+            updateUserBookmarks()
+        }
     }
 
     private fun updateUserBookmarks() {

@@ -48,6 +48,14 @@ fun PlayerScreen(
             val isLoading by chapterPlayerViewModel.isLoading.collectAsState()
             val sliderPosition by chapterPlayerViewModel.sliderPosition.collectAsState()
 
+            BackHandler(
+                onBack = {
+                    chapterPlayerViewModel.onAction(ChapterPlayerActions.Pause)
+                    viewModel.destroy(sliderPosition)
+                    onNavigateToBack()
+                },
+            )
+            
             Button(
                 onClick = {
                     chapterPlayerViewModel.onAction(ChapterPlayerActions.Pause)
@@ -87,14 +95,6 @@ fun PlayerScreen(
             }
 
             Log.d("Player state", playerState.state.toString())
-
-            BackHandler(
-                onBack = {
-                    chapterPlayerViewModel.onAction(ChapterPlayerActions.Pause)
-                    viewModel.destroy(sliderPosition)
-                    onNavigateToBack()
-                },
-            )
 
             PlayerControls(
                 onAction = chapterPlayerViewModel::onAction,

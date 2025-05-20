@@ -126,6 +126,7 @@ fun BookmarksScreen(
                             onNavigateToReader = onNavigateToReader,
                             onNavigateToPlayer = onNavigateToPlayer,
                             onBookClick = {},
+                            onDeleteBookmark = viewModel::onDeleteBookmark,
                         )
                     }
                 }

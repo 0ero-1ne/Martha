@@ -96,6 +96,10 @@ class ReaderViewModel @Inject constructor(
         }
     }
 
+    fun clearReader() {
+        bufferedReader?.close()
+    }
+
     private fun loadFile() {
         GlobalScope.launch {
             bufferedReader = getFileBufferedReader(url)
@@ -104,11 +108,16 @@ class ReaderViewModel @Inject constructor(
 
     fun loadPages() {
         GlobalScope.launch {
-            _reader.value = bufferedReader!!.readText()
+            try {
+                _reader.value = bufferedReader!!.readText()
+            } catch (_: Exception) {
+                Log.e("Error", "Error")
+            }
         }
     }
 
     fun addPage(page: String) {
+        Log.d("New page", "New page")
         _pages.update {
             val list = _pages.value.toMutableList()
             list.add(page)
