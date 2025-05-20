@@ -39,7 +39,7 @@ class ReaderViewModel @Inject constructor(
     private val userRepository: UserRepository
 ): ViewModel() {
     var book: Book? by mutableStateOf(null)
-    private var currentChapter: Chapter? by mutableStateOf(null)
+    var currentChapter: Chapter? by mutableStateOf(null)
 
     private val _reader: MutableStateFlow<String?> = MutableStateFlow(null)
     val reader = _reader.asStateFlow()
@@ -67,8 +67,15 @@ class ReaderViewModel @Inject constructor(
                 ),
             )
 
+            Log.d("Params", "Params chapter id ${params.chapterId}")
+
             book = bookRepository.getBookForReader(params.bookId)
-            currentChapter = chapterRepository.getChapterById(params.chapterId)
+            currentChapter = if (book!!.chapters.isNotEmpty() && params.chapterId == 0u) {
+                chapterRepository.getChapterById(book!!.chapters.minBy {it.id}.id)
+            } else {
+                chapterRepository.getChapterById(params.chapterId)
+            }
+
             userManager.getUser().savedBooks.forEach {(key, savedBooks) ->
                 val hasBookmark =
                     savedBooks.filter {it.bookId == book!!.id}
@@ -127,6 +134,8 @@ class ReaderViewModel @Inject constructor(
                 page = if (savedBook.page > currentPage) savedBook.page else currentPage,
             )
 
+            Log.d("Current chapter", "Chapter id " + currentChapter!!.id)
+
             bookmarks["Reading"]!!.add(savedBook)
 
             userManager.setUser(
@@ -134,14 +143,13 @@ class ReaderViewModel @Inject constructor(
                     savedBooks = bookmarks.toMap(),
                 ),
             )
+
+            userRepository.updateUser(userManager.getUser())
         }
     }
 
     fun destroy() {
-        viewModelScope.launch {
-            bufferedReader?.close()
-            saveCurrentPosition()
-            userRepository.updateUser(userManager.getUser())
-        }
+        bufferedReader?.close()
+        saveCurrentPosition()
     }
 }

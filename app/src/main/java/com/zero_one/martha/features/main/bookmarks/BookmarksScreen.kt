@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.features.main.bookmarks.components.BottomSheet
 import com.zero_one.martha.features.main.bookmarks.components.SavedBookItem
@@ -120,8 +119,9 @@ fun BookmarksScreen(
                 ) {
                     val folderString = bookmarks.value!!.keys.elementAt(page)
                     bookmarks.value!![folderString]!!.forEach {savedBook ->
+                        val book = books.value.firstOrNull {it.id == savedBook.bookId}
                         SavedBookItem(
-                            book = books.value.firstOrNull {it.id == savedBook.bookId} ?: Book(),
+                            book = book,
                             savedBook = savedBook,
                             onNavigateToReader = onNavigateToReader,
                             onNavigateToPlayer = onNavigateToPlayer,

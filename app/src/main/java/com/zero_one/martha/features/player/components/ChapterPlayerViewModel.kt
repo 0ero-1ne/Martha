@@ -54,7 +54,7 @@ class ChapterPlayerViewModel @Inject constructor(
 
     fun onAction(action: ChapterPlayerActions) {
         when (action) {
-            is ChapterPlayerActions.Init -> init(action.uri)
+            is ChapterPlayerActions.Init -> init(action.uri, action.state)
             is ChapterPlayerActions.Play -> resume()
             is ChapterPlayerActions.Pause -> pause()
             is ChapterPlayerActions.Resume -> resume()
@@ -66,7 +66,7 @@ class ChapterPlayerViewModel @Inject constructor(
         }
     }
 
-    private fun init(uri: Uri) {
+    private fun init(uri: Uri, state: Long) {
         updateIsLoading(true)
 
         listener = object: Player.Listener {
@@ -99,6 +99,8 @@ class ChapterPlayerViewModel @Inject constructor(
                 setPlaybackSpeed(1F)
                 prepare()
                 isInit = true
+                seekTo(state)
+                updateSliderPosition(state)
             }
     }
 

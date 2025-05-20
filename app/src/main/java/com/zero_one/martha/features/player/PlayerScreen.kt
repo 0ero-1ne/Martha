@@ -58,7 +58,7 @@ fun PlayerScreen(
                 Text("Back")
             }
 
-            if (viewModel.currentChapter == null) {
+            if (viewModel.currentChapter == null || viewModel.timeState == -1L) {
                 CircularProgressIndicator()
                 return@Scaffold
             }
@@ -78,10 +78,12 @@ fun PlayerScreen(
 
             val chapterUri = "${BuildConfig.STORAGE_URL}audios/${viewModel.currentChapter!!.audio}"
             if (!chapterPlayerViewModel.isInit) {
-                chapterPlayerViewModel.onAction(ChapterPlayerActions.Init(chapterUri.toUri()))
-                if (chapterPlayerViewModel.isInit) {
-                    chapterPlayerViewModel.onAction(ChapterPlayerActions.SeekTo(viewModel.timeState))
-                }
+                chapterPlayerViewModel.onAction(
+                    ChapterPlayerActions.Init(
+                        chapterUri.toUri(),
+                        viewModel.timeState,
+                    ),
+                )
             }
 
             Log.d("Player state", playerState.state.toString())

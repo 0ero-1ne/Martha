@@ -2,15 +2,28 @@ package com.zero_one.martha.features.reader
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Button
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,13 +34,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.zero_one.martha.features.reader.ui.readerTextStyle
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -46,6 +62,7 @@ fun ReaderScreen(
     val reader = viewModel.reader.collectAsState()
     val pages = viewModel.pages.collectAsState()
 
+    var menuState by remember {mutableStateOf(true)}
     var isCounting by remember {mutableStateOf(true)}
     var currentPage by remember {mutableStateOf("")}
     var endLineIndex by remember {mutableIntStateOf(0)}
@@ -76,6 +93,52 @@ fun ReaderScreen(
         modifier = Modifier
             .fillMaxSize(),
     ) {paddingValues ->
+        if (menuState) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
+                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
+                        top = paddingValues.calculateTopPadding(),
+                    )
+                    .clip(RoundedCornerShape(10.dp))
+                    .zIndex(1f),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(
+                        onClick = {
+                            viewModel.destroy()
+                            onNavigateToBack()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = "Exit reader",
+                            tint = Color.Black,
+                        )
+                    }
+
+                    viewModel.currentChapter.let {
+                        if (it == null)
+                            CircularProgressIndicator()
+                        else
+                            Text(
+                                text = it.title,
+                                style = LocalTextStyle.current.copy(
+                                    color = Color.Black,
+                                ),
+                            )
+                    }
+                }
+            }
+        }
         Column(
             modifier = Modifier
                 .padding(
@@ -86,15 +149,6 @@ fun ReaderScreen(
                 )
                 .fillMaxSize(),
         ) {
-            Button(
-                onClick = {
-                    viewModel.destroy()
-                    onNavigateToBack()
-                },
-            ) {
-                Text("Back")
-            }
-
             if (viewModel.bufferedReader == null) {
                 CircularProgressIndicator()
                 return@Column
@@ -148,6 +202,7 @@ fun ReaderScreen(
                 },
                 initialPage = viewModel.currentPage,
             )
+            val interactionSource = remember {MutableInteractionSource()}
 
             HorizontalPager(
                 state = pagerState,
@@ -168,7 +223,13 @@ fun ReaderScreen(
                         .padding(
                             start = 5.dp,
                             end = 5.dp,
-                        ),
+                        )
+                        .clickable(
+                            indication = null,
+                            interactionSource = interactionSource,
+                        ) {
+                            menuState = !menuState
+                        },
                 )
             }
         }

@@ -97,7 +97,7 @@ class BookmarksViewModel @Inject constructor(
 
     private fun loadBook(bookId: UInt) {
         viewModelScope.launch {
-            val book = bookRepository.getBookById(bookId)
+            val book = bookRepository.getBookForReader(bookId)
             if (!_books.value.any {it.id == bookId}) {
                 val list = _books.value.toMutableList()
                 list.add(book)

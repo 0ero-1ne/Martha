@@ -1,6 +1,5 @@
 package com.zero_one.martha.features.player
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +35,7 @@ class PlayerViewModel @Inject constructor(
 
     private var savedBook = SavedBook()
     private var folderName = ""
-    var timeState by mutableLongStateOf(0L)
+    var timeState by mutableLongStateOf(-1L)
 
     init {
         viewModelScope.launch {
@@ -47,7 +46,8 @@ class PlayerViewModel @Inject constructor(
             )
 
             book = bookRepository.getBookForReader(params.bookId)
-            currentChapter = if (book!!.chapters.isNotEmpty()) {
+
+            currentChapter = if (book!!.chapters.isNotEmpty() && params.chapterId == 0u) {
                 chapterRepository.getChapterById(book!!.chapters.minBy {it.id}.id)
             } else {
                 chapterRepository.getChapterById(params.chapterId)
@@ -63,13 +63,14 @@ class PlayerViewModel @Inject constructor(
             }
 
             if (currentChapter!!.id == savedBook.audioChapter) {
-                Log.d("Saved state", savedBook.audio.toString())
                 timeState = savedBook.audio
+            } else {
+                timeState = 0L
             }
         }
     }
 
-    fun destroy(timeState: Long) {
+    private fun saveCurrentPosition(timeState: Long) {
         viewModelScope.launch {
             val bookmarks = userManager.getUser().savedBooks.toMutableMap()
 
@@ -77,7 +78,7 @@ class PlayerViewModel @Inject constructor(
                 return@launch
             }
 
-            bookmarks[folderName]!!.remove(savedBook)
+            bookmarks[folderName]?.remove(savedBook)
 
             savedBook = savedBook.copy(
                 bookId = book!!.id,
@@ -95,5 +96,9 @@ class PlayerViewModel @Inject constructor(
 
             userRepository.updateUser(userManager.getUser())
         }
+    }
+
+    fun destroy(timeState: Long) {
+        saveCurrentPosition(timeState)
     }
 }
