@@ -2,8 +2,45 @@ package com.zero_one.martha.features.main.home
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.zero_one.martha.data.domain.model.Book
+import com.zero_one.martha.data.domain.repository.BookRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel(
-    private val handle: SavedStateHandle
-) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val handle: SavedStateHandle,
+    private val bookRepository: BookRepository
+): ViewModel() {
+    private val _popularBooks = MutableStateFlow<List<Book>?>(null)
+    val popularBooks = _popularBooks.asStateFlow()
+
+    private val _newBooks = MutableStateFlow<List<Book>?>(null)
+    val newBooks = _newBooks.asStateFlow()
+
+    init {
+        initPopularBooks()
+        initNewBooks()
+    }
+
+    private fun initPopularBooks() {
+        viewModelScope.launch {
+            _popularBooks.update {
+                bookRepository.getBooks()
+            }
+        }
+    }
+
+    private fun initNewBooks() {
+        viewModelScope.launch {
+            _newBooks.update {
+                bookRepository.getBooks()
+            }
+        }
+    }
 }

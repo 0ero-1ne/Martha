@@ -1,7 +1,6 @@
 package com.zero_one.martha.navigation.main
 
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -40,7 +39,10 @@ fun NavGraphBuilder.mainNavigationGraph(
     ) {
         composable<HomeRoute> {
             HomeScreen(
-                viewModel = viewModel<HomeViewModel>(),
+                viewModel = hiltViewModel<HomeViewModel>(),
+                onNavigateToBook = {bookId ->
+                    navController.navigate(BookRoute(bookId = bookId))
+                },
             )
         }
         composable<ProfileRoute> {
