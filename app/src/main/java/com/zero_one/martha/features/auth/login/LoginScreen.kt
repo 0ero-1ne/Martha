@@ -2,15 +2,21 @@ package com.zero_one.martha.features.auth.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -21,11 +27,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.zero_one.martha.ui.components.CustomTopBar
+import com.zero_one.martha.features.auth.ui.AppBar
 import com.zero_one.martha.ui.forms.login.LoginForm
 import com.zero_one.martha.ui.forms.login.rememberLoginFormState
 import kotlinx.coroutines.launch
@@ -43,11 +51,6 @@ fun LoginScreen(
     val interactionSource = remember {MutableInteractionSource()}
 
     Scaffold(
-        topBar = {
-            CustomTopBar(
-                onNavigateToBack = onNavigateToBack,
-            )
-        },
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         },
@@ -57,9 +60,9 @@ fun LoginScreen(
                 .fillMaxSize()
                 .padding(
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
-                    top = paddingValues.calculateTopPadding(),
+                    top = paddingValues.calculateTopPadding() + 16.dp,
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
-                    bottom = paddingValues.calculateBottomPadding(),
+                    bottom = paddingValues.calculateBottomPadding() + 16.dp,
                 )
                 .clickable(
                     interactionSource = interactionSource,
@@ -69,7 +72,6 @@ fun LoginScreen(
                     },
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
         ) {
             val formState = rememberLoginFormState()
             val context = LocalContext.current
@@ -89,16 +91,43 @@ fun LoginScreen(
                     }
                 }
             }
+
+            AppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = 16.dp,
+                    ),
+                onNavigateToBack = onNavigateToBack,
+            )
+
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.8f),
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if (viewModel.isLoginButtonPressed) {
-                    CircularProgressIndicator()
-                }
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f),
+                )
                 LoginForm(state = formState)
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f),
+                )
                 Button(
+                    modifier = Modifier
+                        .padding(top = 32.dp)
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
                     onClick = {
+                        if (viewModel.isLoginButtonPressed) {
+                            return@Button
+                        }
+
                         keyboardController?.hide()
                         formState.validate()
 
@@ -107,13 +136,52 @@ fun LoginScreen(
                         }
                     },
                 ) {
-                    Text("Login")
+                    if (viewModel.isLoginButtonPressed) {
+                        CircularProgressIndicator()
+                    } else {
+                        Text(
+                            text = "Login",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
-                Button(
-                    onClick = onNavigateToSignupScreen,
-                ) {
-                    Text("Signup form")
-                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .padding(
+                        top = 16.dp,
+                    ),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            end = 5.dp,
+                        ),
+                    text = "Still has no account?",
+                )
+                Text(
+                    modifier = Modifier
+                        .clickable {
+                            onNavigateToSignupScreen()
+                        },
+                    text = "Signup",
+                    color = if (isSystemInDarkTheme())
+                        Color(0xFF9874AA)
+                    else
+                        Color(0xFF251758),
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            start = 5.dp,
+                        ),
+                    text = "now!",
+                )
             }
         }
     }

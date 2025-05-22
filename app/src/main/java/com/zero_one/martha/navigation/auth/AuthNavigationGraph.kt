@@ -1,5 +1,7 @@
 package com.zero_one.martha.navigation.auth
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -22,7 +24,32 @@ fun NavGraphBuilder.authNavigationGraph(
     navigation<AuthNavigationGraph>(
         startDestination = LoginRoute,
     ) {
-        composable<LoginRoute> {
+        composable<LoginRoute>(
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    tween(500),
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    tween(500),
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    tween(500),
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    tween(500),
+                )
+            },
+        ) {
             val viewModel = hiltViewModel<LoginViewModel>()
             LoginScreen(
                 viewModel = viewModel,
@@ -36,7 +63,20 @@ fun NavGraphBuilder.authNavigationGraph(
             )
         }
 
-        composable<SignupRoute> {
+        composable<SignupRoute>(
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    tween(500),
+                )
+            },
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    tween(500),
+                )
+            },
+        ) {
             val viewModel = hiltViewModel<SignupViewModel>()
             SignupScreen(
                 viewModel = viewModel,

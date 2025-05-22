@@ -1,16 +1,18 @@
 package com.zero_one.martha.ui.fields.password
 
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import com.zero_one.martha.modifier.clearFocusOnKeyboardDismiss
 
 @Composable
@@ -31,16 +34,16 @@ fun PasswordField(
 ) {
     var isPasswordVisible by remember {mutableStateOf(false)}
 
-    TextField(
+    OutlinedTextField(
         value = state.value,
         onValueChange = state::onValueChanged,
         modifier = modifier
-            .fillMaxWidth()
-            .clearFocusOnKeyboardDismiss(),
+            .clearFocusOnKeyboardDismiss()
+            .padding(
+                bottom = 5.dp,
+            ),
+        isError = state.error != null,
         leadingIcon = {
-            Icon(Icons.Default.Password, "Password field icon")
-        },
-        trailingIcon = {
             IconButton(onClick = {isPasswordVisible = !isPasswordVisible}) {
                 Icon(
                     imageVector = if (isPasswordVisible) {
@@ -52,23 +55,43 @@ fun PasswordField(
                 )
             }
         },
+        trailingIcon = {
+            if (state.value.isNotEmpty())
+                IconButton(
+                    onClick = state::clear,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Clear password field",
+                    )
+                }
+        },
         visualTransformation = if (isPasswordVisible) {
             VisualTransformation.None
         } else {
             PasswordVisualTransformation()
         },
-        isError = state.error != null,
-        supportingText = state.error?.let {
-            {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Red,
-                )
-            }
-        },
         keyboardOptions = KeyboardOptions(
             imeAction = imeAction,
         ),
+        shape = RoundedCornerShape(16.dp),
+        placeholder = {
+            Text("Enter the password")
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            errorBorderColor = Color(0xFFC80000),
+        ),
+    )
+    Text(
+        text = state.error ?: "",
+        modifier = Modifier
+            .padding(
+                start = 16.dp,
+                bottom = 24.dp,
+            ),
+        color = Color(0xFFC80000),
+        style = MaterialTheme.typography.labelMedium,
     )
 }

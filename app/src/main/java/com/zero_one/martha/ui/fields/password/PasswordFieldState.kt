@@ -44,6 +44,11 @@ class PasswordFieldState(initialValue: String) {
 
         return error == null
     }
+
+    fun clear() {
+        value = ""
+        error = null
+    }
 }
 
 private val passwordFieldSaver = listSaver(

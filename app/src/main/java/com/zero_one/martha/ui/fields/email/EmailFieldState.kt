@@ -36,6 +36,11 @@ class EmailFieldState(initialValue: String) {
             EmailValidationResult.VALID -> null
         }
     }
+
+    fun clear() {
+        value = ""
+        error = null
+    }
 }
 
 private val emailFieldSaver = listSaver(
