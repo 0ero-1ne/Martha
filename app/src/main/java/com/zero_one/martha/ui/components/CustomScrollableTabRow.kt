@@ -45,36 +45,37 @@ fun CustomScrollableTabRow(
         }
     }
 
-    ScrollableTabRow(
-        edgePadding = 0.dp,
-        selectedTabIndex = selectedTabIndex.value,
-        modifier = Modifier
-            .fillMaxWidth(),
-        indicator = {tabPositions ->
-            TabRowDefaults.PrimaryIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .smoothTabIndicatorOffset(
-                        previousTabPosition = tabPositions[previousTabIndex],
-                        newTabPosition = tabPositions[targetTabIndex],
-                        swipeProgress = pagerState.currentPageOffsetFraction,
-                    ),
-            )
-        },
-    ) {
-        tabs.forEachIndexed {index, title ->
-            Tab(
-                selected = selectedTabIndex.value == index,
-                onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                },
-                unselectedContentColor = MaterialTheme.colorScheme.secondary,
-                text = {
-                    Text(title)
-                },
-            )
+    if (tabs.isNotEmpty())
+        ScrollableTabRow(
+            edgePadding = 0.dp,
+            selectedTabIndex = selectedTabIndex.value,
+            modifier = Modifier
+                .fillMaxWidth(),
+            indicator = {tabPositions ->
+                TabRowDefaults.PrimaryIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .smoothTabIndicatorOffset(
+                            previousTabPosition = tabPositions[previousTabIndex],
+                            newTabPosition = tabPositions[targetTabIndex],
+                            swipeProgress = pagerState.currentPageOffsetFraction,
+                        ),
+                )
+            },
+        ) {
+            tabs.forEachIndexed {index, title ->
+                Tab(
+                    selected = selectedTabIndex.value == index,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    unselectedContentColor = MaterialTheme.colorScheme.secondary,
+                    text = {
+                        Text(title)
+                    },
+                )
+            }
         }
-    }
 }

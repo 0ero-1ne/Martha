@@ -137,7 +137,9 @@ fun LoginScreen(
                     },
                 ) {
                     if (viewModel.isLoginButtonPressed) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.background,
+                        )
                     } else {
                         Text(
                             text = "Login",

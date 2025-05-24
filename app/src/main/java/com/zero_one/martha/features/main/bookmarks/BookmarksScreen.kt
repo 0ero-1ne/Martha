@@ -1,5 +1,6 @@
 package com.zero_one.martha.features.main.bookmarks
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,8 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +43,7 @@ fun BookmarksScreen(
     viewModel: BookmarksViewModel,
     onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit,
     onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
+    onNavigateToLoginPage: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -48,7 +53,7 @@ fun BookmarksScreen(
                 .padding(
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
-                    bottom = paddingValues.calculateBottomPadding(),
+                    bottom = paddingValues.calculateBottomPadding() + 16.dp,
                 )
                 .fillMaxSize(),
         ) {
@@ -56,7 +61,42 @@ fun BookmarksScreen(
             val books = viewModel.books.collectAsState()
 
             if (user.value.id == 0u) {
-                Text("No user")
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            top = paddingValues.calculateTopPadding() + 16.dp,
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = "You are not authorized",
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                top = 16.dp,
+                            ),
+                        text = "Authorize to see bookmarks",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    OutlinedButton(
+                        modifier = Modifier
+                            .padding(
+                                top = 16.dp,
+                            ),
+                        onClick = onNavigateToLoginPage,
+                        shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                    ) {
+                        Text(
+                            text = "Login",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
                 return@Scaffold
             }
 

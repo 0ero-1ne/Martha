@@ -137,7 +137,9 @@ fun SignupScreen(
                     },
                 ) {
                     if (viewModel.isSignupButtonPressed) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.background,
+                        )
                     } else {
                         Text(
                             text = "Signup",

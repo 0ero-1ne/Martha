@@ -33,18 +33,6 @@ fun NavGraphBuilder.authNavigationGraph(
             },
             exitTransition = {
                 slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    tween(500),
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(500),
-                )
-            },
-            popExitTransition = {
-                slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     tween(500),
                 )

@@ -2,6 +2,7 @@ package com.zero_one.martha.data.source.network.repository
 
 import android.util.Log
 import com.zero_one.martha.data.domain.repository.AuthRepository
+import com.zero_one.martha.data.domain.repository.UserRepository
 import com.zero_one.martha.data.source.datastore.user.UserManager
 import com.zero_one.martha.data.source.datastore.user.tokens.TokensManager
 import com.zero_one.martha.data.source.network.api.NetworkAPI
@@ -11,7 +12,8 @@ import javax.inject.Inject
 class AuthRepositoryImpl @Inject constructor(
     private val api: NetworkAPI,
     private val tokensManager: TokensManager,
-    private val userManager: UserManager
+    private val userManager: UserManager,
+    private val userRepository: UserRepository
 ): AuthRepository {
     override suspend fun login(authUser: AuthUser): String? {
         try {
@@ -19,6 +21,7 @@ class AuthRepositoryImpl @Inject constructor(
 
             if (response.isSuccessful && response.body() != null) {
                 tokensManager.setTokens(response.body()!!)
+                userRepository.getUser()
                 return null
             }
 

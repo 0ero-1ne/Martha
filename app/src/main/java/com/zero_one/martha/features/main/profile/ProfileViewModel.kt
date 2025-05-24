@@ -1,5 +1,6 @@
 package com.zero_one.martha.features.main.profile
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,6 +23,7 @@ class ProfileViewModel @Inject constructor(
 
     fun isLogged() {
         runBlocking {
+            Log.d("Is logged", "Is logged")
             user = userRepository.getUser()
         }
     }

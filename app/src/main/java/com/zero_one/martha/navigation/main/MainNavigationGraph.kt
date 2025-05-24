@@ -90,6 +90,9 @@ fun NavGraphBuilder.mainNavigationGraph(
                         ),
                     )
                 },
+                onNavigateToLoginPage = {
+                    rootNavController.navigate(LoginRoute)
+                },
             )
         }
         composable<BookRoute>(

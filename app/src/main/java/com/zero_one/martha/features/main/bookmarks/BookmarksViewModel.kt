@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -46,7 +47,7 @@ class BookmarksViewModel @Inject constructor(
     private fun init() {
         viewModelScope.launch {
             _bookmarks.update {
-                userManager.getUser().savedBooks
+                user.first().savedBooks
             }
             _bookmarks.value!!.values.forEach {savedBooks ->
                 savedBooks.forEach {

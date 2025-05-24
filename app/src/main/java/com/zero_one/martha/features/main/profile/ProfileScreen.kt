@@ -1,5 +1,6 @@
 package com.zero_one.martha.features.main.profile
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,12 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,7 +52,7 @@ fun ProfileScreen(
                 .padding(
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
-                    bottom = paddingValues.calculateBottomPadding(),
+                    bottom = paddingValues.calculateBottomPadding() + 16.dp,
                 )
                 .fillMaxSize(),
         ) {
@@ -59,17 +61,38 @@ fun ProfileScreen(
             if (viewModel.user == null || (viewModel.user != null && viewModel.user!!.id == 0u)) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .padding(
+                            top = paddingValues.calculateTopPadding() + 16.dp,
+                        ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    Text("You are not authorized")
-                    Button(
-                        onClick = {
-                            onNavigateToLoginPage()
-                        },
+                    Text(
+                        text = "You are not authorized",
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                top = 16.dp,
+                            ),
+                        text = "Authorize to control your account",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    OutlinedButton(
+                        modifier = Modifier
+                            .padding(
+                                top = 16.dp,
+                            ),
+                        onClick = onNavigateToLoginPage,
+                        shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                     ) {
-                        Text("Login")
+                        Text(
+                            text = "Login",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     }
                 }
                 return@Scaffold
