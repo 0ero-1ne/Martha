@@ -1,6 +1,5 @@
 package com.zero_one.martha.features.main.home.components
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,12 +28,7 @@ fun BookItem(
     book: Book,
     onBookClick: (UInt) -> Unit
 ) {
-    Box(
-        modifier = Modifier.clickable {
-            Log.d("Clicked", "Clicked")
-            onBookClick(book.id)
-        },
-    ) {
+    Box {
         Column {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -51,7 +45,10 @@ fun BookItem(
                     .padding(
                         bottom = 5.dp,
                     )
-                    .clip(RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .clickable {
+                        onBookClick(book.id)
+                    },
             )
             Text(
                 text = book.title,

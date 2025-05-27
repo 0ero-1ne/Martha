@@ -3,6 +3,9 @@ package com.zero_one.martha.features.reader
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -99,7 +102,13 @@ fun ReaderScreen(
         modifier = Modifier
             .fillMaxSize(),
     ) {paddingValues ->
-        if (menuState) {
+        AnimatedVisibility(
+            visible = menuState,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier
+                .zIndex(2f),
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -108,13 +117,12 @@ fun ReaderScreen(
                         end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
                         top = paddingValues.calculateTopPadding(),
                     )
-                    .clip(RoundedCornerShape(10.dp))
-                    .zIndex(1f),
+                    .clip(RoundedCornerShape(10.dp)),
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.primaryContainer),
+                        .background(MaterialTheme.colorScheme.primary),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -228,6 +236,10 @@ fun ReaderScreen(
             )
             val interactionSource = remember {MutableInteractionSource()}
             viewModel.clearReader()
+
+            LaunchedEffect(pagerState.currentPage) {
+                menuState = false
+            }
 
             HorizontalPager(
                 state = pagerState,

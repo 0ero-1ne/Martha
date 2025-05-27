@@ -1,23 +1,31 @@
 package com.zero_one.martha.features.player.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Forward10
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Replay10
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.zero_one.martha.features.player.components.ChapterPlayerActions
 import com.zero_one.martha.features.player.components.ChapterPlayerState
+import com.zero_one.martha.ui.components.CustomIconButton
 
 @Composable
 fun PlayerControls(
@@ -35,22 +43,22 @@ fun PlayerControls(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
-        IconButton(
+        CustomIconButton(
             onClick = {
                 onAction(ChapterPlayerActions.Replay)
             },
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Replay10,
-                contentDescription = "Replay 10 icon",
-            )
-        }
-        IconButton(
+            imageVector = Icons.Rounded.Replay10,
+            size = 36.dp,
+        )
+
+        Button(
             modifier = Modifier
                 .padding(
                     start = 10.dp,
                     end = 10.dp,
-                ),
+                )
+                .wrapContentSize(),
+            shape = CircleShape,
             enabled = !isLoading,
             onClick = {
                 when (playerState) {
@@ -65,27 +73,32 @@ fun PlayerControls(
                     )
                 }
             },
+            contentPadding = PaddingValues(0.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.primary,
+            ),
         ) {
             if (isLoading) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(Modifier.size(82.dp))
             } else {
                 Icon(
                     imageVector = if (playerState == ChapterPlayerState.PLAYING)
-                        Icons.Rounded.Pause else
-                        Icons.Rounded.PlayArrow,
+                        Icons.Rounded.Pause
+                    else Icons.Rounded.PlayArrow,
                     contentDescription = "Play / Pause icons",
+                    modifier = Modifier
+                        .size(82.dp),
                 )
             }
         }
-        IconButton(
+
+        CustomIconButton(
             onClick = {
                 onAction(ChapterPlayerActions.Forward)
             },
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Forward10,
-                contentDescription = "Forward 10 icon",
-            )
-        }
+            imageVector = Icons.Rounded.Forward10,
+            size = 36.dp,
+        )
     }
 }
