@@ -3,17 +3,20 @@ package com.zero_one.martha.features.main.bookmarks
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -35,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.features.main.bookmarks.components.BottomSheet
 import com.zero_one.martha.features.main.bookmarks.components.SavedBookItem
+import com.zero_one.martha.modifier.bottomBorder
 import com.zero_one.martha.ui.components.CustomScrollableTabRow
 import kotlinx.coroutines.launch
 
@@ -45,14 +49,13 @@ fun BookmarksScreen(
     onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
     onNavigateToLoginPage: () -> Unit
 ) {
+    var showBottomSheet by remember {mutableStateOf(false)}
     Scaffold(
         modifier = Modifier.fillMaxSize(),
     ) {paddingValues ->
         Column(
             modifier = Modifier
                 .padding(
-                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
                     bottom = paddingValues.calculateBottomPadding() + 16.dp,
                 )
                 .fillMaxSize(),
@@ -111,7 +114,6 @@ fun BookmarksScreen(
             var userId by rememberSaveable {mutableStateOf("")}
             val pageCount = remember {mutableIntStateOf(bookmarks.value!!.size)}
             val pagerState = rememberPagerState {pageCount.intValue}
-            var showBottomSheet by remember {mutableStateOf(false)}
             var pages by remember {mutableStateOf(bookmarks.value!!.keys)}
 
             LaunchedEffect(bookmarks.value!!) {
@@ -130,63 +132,106 @@ fun BookmarksScreen(
                 }
             }
 
-            CustomScrollableTabRow(
-                pagerState = pagerState,
-                tabs = pages,
-            )
-
-            Spacer(Modifier.height(10.dp))
-
-            Button(
-                onClick = {
-                    showBottomSheet = true
-                },
-            ) {
-                Text("Open")
-            }
-
-            HorizontalPager(
-                state = pagerState,
+            Row(
                 modifier = Modifier
-                    .fillMaxSize(),
-                pageSpacing = 5.dp,
-            ) {page ->
-                Column(
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = 16.dp,
+                    )
+                    .bottomBorder(
+                        color = MaterialTheme.colorScheme.primary,
+                        height = 1f,
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                CustomScrollableTabRow(
                     modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
+                        .weight(5f),
+                    pagerState = pagerState,
+                    tabs = pages,
+                )
+                IconButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    onClick = {
+                        showBottomSheet = true
+                    },
                 ) {
-                    val folderString = bookmarks.value!!.keys.elementAt(page)
-                    bookmarks.value!![folderString]!!.forEach {savedBook ->
-                        val book = books.value.firstOrNull {it.id == savedBook.bookId}
-                        SavedBookItem(
-                            book = book,
-                            savedBook = savedBook,
-                            onNavigateToReader = onNavigateToReader,
-                            onNavigateToPlayer = onNavigateToPlayer,
-                            onBookClick = {},
-                            onDeleteBookmark = viewModel::onDeleteBookmark,
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Folder control",
+                    )
                 }
             }
 
-            if (showBottomSheet) {
-                BottomSheet(
-                    pages = pages,
-                    currentTab = pagerState.currentPage,
-                    onDismiss = {
-                        showBottomSheet = false
-                    },
-                    onAddNewFolder = viewModel::addNewFolder,
-                    onDeleteFolder = viewModel::deleteFolder,
-                    onScrollToFirstTab = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(0)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
+                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
+                    ),
+            ) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    pageSpacing = 5.dp,
+                ) {page ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        val folderString = bookmarks.value!!.keys.elementAt(page)
+                        val savedBooks = bookmarks.value!![folderString]!!
+
+                        if (savedBooks.isEmpty()) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Text(
+                                    text = "No saved books in folder",
+                                    style = MaterialTheme.typography.titleMedium,
+                                )
+                            }
+                            return@HorizontalPager
                         }
-                    },
-                )
+
+                        bookmarks.value!![folderString]!!.forEach {savedBook ->
+                            val book = books.value.firstOrNull {it.id == savedBook.bookId}
+                            SavedBookItem(
+                                book = book,
+                                savedBook = savedBook,
+                                onNavigateToReader = onNavigateToReader,
+                                onNavigateToPlayer = onNavigateToPlayer,
+                                onBookClick = {},
+                                onDeleteBookmark = viewModel::onDeleteBookmark,
+                            )
+                        }
+                    }
+                }
+
+                if (showBottomSheet) {
+                    BottomSheet(
+                        pages = pages,
+                        currentTab = pagerState.currentPage,
+                        onDismiss = {
+                            showBottomSheet = false
+                        },
+                        onAddNewFolder = viewModel::addNewFolder,
+                        onDeleteFolder = viewModel::deleteFolder,
+                        onScrollToFirstTab = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(0)
+                            }
+                        },
+                    )
+                }
             }
         }
     }

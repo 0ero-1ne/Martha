@@ -70,7 +70,7 @@ fun PlayerScreen(
                 .padding(
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
-                    top = paddingValues.calculateTopPadding(),
+                    top = paddingValues.calculateTopPadding() + 16.dp,
                     bottom = paddingValues.calculateBottomPadding(),
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,

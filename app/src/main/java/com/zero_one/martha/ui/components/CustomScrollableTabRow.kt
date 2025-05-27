@@ -2,6 +2,7 @@ package com.zero_one.martha.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -17,12 +18,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.zero_one.martha.modifier.smoothTabIndicatorOffset
 import kotlinx.coroutines.launch
 
 @Composable
 fun CustomScrollableTabRow(
+    modifier: Modifier = Modifier,
     pagerState: PagerState,
     tabs: Set<String>
 ) {
@@ -49,8 +52,7 @@ fun CustomScrollableTabRow(
         ScrollableTabRow(
             edgePadding = 0.dp,
             selectedTabIndex = selectedTabIndex.value,
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = modifier,
             indicator = {tabPositions ->
                 TabRowDefaults.PrimaryIndicator(
                     modifier = Modifier
@@ -62,6 +64,7 @@ fun CustomScrollableTabRow(
                         ),
                 )
             },
+            divider = {},
         ) {
             tabs.forEachIndexed {index, title ->
                 Tab(
@@ -71,10 +74,12 @@ fun CustomScrollableTabRow(
                             pagerState.animateScrollToPage(index)
                         }
                     },
-                    unselectedContentColor = MaterialTheme.colorScheme.secondary,
+                    unselectedContentColor = MaterialTheme.colorScheme.outline,
                     text = {
                         Text(title)
                     },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp)),
                 )
             }
         }
