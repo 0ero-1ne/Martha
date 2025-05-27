@@ -33,7 +33,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.zero_one.martha.features.auth.ui.AppBar
+import com.zero_one.martha.ui.components.CustomTopBar
 import com.zero_one.martha.ui.forms.login.LoginForm
 import com.zero_one.martha.ui.forms.login.rememberLoginFormState
 import kotlinx.coroutines.launch
@@ -53,6 +53,11 @@ fun LoginScreen(
     Scaffold(
         snackbarHost = {
             SnackbarHost(snackbarHostState)
+        },
+        topBar = {
+            CustomTopBar(
+                onNavigateToBack = onNavigateToBack,
+            )
         },
     ) {paddingValues ->
         Column(
@@ -91,15 +96,6 @@ fun LoginScreen(
                     }
                 }
             }
-
-            AppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        bottom = 16.dp,
-                    ),
-                onNavigateToBack = onNavigateToBack,
-            )
 
             Column(
                 modifier = Modifier

@@ -35,11 +35,11 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.R
-import com.zero_one.martha.features.auth.ui.AppBar
 import com.zero_one.martha.features.player.components.ChapterPlayerActions
 import com.zero_one.martha.features.player.components.ChapterPlayerViewModel
 import com.zero_one.martha.features.player.ui.AudioSlider
 import com.zero_one.martha.features.player.ui.PlayerControls
+import com.zero_one.martha.ui.components.CustomTopBar
 
 @Composable
 fun PlayerScreen(
@@ -47,9 +47,22 @@ fun PlayerScreen(
     chapterPlayerViewModel: ChapterPlayerViewModel,
     onNavigateToBack: () -> Unit
 ) {
+    val playerState by chapterPlayerViewModel.playerState.collectAsState()
+    val isLoading by chapterPlayerViewModel.isLoading.collectAsState()
+    val sliderPosition by chapterPlayerViewModel.sliderPosition.collectAsState()
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
+        topBar = {
+            CustomTopBar(
+                onNavigateToBack = {
+                    chapterPlayerViewModel.onAction(ChapterPlayerActions.Pause)
+                    viewModel.destroy(sliderPosition)
+                    onNavigateToBack()
+                },
+            )
+        },
     ) {paddingValues ->
         Column(
             modifier = Modifier
@@ -62,10 +75,6 @@ fun PlayerScreen(
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val playerState by chapterPlayerViewModel.playerState.collectAsState()
-            val isLoading by chapterPlayerViewModel.isLoading.collectAsState()
-            val sliderPosition by chapterPlayerViewModel.sliderPosition.collectAsState()
-
             BackHandler(
                 onBack = {
                     chapterPlayerViewModel.onAction(ChapterPlayerActions.Pause)
@@ -73,21 +82,6 @@ fun PlayerScreen(
                     onNavigateToBack()
                 },
             )
-
-            AppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        bottom = 32.dp,
-                        top = 16.dp,
-                    ),
-                onNavigateToBack = {
-                    chapterPlayerViewModel.onAction(ChapterPlayerActions.Pause)
-                    viewModel.destroy(sliderPosition)
-                    onNavigateToBack()
-                },
-            )
-
 
             if (viewModel.currentChapter == null || viewModel.timeState == -1L) {
                 CircularProgressIndicator()
