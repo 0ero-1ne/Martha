@@ -77,7 +77,7 @@ fun CatalogScreen(
                     state = filterMenuState,
                 )
             }
-            
+
             CustomSearchBar(
                 onSearch = viewModel::search,
                 query = query,
