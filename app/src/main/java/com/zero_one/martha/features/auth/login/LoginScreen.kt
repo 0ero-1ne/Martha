@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,11 +29,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import com.zero_one.martha.R
 import com.zero_one.martha.ui.components.CustomTopBar
 import com.zero_one.martha.ui.forms.login.LoginForm
 import com.zero_one.martha.ui.forms.login.rememberLoginFormState
@@ -104,6 +110,33 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f),
+                )
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(
+                            if (isSystemInDarkTheme())
+                                R.drawable.app_logo_light
+                            else R.drawable.app_logo_dark,
+                        )
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "App logo icon",
+                    contentScale = ContentScale.FillHeight,
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(150.dp),
+                )
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f),
+                )
+                Text(
+                    text = "Login",
+                    style = MaterialTheme.typography.displayLarge,
+                )
                 Spacer(
                     modifier = Modifier
                         .weight(1f),
