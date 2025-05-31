@@ -93,6 +93,9 @@ fun NavGraphBuilder.mainNavigationGraph(
                 onNavigateToLoginPage = {
                     rootNavController.navigate(LoginRoute)
                 },
+                onNavigateToBook = {bookId ->
+                    navController.navigate(BookRoute(bookId))
+                },
             )
         }
         composable<BookRoute>(

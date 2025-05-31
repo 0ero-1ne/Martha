@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +36,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.zero_one.martha.data.domain.model.User
@@ -47,7 +51,8 @@ fun BookmarksScreen(
     viewModel: BookmarksViewModel,
     onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit,
     onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
-    onNavigateToLoginPage: () -> Unit
+    onNavigateToLoginPage: () -> Unit,
+    onNavigateToBook: (bookId: UInt) -> Unit,
 ) {
     var showBottomSheet by remember {mutableStateOf(false)}
     Scaffold(
@@ -178,6 +183,7 @@ fun BookmarksScreen(
                         .fillMaxSize(),
                     pageSpacing = 5.dp,
                 ) {page ->
+                    val columns by remember {mutableIntStateOf(3)}
                     Column(
                         modifier = Modifier
                             .fillMaxSize(),
@@ -202,16 +208,26 @@ fun BookmarksScreen(
                             return@HorizontalPager
                         }
 
-                        bookmarks.value!![folderString]!!.forEach {savedBook ->
-                            val book = books.value.firstOrNull {it.id == savedBook.bookId}
-                            SavedBookItem(
-                                book = book,
-                                savedBook = savedBook,
-                                onNavigateToReader = onNavigateToReader,
-                                onNavigateToPlayer = onNavigateToPlayer,
-                                onBookClick = {},
-                                onDeleteBookmark = viewModel::onDeleteBookmark,
-                            )
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(columns),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            items(bookmarks.value!![folderString]!!) {savedBook ->
+                                val book = books.value.firstOrNull {it.id == savedBook.bookId}
+                                SavedBookItem(
+                                    book = book,
+                                    savedBook = savedBook,
+                                    size = getBookSize(columns),
+                                    onNavigateToReader = onNavigateToReader,
+                                    onNavigateToPlayer = onNavigateToPlayer,
+                                    onBookClick = {
+                                        onNavigateToBook(book!!.id)
+                                    },
+                                    onDeleteBookmark = viewModel::onDeleteBookmark,
+                                )
+                            }
                         }
                     }
                 }
@@ -234,5 +250,14 @@ fun BookmarksScreen(
                 }
             }
         }
+    }
+}
+
+private fun getBookSize(columns: Int): Dp {
+    return when (columns) {
+        2 -> 250.dp
+        3 -> 190.dp
+        4 -> 150.dp
+        else -> 180.dp
     }
 }

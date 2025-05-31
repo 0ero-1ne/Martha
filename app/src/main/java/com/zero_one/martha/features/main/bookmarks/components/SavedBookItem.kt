@@ -1,26 +1,23 @@
 package com.zero_one.martha.features.main.bookmarks.components
 
-import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,10 +29,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
@@ -49,41 +46,45 @@ import com.zero_one.martha.data.domain.model.SavedBook
 fun SavedBookItem(
     book: Book?,
     savedBook: SavedBook,
+    size: Dp,
     onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit,
     onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
     onBookClick: (UInt) -> Unit,
     onDeleteBookmark: (SavedBook) -> Unit
 ) {
-    Box {
+    Box(
+        modifier = Modifier
+            .wrapContentSize(),
+    ) {
         Box(
             modifier = Modifier
-                .zIndex(1f)
                 .padding(
-                    top = 80.dp,
-                    start = 10.dp,
-                ),
-            contentAlignment = Alignment.TopEnd,
-        ) {
-            IconButton(
-                onClick = {
-                    onDeleteBookmark(savedBook)
-                },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Remove bookmark",
-                    tint = Color.White,
+                    top = 3.dp,
+                    end = 3.dp,
                 )
-            }
+                .zIndex(2f)
+                .background(MaterialTheme.colorScheme.background, CircleShape)
+                .align(Alignment.TopEnd),
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Close,
+                contentDescription = "Remove bookmark",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(3.dp)
+                    .align(Alignment.TopEnd)
+                    .clickable {
+                        onDeleteBookmark(savedBook)
+                    }
+                    .size(15.dp),
+            )
         }
-        Row(
+        Column(
             modifier = Modifier
                 .padding(
                     bottom = 16.dp,
                 )
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             if (book == null) {
                 CircularProgressIndicator()
@@ -92,8 +93,6 @@ fun SavedBookItem(
 
             val dialogState = remember {mutableStateOf(false)}
 
-            Log.d("Saved book read", savedBook.readerChapter.toString())
-            Log.d("Saved book audio", savedBook.audioChapter.toString())
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(book.cover)
@@ -103,79 +102,20 @@ fun SavedBookItem(
                 contentScale = ContentScale.Crop,
                 error = painterResource(R.drawable.ic_no_cover),
                 modifier = Modifier
-                    .height(100.dp)
-                    .width(70.dp)
+                    .height(size)
+                    .padding(
+                        bottom = 5.dp,
+                    )
                     .clip(RoundedCornerShape(5.dp))
                     .clickable {
                         onBookClick(book.id)
                     },
             )
-
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        text = book.title,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Log.d("Reader state", savedBook.page.toString())
-                    Button(
-                        onClick = {
-                            if (book.chapters.isEmpty()) {
-                                dialogState.value = true
-                                return@Button
-                            }
-                            onNavigateToReader(savedBook.bookId, savedBook.readerChapter)
-                        },
-                        modifier = Modifier
-                            .padding(end = 5.dp),
-                    ) {
-                        if (book.id == 0u) {
-                            CircularProgressIndicator()
-                        } else {
-                            Icon(
-                                imageVector = Icons.Default.Book,
-                                contentDescription = "Continue read book",
-                            )
-                            if (savedBook.readerChapter == 0u) {
-                                Text("Start")
-                            } else {
-                                Text("Continue ${savedBook.readerChapter}")
-                            }
-                        }
-                    }
-
-                    Log.d("Audio state", savedBook.audio.toString())
-                    Button(
-                        onClick = {
-                            if (book.chapters.isEmpty()) {
-                                dialogState.value = true
-                                return@Button
-                            }
-                            onNavigateToPlayer(savedBook.bookId, savedBook.audioChapter)
-                        },
-                    ) {
-                        if (book.id == 0u) {
-                            CircularProgressIndicator()
-                        } else {
-                            Icon(
-                                imageVector = Icons.Default.Headphones,
-                                contentDescription = "Continue listen to book",
-                            )
-                            if (savedBook.audioChapter == 0u) {
-                                Text("Start")
-                            } else {
-                                Text("Continue ${savedBook.audioChapter}")
-                            }
-                        }
-                    }
-                }
-            }
+            Text(
+                text = book.title,
+                maxLines = 2,
+                style = MaterialTheme.typography.bodyMedium,
+            )
 
             if (dialogState.value) {
                 DialogIfBookHasNoChapters(
