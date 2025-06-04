@@ -1,6 +1,7 @@
 package com.zero_one.martha.data.source.network.api
 
 import com.zero_one.martha.data.source.network.models.Book
+import com.zero_one.martha.data.source.network.models.BookRate
 import com.zero_one.martha.data.source.network.models.Chapter
 import com.zero_one.martha.data.source.network.models.Comment
 import com.zero_one.martha.data.source.network.models.CommentRate
@@ -44,6 +45,11 @@ interface NetworkAPI {
     suspend fun createCommentRate(commentRate: CommentRate): Response<CommentRate>
     suspend fun updateCommentRate(commentRate: CommentRate): Response<CommentRate>
     suspend fun deleteCommentRate(commentId: UInt, userId: UInt): Response<String>
+
+    // Book Rate
+    suspend fun createBookRate(bookRate: BookRate): Response<BookRate>
+    suspend fun updateBookRate(bookRate: BookRate): Response<BookRate>
+    suspend fun deleteBookRate(bookId: UInt, userId: UInt): Response<Boolean>
 
     // Tag
     suspend fun getTags(): Response<List<Tag>>

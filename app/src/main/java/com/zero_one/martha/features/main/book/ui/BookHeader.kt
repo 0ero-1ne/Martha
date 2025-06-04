@@ -15,13 +15,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -40,7 +44,9 @@ import com.zero_one.martha.data.domain.model.SavedBook
 fun BookHeader(
     book: Book,
     folderName: String,
-    onOpenBottomSheet: () -> Unit,
+    userRating: Int,
+    onOpenBookmarksModal: () -> Unit,
+    onOpenRatingModal: () -> Unit,
     isAuth: () -> Boolean,
     onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit,
     onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
@@ -93,26 +99,38 @@ fun BookHeader(
                         )
                     }
                 }
-                OutlinedButton(
-                    enabled = isAuth(),
-                    onClick = onOpenBottomSheet,
-                    shape = RoundedCornerShape(10.dp),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                    modifier = Modifier.padding(
-                        top = 16.dp,
-                    ),
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    val text = if (!isAuth()) "Not auth" else folderName
-                    Icon(
-                        imageVector = Icons.Default.Bookmark,
-                        contentDescription = "Bookmark icon",
-                        modifier = Modifier
-                            .padding(end = 5.dp),
-                    )
-                    Text(
-                        text = text.ifEmpty {"Save in ..."},
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
+                    OutlinedButton(
+                        enabled = isAuth(),
+                        onClick = onOpenBookmarksModal,
+                        shape = RoundedCornerShape(10.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(
+                            imageVector = if (folderName == "") Icons.Default.BookmarkBorder
+                            else Icons.Default.Bookmark,
+                            contentDescription = "Bookmark icon",
+                        )
+                    }
+                    OutlinedButton(
+                        onClick = onOpenRatingModal,
+                        shape = RoundedCornerShape(10.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(
+                            imageVector = if (userRating == 0) Icons.Default.StarBorder
+                            else Icons.Default.Star,
+                            contentDescription = "Bookmark icon",
+                        )
+                    }
                 }
             }
         }

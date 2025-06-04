@@ -34,6 +34,7 @@ import com.zero_one.martha.features.main.book.tabs.ChaptersTab
 import com.zero_one.martha.features.main.book.tabs.CommentsTab
 import com.zero_one.martha.features.main.book.ui.BookHeader
 import com.zero_one.martha.features.main.book.ui.BottomSheetBookmarks
+import com.zero_one.martha.features.main.book.ui.BottomSheetRating
 import com.zero_one.martha.ui.components.CustomTabRow
 import com.zero_one.martha.ui.components.CustomTopBar
 
@@ -96,13 +97,19 @@ fun BookScreen(
                 viewModel.bookmarkFolderName = folderName
             }
 
-            var showBottomSheet by remember {mutableStateOf(false)}
+            var showBookmarksModal by remember {mutableStateOf(false)}
+            var showRatingModal by remember {mutableStateOf(false)}
+            val userBookRate = viewModel.userBookRate.collectAsState()
 
             BookHeader(
                 book = viewModel.book!!,
                 folderName = viewModel.bookmarkFolderName,
-                onOpenBottomSheet = {
-                    showBottomSheet = true
+                userRating = userBookRate.value.rating,
+                onOpenBookmarksModal = {
+                    showBookmarksModal = true
+                },
+                onOpenRatingModal = {
+                    showRatingModal = true
                 },
                 isAuth = viewModel::isAuth,
                 onNavigateToReader = onNavigateToReader,
@@ -169,16 +176,28 @@ fun BookScreen(
                 }
             }
 
-            if (showBottomSheet) {
+            if (showBookmarksModal) {
                 BottomSheetBookmarks(
                     onDismiss = {
-                        showBottomSheet = false
+                        showBookmarksModal = false
                     },
                     bookmarks = user.value.savedBooks.keys,
                     onSaveBookInBookmarks = viewModel::saveBookInBookmarks,
                     onRemoveBookFromBookmarks = viewModel::onRemoveBookFromBookmarks,
                     onReplaceBookmark = viewModel::onReplaceBookmark,
                     currentFolderName = viewModel.bookmarkFolderName,
+                )
+            }
+
+            if (showRatingModal) {
+                BottomSheetRating(
+                    bookId = viewModel.book!!.id,
+                    onDismiss = {
+                        showRatingModal = false
+                    },
+                    bookRate = userBookRate.value,
+                    onRateBook = viewModel::onRateBook,
+                    isAuth = viewModel::isAuth,
                 )
             }
         }

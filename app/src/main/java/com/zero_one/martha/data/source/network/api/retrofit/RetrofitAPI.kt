@@ -2,6 +2,7 @@ package com.zero_one.martha.data.source.network.api.retrofit
 
 import com.zero_one.martha.data.source.network.api.NetworkAPI
 import com.zero_one.martha.data.source.network.models.Book
+import com.zero_one.martha.data.source.network.models.BookRate
 import com.zero_one.martha.data.source.network.models.Chapter
 import com.zero_one.martha.data.source.network.models.Comment
 import com.zero_one.martha.data.source.network.models.CommentRate
@@ -41,7 +42,7 @@ interface RetrofitAPI: NetworkAPI {
     @GET(value = "books")
     override suspend fun getBooks(): Response<List<Book>>
 
-    @GET(value = "books/{id}?withTags=true&withAuthors=true&withComments=true")
+    @GET(value = "books/{id}?withTags=true&withAuthors=true&withComments=true&withBookRates=true")
     override suspend fun getBookById(@Path("id") id: UInt): Response<Book>
 
     @GET(value = "books/{id}?withChapters=true")
@@ -88,6 +89,19 @@ interface RetrofitAPI: NetworkAPI {
         @Path("commentId") commentId: UInt,
         @Path("userId") userId: UInt
     ): Response<String>
+
+    // Book Rate
+    @POST(value = "book_rates")
+    override suspend fun createBookRate(@Body bookRate: BookRate): Response<BookRate>
+
+    @PUT(value = "book_rates")
+    override suspend fun updateBookRate(@Body bookRate: BookRate): Response<BookRate>
+
+    @DELETE(value = "book_rates/{bookId}/{userId}")
+    override suspend fun deleteBookRate(
+        @Path("bookId") bookId: UInt,
+        @Path("userId") userId: UInt
+    ): Response<Boolean>
 
     // Tag
     @GET(value = "tags")

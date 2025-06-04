@@ -2,6 +2,7 @@ package com.zero_one.martha.data.source.network.repository
 
 import android.util.Log
 import com.zero_one.martha.data.domain.model.Book
+import com.zero_one.martha.data.domain.model.BookRate
 import com.zero_one.martha.data.domain.model.Chapter
 import com.zero_one.martha.data.domain.model.Filters
 import com.zero_one.martha.data.domain.repository.BookRepository
@@ -94,6 +95,7 @@ class BookRepositoryImpl @Inject constructor(
             authors = networkBook.authors?.map {networkAuthorToAuthor(it)} ?: emptyList(),
             comments = networkBook.comments?.map {networkCommentToComment(it)} ?: emptyList(),
             chapters = networkBook.chapters?.map {networkChapterToChapter(it)} ?: emptyList(),
+            rates = networkBook.rates?.map {networkToBookRate(it)} ?: emptyList(),
         )
     }
 
@@ -129,6 +131,14 @@ class BookRepositoryImpl @Inject constructor(
             text = chapter.text,
             audio = chapter.audio,
             bookId = chapter.bookId,
+        )
+    }
+
+    private fun networkToBookRate(bookRate: com.zero_one.martha.data.source.network.models.BookRate): BookRate {
+        return BookRate(
+            userId = bookRate.userId,
+            bookId = bookRate.bookId,
+            rating = bookRate.rating,
         )
     }
 }

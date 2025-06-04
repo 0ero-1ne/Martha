@@ -8,10 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.zero_one.martha.data.domain.model.Book
+import com.zero_one.martha.data.domain.model.BookRate
 import com.zero_one.martha.data.domain.model.Chapter
 import com.zero_one.martha.data.domain.model.Comment
 import com.zero_one.martha.data.domain.model.CommentRate
 import com.zero_one.martha.data.domain.model.SavedBook
+import com.zero_one.martha.data.domain.repository.BookRateRepository
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.domain.repository.ChapterRepository
 import com.zero_one.martha.data.domain.repository.CommentRateRepository
@@ -20,7 +22,11 @@ import com.zero_one.martha.data.domain.repository.UserRepository
 import com.zero_one.martha.data.source.datastore.user.UserManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -34,7 +40,8 @@ class BookViewModel @Inject constructor(
     private val commentRepository: CommentRepository,
     private val userRepository: UserRepository,
     private val userManager: UserManager,
-    private val commentRateRepository: CommentRateRepository
+    private val commentRateRepository: CommentRateRepository,
+    private val bookRateRepository: BookRateRepository,
 ): ViewModel() {
     var user = userManager.getUserFlow()
     var book: Book? by mutableStateOf(null)
@@ -43,6 +50,9 @@ class BookViewModel @Inject constructor(
     var comments: List<Comment>? by mutableStateOf(null)
     var bookmarkFolderName by mutableStateOf("")
     private var savedBook by mutableStateOf(SavedBook())
+
+    private val _userBookRate = MutableStateFlow(BookRate())
+    val userBookRate = _userBookRate.asStateFlow()
 
     private val commentValidationEventChannel = Channel<CommentValidationEvent>()
     val commentValidationEvents = commentValidationEventChannel.receiveAsFlow()
@@ -66,6 +76,12 @@ class BookViewModel @Inject constructor(
                         savedBook = it
                     }
                 }
+            }
+            _userBookRate.update {
+                book!!.rates.firstOrNull {
+                    it.bookId == book!!.id &&
+                        it.userId == user.first().id
+                } ?: BookRate()
             }
         }
     }
@@ -254,6 +270,78 @@ class BookViewModel @Inject constructor(
                 return@launch
             }
             commentValidationEventChannel.send(CommentValidationEvent.Error)
+        }
+    }
+
+    fun onRateBook(bookId: UInt, rating: Int) {
+        viewModelScope.launch {
+            val user = userManager.getUser()
+
+            val bookRate = book!!.rates.firstOrNull {it.bookId == bookId && it.userId == user.id}
+
+            if (bookRate != null) {
+                if (rating == 0) {
+                    onDeleteBookRate(bookRate)
+                } else {
+                    onUpdateBookRate(
+                        bookRate.copy(
+                            rating = rating,
+                        ),
+                    )
+                }
+            } else onCreateBookRate(
+                BookRate(
+                    bookId = bookId,
+                    userId = user.id,
+                    rating = rating,
+                ),
+            )
+        }
+    }
+
+    private fun onCreateBookRate(bookRate: BookRate) {
+        viewModelScope.launch {
+            val createdBookRate = bookRateRepository.createBookRate(bookRate)
+            if (createdBookRate.bookId != 0u) {
+                val newRates = book!!.rates.toMutableList()
+                newRates.add(createdBookRate)
+                book = book!!.copy(
+                    rates = newRates,
+                )
+                _userBookRate.update {createdBookRate}
+            }
+        }
+    }
+
+    private fun onUpdateBookRate(bookRate: BookRate) {
+        viewModelScope.launch {
+            val updatedBookRate = bookRateRepository.updateBookRate(bookRate)
+            if (updatedBookRate.rating != 0) {
+                val newRates = book!!.rates.toMutableList()
+                newRates.removeIf {
+                    it.bookId == updatedBookRate.bookId &&
+                        it.userId == updatedBookRate.userId
+                }
+                newRates.add(updatedBookRate)
+                book = book!!.copy(
+                    rates = newRates,
+                )
+                _userBookRate.update {updatedBookRate}
+            }
+        }
+    }
+
+    private fun onDeleteBookRate(bookRate: BookRate) {
+        viewModelScope.launch {
+            val deletedBookRate = bookRateRepository.deleteBookRate(bookRate)
+            if (deletedBookRate) {
+                val newRates = book!!.rates.toMutableList()
+                newRates.removeIf {it.bookId == bookRate.bookId && it.userId == bookRate.userId}
+                book = book!!.copy(
+                    rates = newRates,
+                )
+                _userBookRate.update {BookRate()}
+            }
         }
     }
 

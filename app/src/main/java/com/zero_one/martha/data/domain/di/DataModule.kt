@@ -1,6 +1,7 @@
 package com.zero_one.martha.data.domain.di
 
 import com.zero_one.martha.data.domain.repository.AuthRepository
+import com.zero_one.martha.data.domain.repository.BookRateRepository
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.domain.repository.ChapterRepository
 import com.zero_one.martha.data.domain.repository.CommentRateRepository
@@ -8,6 +9,7 @@ import com.zero_one.martha.data.domain.repository.CommentRepository
 import com.zero_one.martha.data.domain.repository.TagRepository
 import com.zero_one.martha.data.domain.repository.UserRepository
 import com.zero_one.martha.data.source.network.repository.AuthRepositoryImpl
+import com.zero_one.martha.data.source.network.repository.BookRateRepositoryImpl
 import com.zero_one.martha.data.source.network.repository.BookRepositoryImpl
 import com.zero_one.martha.data.source.network.repository.ChapterRepositoryImpl
 import com.zero_one.martha.data.source.network.repository.CommentRateRepositoryImpl
@@ -57,4 +59,9 @@ abstract class DataModule {
     abstract fun bindCommentRateRepository(
         commentRateRepository: CommentRateRepositoryImpl
     ): CommentRateRepository
+
+    @Binds
+    abstract fun bindBookRateRepository(
+        bookRateRepository: BookRateRepositoryImpl
+    ): BookRateRepository
 }
