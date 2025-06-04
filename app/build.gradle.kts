@@ -66,6 +66,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.datetime)
 
+    // Expandable text
+    implementation(libs.expandabletext)
+
     // coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)

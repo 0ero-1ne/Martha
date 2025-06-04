@@ -1,5 +1,6 @@
 package com.zero_one.martha.features.main.book
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -10,7 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,8 +24,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.data.domain.model.SavedBook
 import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.features.main.book.tabs.AboutTab
 import com.zero_one.martha.features.main.book.tabs.ChaptersTab
@@ -100,19 +105,33 @@ fun BookScreen(
                     showBottomSheet = true
                 },
                 isAuth = viewModel::isAuth,
+                onNavigateToReader = onNavigateToReader,
+                onNavigateToPlayer = onNavigateToPlayer,
+                savedBook = user.value.savedBooks[viewModel.bookmarkFolderName]?.firstOrNull {
+                    it.bookId == viewModel.book!!.id
+                } ?: SavedBook(),
+                chapters = viewModel.chapters ?: emptyList(),
             )
 
             CustomTabRow(
                 pagerState = pagerState,
                 tabs = tabs.toSet(),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.primary,
+                        RoundedCornerShape(10.dp),
+                    ),
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             HorizontalPager(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 state = pagerState,
+                pageSpacing = 16.dp,
             ) {page ->
                 Column(
                     modifier = Modifier
@@ -140,6 +159,7 @@ fun BookScreen(
                             onSaveComment = viewModel::saveComment,
                             onUpdateComment = viewModel::updateComment,
                             onDeleteComment = viewModel::deleteComment,
+                            onRateComment = viewModel::onRateComment,
                             commentEvents = viewModel.commentValidationEvents,
                             isAuth = viewModel::isAuth,
                             userId = user.value.id,

@@ -47,8 +47,6 @@ fun SavedBookItem(
     book: Book?,
     savedBook: SavedBook,
     size: Dp,
-    onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit,
-    onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
     onBookClick: (UInt) -> Unit,
     onDeleteBookmark: (SavedBook) -> Unit
 ) {

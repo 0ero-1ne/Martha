@@ -3,6 +3,7 @@ package com.zero_one.martha.data.source.network.api
 import com.zero_one.martha.data.source.network.models.Book
 import com.zero_one.martha.data.source.network.models.Chapter
 import com.zero_one.martha.data.source.network.models.Comment
+import com.zero_one.martha.data.source.network.models.CommentRate
 import com.zero_one.martha.data.source.network.models.Tag
 import com.zero_one.martha.data.source.network.models.User
 import com.zero_one.martha.data.source.network.models.auth.AuthTokens
@@ -38,6 +39,11 @@ interface NetworkAPI {
     suspend fun saveComment(comment: Comment): Response<Comment>
     suspend fun updateComment(comment: Comment, id: UInt): Response<Comment>
     suspend fun deleteComment(commentId: UInt): Response<String>
+
+    // Comment Rate
+    suspend fun createCommentRate(commentRate: CommentRate): Response<CommentRate>
+    suspend fun updateCommentRate(commentRate: CommentRate): Response<CommentRate>
+    suspend fun deleteCommentRate(commentId: UInt, userId: UInt): Response<String>
 
     // Tag
     suspend fun getTags(): Response<List<Tag>>

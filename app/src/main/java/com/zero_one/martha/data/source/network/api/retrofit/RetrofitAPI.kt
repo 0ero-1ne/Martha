@@ -4,6 +4,7 @@ import com.zero_one.martha.data.source.network.api.NetworkAPI
 import com.zero_one.martha.data.source.network.models.Book
 import com.zero_one.martha.data.source.network.models.Chapter
 import com.zero_one.martha.data.source.network.models.Comment
+import com.zero_one.martha.data.source.network.models.CommentRate
 import com.zero_one.martha.data.source.network.models.Tag
 import com.zero_one.martha.data.source.network.models.User
 import com.zero_one.martha.data.source.network.models.auth.AuthTokens
@@ -74,6 +75,19 @@ interface RetrofitAPI: NetworkAPI {
 
     @DELETE(value = "comments/{id}")
     override suspend fun deleteComment(@Path("id") commentId: UInt): Response<String>
+
+    // Comment Rate
+    @POST(value = "comment_rates")
+    override suspend fun createCommentRate(@Body commentRate: CommentRate): Response<CommentRate>
+
+    @PUT(value = "comment_rates")
+    override suspend fun updateCommentRate(@Body commentRate: CommentRate): Response<CommentRate>
+
+    @DELETE(value = "comment_rates/{commentId}/{userId}")
+    override suspend fun deleteCommentRate(
+        @Path("commentId") commentId: UInt,
+        @Path("userId") userId: UInt
+    ): Response<String>
 
     // Tag
     @GET(value = "tags")

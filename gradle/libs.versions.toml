@@ -1,6 +1,7 @@
 [versions]
-agp = "8.9.2"
+agp = "8.9.3"
 coilCompose = "3.1.0"
+expandabletext = "0.4.0"
 kotlin = "2.1.20"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -11,14 +12,14 @@ kotlinxDatetime = "0.3.2"
 lifecycleRuntimeKtx = "2.9.0"
 lifecycleRuntimeCompose = "2.9.0"
 activityCompose = "1.10.1"
-composeBom = "2025.05.00"
-media3ExoplayerDash = "1.6.1"
+composeBom = "2025.05.01"
+media3ExoplayerDash = "1.7.1"
 navigationCompose = "2.9.0"
 kotlinxSerializationJson = "1.8.0"
 lifecycleViewmodelCompose = "2.9.0"
 ksp = "2.1.20-1.0.31"
 icons = "1.7.8"
-datastore = "1.1.6"
+datastore = "1.1.7"
 
 # hilt
 hiltAndroid = "2.51.1"
@@ -39,6 +40,7 @@ androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-da
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3ExoplayerDash" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+expandabletext = { module = "io.github.dokar3:expandabletext", version.ref = "expandabletext" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

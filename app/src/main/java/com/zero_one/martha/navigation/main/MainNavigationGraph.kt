@@ -35,7 +35,7 @@ fun NavGraphBuilder.mainNavigationGraph(
     rootNavController: NavController
 ) {
     navigation<MainNavigationGraph>(
-        startDestination = HomeRoute,
+        startDestination = BookRoute(1u),
     ) {
         composable<HomeRoute> {
             HomeScreen(
@@ -74,22 +74,6 @@ fun NavGraphBuilder.mainNavigationGraph(
 
             BookmarksScreen(
                 viewModel = viewModel,
-                onNavigateToReader = {bookId, chapterId ->
-                    rootNavController.navigate(
-                        ReaderRoute(
-                            bookId = bookId,
-                            chapterId = chapterId,
-                        ),
-                    )
-                },
-                onNavigateToPlayer = {bookId, chapterId ->
-                    rootNavController.navigate(
-                        PlayerRoute(
-                            bookId = bookId,
-                            chapterId = chapterId,
-                        ),
-                    )
-                },
                 onNavigateToLoginPage = {
                     rootNavController.navigate(LoginRoute)
                 },

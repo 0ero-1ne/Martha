@@ -10,9 +10,11 @@ import androidx.navigation.toRoute
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.Chapter
 import com.zero_one.martha.data.domain.model.Comment
+import com.zero_one.martha.data.domain.model.CommentRate
 import com.zero_one.martha.data.domain.model.SavedBook
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.domain.repository.ChapterRepository
+import com.zero_one.martha.data.domain.repository.CommentRateRepository
 import com.zero_one.martha.data.domain.repository.CommentRepository
 import com.zero_one.martha.data.domain.repository.UserRepository
 import com.zero_one.martha.data.source.datastore.user.UserManager
@@ -31,7 +33,8 @@ class BookViewModel @Inject constructor(
     private val chapterRepository: ChapterRepository,
     private val commentRepository: CommentRepository,
     private val userRepository: UserRepository,
-    private val userManager: UserManager
+    private val userManager: UserManager,
+    private val commentRateRepository: CommentRateRepository
 ): ViewModel() {
     var user = userManager.getUserFlow()
     var book: Book? by mutableStateOf(null)
@@ -39,6 +42,7 @@ class BookViewModel @Inject constructor(
     var chaptersSortType: Boolean by mutableStateOf(true)
     var comments: List<Comment>? by mutableStateOf(null)
     var bookmarkFolderName by mutableStateOf("")
+    private var savedBook by mutableStateOf(SavedBook())
 
     private val commentValidationEventChannel = Channel<CommentValidationEvent>()
     val commentValidationEvents = commentValidationEventChannel.receiveAsFlow()
@@ -59,6 +63,7 @@ class BookViewModel @Inject constructor(
                 value.forEach {
                     if (it.bookId == book!!.id) {
                         bookmarkFolderName = key
+                        savedBook = it
                     }
                 }
             }
@@ -130,6 +135,117 @@ class BookViewModel @Inject constructor(
                     if (value.id == updateCommentResult.id) {
                         mutable[index] = value.copy(
                             text = updateCommentResult.text,
+                        )
+                    }
+                }
+                comments = mutable.toList()
+                commentValidationEventChannel.send(CommentValidationEvent.Success)
+                return@launch
+            }
+            commentValidationEventChannel.send(CommentValidationEvent.Error)
+        }
+    }
+
+    fun onRateComment(commentId: UInt, rating: Boolean?) {
+        viewModelScope.launch {
+            val user = userManager.getUser()
+
+            val comment = comments!!.find {
+                it.id == commentId
+            }
+
+            val commentRate =
+                comment!!.rates.firstOrNull {it.commentId == commentId && it.userId == user.id}
+
+            if (commentRate != null) {
+                if (rating == null) {
+                    deleteCommentRate(commentRate)
+                } else {
+                    val newCommentRate = commentRate.copy(
+                        rating = rating,
+                    )
+                    updateCommentRate(newCommentRate)
+                }
+            } else {
+                createCommentRate(
+                    CommentRate(
+                        commentId = commentId,
+                        userId = user.id,
+                        rating = rating!!,
+                    ),
+                )
+            }
+        }
+    }
+
+    private fun createCommentRate(commentRate: CommentRate) {
+        viewModelScope.launch {
+            val comment = comments!!.find {
+                it.id == commentRate.commentId
+            }
+            val rates = comment!!.rates.toMutableList()
+
+            val createResult = commentRateRepository.createCommentRate(commentRate)
+            if (createResult.commentId != 0u) {
+                val mutable = comments!!.toMutableList()
+                mutable.forEachIndexed {index, value ->
+                    if (value.id == createResult.commentId) {
+                        rates.add(createResult)
+                        mutable[index] = value.copy(
+                            rates = rates,
+                        )
+                    }
+                }
+                comments = mutable.toList()
+                commentValidationEventChannel.send(CommentValidationEvent.Success)
+                return@launch
+            }
+            commentValidationEventChannel.send(CommentValidationEvent.Error)
+        }
+    }
+
+    private fun updateCommentRate(commentRate: CommentRate) {
+        viewModelScope.launch {
+            val comment = comments!!.find {
+                it.id == commentRate.commentId
+            }
+            val rates = comment!!.rates.toMutableList()
+
+            val createResult = commentRateRepository.updateCommentRate(commentRate)
+            if (createResult.commentId != 0u) {
+                val mutable = comments!!.toMutableList()
+                mutable.forEachIndexed {index, value ->
+                    if (value.id == createResult.commentId) {
+                        rates.removeIf {it.userId == commentRate.userId}
+                        rates.add(createResult)
+                        mutable[index] = value.copy(
+                            rates = rates,
+                        )
+                    }
+                }
+                comments = mutable.toList()
+                commentValidationEventChannel.send(CommentValidationEvent.Success)
+                return@launch
+            }
+            commentValidationEventChannel.send(CommentValidationEvent.Error)
+        }
+    }
+
+    private fun deleteCommentRate(commentRate: CommentRate) {
+        viewModelScope.launch {
+            val comment = comments!!.find {
+                it.id == commentRate.commentId
+            }
+            val rates = comment!!.rates.toMutableList()
+
+            val createResult = commentRateRepository.deleteCommentRate(commentRate)
+            if (createResult) {
+                val mutable = comments!!.toMutableList()
+                mutable.forEachIndexed {index, value ->
+                    if (value.id == comment.id) {
+                        rates.removeIf {it.userId == commentRate.userId}
+                        mutable[index] = value.copy(
+                            rates = rates,
                         )
                     }
                 }

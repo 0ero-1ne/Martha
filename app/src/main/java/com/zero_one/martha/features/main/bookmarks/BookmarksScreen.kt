@@ -49,8 +49,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun BookmarksScreen(
     viewModel: BookmarksViewModel,
-    onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit,
-    onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
     onNavigateToLoginPage: () -> Unit,
     onNavigateToBook: (bookId: UInt) -> Unit,
 ) {
@@ -220,8 +218,6 @@ fun BookmarksScreen(
                                     book = book,
                                     savedBook = savedBook,
                                     size = getBookSize(columns),
-                                    onNavigateToReader = onNavigateToReader,
-                                    onNavigateToPlayer = onNavigateToPlayer,
                                     onBookClick = {
                                         onNavigateToBook(book!!.id)
                                     },
