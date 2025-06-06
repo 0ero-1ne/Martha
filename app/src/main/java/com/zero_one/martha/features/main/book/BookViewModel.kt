@@ -178,58 +178,34 @@ class BookViewModel @Inject constructor(
 
             if (commentRate != null) {
                 if (rating == null) {
-                    deleteCommentRate(commentRate)
+                    val deleteResult = commentRateRepository.deleteCommentRate(commentRate)
+                    if (!deleteResult) {
+                        return@launch
+                    }
                 } else {
                     val newCommentRate = commentRate.copy(
                         rating = rating,
                     )
-                    updateCommentRate(newCommentRate)
+                    val updateResult = commentRateRepository.updateCommentRate(newCommentRate)
+                    if (updateResult.commentId == 0u) {
+                        return@launch
+                    }
                 }
             } else {
-                createCommentRate(
+                val createResult = commentRateRepository.createCommentRate(
                     CommentRate(
                         commentId = commentId,
                         userId = user.id,
                         rating = rating!!,
                     ),
                 )
+                if (createResult.commentId == 0u) {
+                    return@launch
+                }
             }
-        }
-    }
 
-    private fun createCommentRate(commentRate: CommentRate) {
-        viewModelScope.launch {
-            val createResult = commentRateRepository.createCommentRate(commentRate)
-            if (createResult.commentId != 0u) {
-                comments = commentRepository.getCommentsByBookId(book!!.id)
-                commentValidationEventChannel.send(CommentValidationEvent.Success)
-                return@launch
-            }
-            commentValidationEventChannel.send(CommentValidationEvent.Error)
-        }
-    }
-
-    private fun updateCommentRate(commentRate: CommentRate) {
-        viewModelScope.launch {
-            val createResult = commentRateRepository.updateCommentRate(commentRate)
-            if (createResult.commentId != 0u) {
-                comments = commentRepository.getCommentsByBookId(book!!.id)
-                commentValidationEventChannel.send(CommentValidationEvent.Success)
-                return@launch
-            }
-            commentValidationEventChannel.send(CommentValidationEvent.Error)
-        }
-    }
-
-    private fun deleteCommentRate(commentRate: CommentRate) {
-        viewModelScope.launch {
-            val createResult = commentRateRepository.deleteCommentRate(commentRate)
-            if (createResult) {
-                comments = commentRepository.getCommentsByBookId(book!!.id)
-                commentValidationEventChannel.send(CommentValidationEvent.Success)
-                return@launch
-            }
-            commentValidationEventChannel.send(CommentValidationEvent.Error)
+            comments = commentRepository.getCommentsByBookId(book!!.id)
+            return@launch
         }
     }
 
@@ -382,6 +358,9 @@ class BookViewModel @Inject constructor(
     }
 
     private fun recursiveSearchComment(id: UInt, comments: List<Comment>): Comment {
+        if (comments.any {it.id == id}) {
+            return comments.first {it.id == id}
+        }
         comments.forEach {comment ->
             if (comment.replies.isNotEmpty()) {
                 return comment.replies.firstOrNull {it.id == id} ?: recursiveSearchComment(

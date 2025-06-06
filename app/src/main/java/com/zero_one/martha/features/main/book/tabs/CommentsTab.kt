@@ -1,5 +1,6 @@
 package com.zero_one.martha.features.main.book.tabs
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,12 +38,23 @@ fun CommentsTab(
     var editText by remember {mutableStateOf("")}
     var parentId by remember {mutableStateOf(0u)}
 
+    if (comments == null) {
+        CircularProgressIndicator()
+        return
+    }
+
+    if (comments.isEmpty()) {
+        Text("No comments...")
+        return
+    }
+
     TextButton(
         onClick = {
             editId = 0u
             editText = ""
             parentId = 0u
             showCommentForm = true
+            Log.d("Leave a comment", "Clicked")
         },
     ) {
         Text("Leave comment")
@@ -64,16 +76,6 @@ fun CommentsTab(
             onUpdateComment = onUpdateComment,
             isAuth = isAuth,
         )
-    }
-
-    if (comments == null) {
-        CircularProgressIndicator()
-        return
-    }
-
-    if (comments.isEmpty()) {
-        Text("No comments...")
-        return
     }
 
     val listState = rememberLazyListState()
