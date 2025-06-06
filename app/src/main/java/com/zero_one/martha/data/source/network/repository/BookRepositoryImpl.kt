@@ -4,11 +4,12 @@ import android.util.Log
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.BookRate
 import com.zero_one.martha.data.domain.model.Chapter
+import com.zero_one.martha.data.domain.model.CommentRate
 import com.zero_one.martha.data.domain.model.Filters
+import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.data.domain.repository.BookRepository
 import com.zero_one.martha.data.source.network.api.NetworkAPI
 import com.zero_one.martha.data.source.network.models.Author
-import com.zero_one.martha.data.source.network.models.Comment
 import com.zero_one.martha.data.source.network.models.Tag
 import javax.inject.Inject
 
@@ -115,11 +116,37 @@ class BookRepositoryImpl @Inject constructor(
         )
     }
 
-    private fun networkCommentToComment(networkComment: Comment): com.zero_one.martha.data.domain.model.Comment {
+    private fun networkCommentToComment(comment: com.zero_one.martha.data.source.network.models.Comment): com.zero_one.martha.data.domain.model.Comment {
         return com.zero_one.martha.data.domain.model.Comment(
-            id = networkComment.id,
-            text = networkComment.text,
-            userId = networkComment.userId,
+            id = comment.id,
+            parentId = comment.parentId,
+            bookId = comment.bookId,
+            userId = comment.userId,
+            text = comment.text,
+            rates = comment.rates?.map {networkCommentRateToCommentRate(it)} ?: listOf(),
+            replies = comment.replies?.map {
+                networkCommentToComment(it)
+            } ?: listOf(),
+            user = User(
+                id = comment.user.id,
+                username = comment.user.username,
+                email = comment.user.email,
+                image = comment.user.image,
+            ),
+        )
+    }
+
+    private fun networkCommentRateToCommentRate(commentRate: com.zero_one.martha.data.source.network.models.CommentRate): CommentRate {
+        return CommentRate(
+            commentId = commentRate.commentId,
+            userId = commentRate.userId,
+            rating = commentRate.rating,
+            user = User(
+                id = commentRate.user.id,
+                username = commentRate.user.username,
+                email = commentRate.user.email,
+                image = commentRate.user.image,
+            ),
         )
     }
 

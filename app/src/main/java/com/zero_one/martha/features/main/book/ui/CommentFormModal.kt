@@ -30,9 +30,10 @@ import kotlinx.coroutines.flow.Flow
 fun CommentFormModal(
     editId: UInt = 0u,
     editText: String = "",
+    parentId: UInt = 0u,
     commentEvents: Flow<BookViewModel.CommentValidationEvent>,
     onDismiss: () -> Unit,
-    onSaveComment: (String) -> Unit,
+    onSaveComment: (String, UInt) -> Unit,
     onUpdateComment: (UInt, String) -> Unit,
     isAuth: () -> Boolean
 ) {
@@ -99,7 +100,7 @@ fun CommentFormModal(
                             if (editId != 0u) {
                                 onUpdateComment(editId, commentFormState.comment.value.trim())
                             } else {
-                                onSaveComment(commentFormState.comment.value.trim())
+                                onSaveComment(commentFormState.comment.value.trim(), parentId)
                             }
                         }
                     }
@@ -110,7 +111,7 @@ fun CommentFormModal(
                     if (editId == 0u) "Save" else "Update"
                 } else "Not authorized"
                 Text(
-                    text = text,
+                    text = if (parentId == 0u) text else "Reply",
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }

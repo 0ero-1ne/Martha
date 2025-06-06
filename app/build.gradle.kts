@@ -24,12 +24,12 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "API_URL", "\"http://192.168.230.94:8080/api/\"")
-            buildConfigField("String", "STORAGE_URL", "\"http://192.168.230.94:8081/\"")
+            buildConfigField("String", "API_URL", "\"http://192.168.156.94:8080/api/\"")
+            buildConfigField("String", "STORAGE_URL", "\"http://192.168.156.94:8081/\"")
         }
         release {
-            buildConfigField("String", "API_URL", "\"http://192.168.164.94:8080/api/\"")
-            buildConfigField("String", "STORAGE_URL", "\"http://192.164.173.94:8081/\"")
+            buildConfigField("String", "API_URL", "\"http://192.168.156.94:8080/api/\"")
+            buildConfigField("String", "STORAGE_URL", "\"http://192.168.156.94:8081/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

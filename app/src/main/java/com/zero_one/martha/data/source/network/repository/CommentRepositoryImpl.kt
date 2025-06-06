@@ -75,10 +75,14 @@ class CommentRepositoryImpl @Inject constructor(
     private fun networkCommentToComment(comment: com.zero_one.martha.data.source.network.models.Comment): Comment {
         return Comment(
             id = comment.id,
+            parentId = comment.parentId,
             bookId = comment.bookId,
             userId = comment.userId,
             text = comment.text,
-            rates = comment.rates.map {networkCommentRateToCommentRate(it)},
+            rates = comment.rates?.map {networkCommentRateToCommentRate(it)} ?: listOf(),
+            replies = comment.replies?.map {
+                networkCommentToComment(it)
+            } ?: listOf(),
             user = User(
                 id = comment.user.id,
                 username = comment.user.username,
@@ -92,9 +96,13 @@ class CommentRepositoryImpl @Inject constructor(
         return com.zero_one.martha.data.source.network.models.Comment(
             id = comment.id,
             bookId = comment.bookId,
+            parentId = comment.parentId,
             userId = comment.userId,
             text = comment.text,
             rates = comment.rates.map {commentRateToNetwork(it)},
+            replies = comment.replies.map {
+                commentToNetworkComment(it)
+            },
             user = com.zero_one.martha.data.source.network.models.User(
                 id = comment.user.id,
                 username = comment.user.username,

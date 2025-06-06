@@ -90,7 +90,7 @@ class BookViewModel @Inject constructor(
         chaptersSortType = !chaptersSortType
     }
 
-    fun saveComment(text: String) {
+    fun saveComment(text: String, parentId: UInt = 0u) {
         viewModelScope.launch {
             val user = userRepository.getUser()
 
@@ -100,6 +100,7 @@ class BookViewModel @Inject constructor(
             }
 
             val comment = Comment(
+                parentId = parentId,
                 bookId = book!!.id,
                 userId = user!!.id,
                 text = text,
@@ -112,9 +113,13 @@ class BookViewModel @Inject constructor(
                 return@launch
             }
 
-            val mutable = comments!!.toMutableList()
-            mutable.add(0, result)
-            comments = mutable.toList()
+            if (result.parentId != 0u) {
+                comments = commentRepository.getCommentsByBookId(book!!.id)
+            } else {
+                val mutable = comments!!.toMutableList()
+                mutable.add(0, result)
+                comments = mutable.toList()
+            }
             commentValidationEventChannel.send(CommentValidationEvent.Success)
         }
     }
@@ -123,11 +128,7 @@ class BookViewModel @Inject constructor(
         viewModelScope.launch {
             val deleteResult = commentRepository.deleteComment(commentId)
             if (deleteResult) {
-                val mutable = comments!!.toMutableList()
-                mutable.removeIf {
-                    it.id == commentId
-                }
-                comments = mutable.toList()
+                comments = commentRepository.getCommentsByBookId(book!!.id)
                 commentValidationEventChannel.send(CommentValidationEvent.Success)
                 return@launch
             }
@@ -137,41 +138,43 @@ class BookViewModel @Inject constructor(
 
     fun updateComment(commentId: UInt, text: String) {
         viewModelScope.launch {
-            var comment = comments!!.find {
-                it.id == commentId
-            }
-            comment = comment!!.copy(
+            var comment = recursiveSearchComment(commentId, comments!!)
+
+            comment = comment.copy(
                 text = text,
             )
 
             val updateCommentResult = commentRepository.updateComment(comment)
-            if (updateCommentResult.id != 0u) {
-                val mutable = comments!!.toMutableList()
-                mutable.forEachIndexed {index, value ->
-                    if (value.id == updateCommentResult.id) {
-                        mutable[index] = value.copy(
-                            text = updateCommentResult.text,
-                        )
-                    }
-                }
-                comments = mutable.toList()
+            if (updateCommentResult.id == 0u) {
+                commentValidationEventChannel.send(CommentValidationEvent.Error)
+                return@launch
+            }
+
+            if (updateCommentResult.parentId != 0u) {
+                comments = commentRepository.getCommentsByBookId(book!!.id)
                 commentValidationEventChannel.send(CommentValidationEvent.Success)
                 return@launch
             }
-            commentValidationEventChannel.send(CommentValidationEvent.Error)
+            val mutable = comments!!.toMutableList()
+            mutable.forEachIndexed {index, value ->
+                if (value.id == updateCommentResult.id) {
+                    mutable[index] = value.copy(
+                        text = updateCommentResult.text,
+                    )
+                }
+            }
+            comments = mutable.toList()
+            commentValidationEventChannel.send(CommentValidationEvent.Success)
         }
     }
 
     fun onRateComment(commentId: UInt, rating: Boolean?) {
         viewModelScope.launch {
             val user = userManager.getUser()
-
-            val comment = comments!!.find {
-                it.id == commentId
-            }
+            val comment = recursiveSearchComment(commentId, comments!!)
 
             val commentRate =
-                comment!!.rates.firstOrNull {it.commentId == commentId && it.userId == user.id}
+                comment.rates.firstOrNull {it.commentId == commentId && it.userId == user.id}
 
             if (commentRate != null) {
                 if (rating == null) {
@@ -196,23 +199,9 @@ class BookViewModel @Inject constructor(
 
     private fun createCommentRate(commentRate: CommentRate) {
         viewModelScope.launch {
-            val comment = comments!!.find {
-                it.id == commentRate.commentId
-            }
-            val rates = comment!!.rates.toMutableList()
-
             val createResult = commentRateRepository.createCommentRate(commentRate)
             if (createResult.commentId != 0u) {
-                val mutable = comments!!.toMutableList()
-                mutable.forEachIndexed {index, value ->
-                    if (value.id == createResult.commentId) {
-                        rates.add(createResult)
-                        mutable[index] = value.copy(
-                            rates = rates,
-                        )
-                    }
-                }
-                comments = mutable.toList()
+                comments = commentRepository.getCommentsByBookId(book!!.id)
                 commentValidationEventChannel.send(CommentValidationEvent.Success)
                 return@launch
             }
@@ -222,24 +211,9 @@ class BookViewModel @Inject constructor(
 
     private fun updateCommentRate(commentRate: CommentRate) {
         viewModelScope.launch {
-            val comment = comments!!.find {
-                it.id == commentRate.commentId
-            }
-            val rates = comment!!.rates.toMutableList()
-
             val createResult = commentRateRepository.updateCommentRate(commentRate)
             if (createResult.commentId != 0u) {
-                val mutable = comments!!.toMutableList()
-                mutable.forEachIndexed {index, value ->
-                    if (value.id == createResult.commentId) {
-                        rates.removeIf {it.userId == commentRate.userId}
-                        rates.add(createResult)
-                        mutable[index] = value.copy(
-                            rates = rates,
-                        )
-                    }
-                }
-                comments = mutable.toList()
+                comments = commentRepository.getCommentsByBookId(book!!.id)
                 commentValidationEventChannel.send(CommentValidationEvent.Success)
                 return@launch
             }
@@ -249,23 +223,9 @@ class BookViewModel @Inject constructor(
 
     private fun deleteCommentRate(commentRate: CommentRate) {
         viewModelScope.launch {
-            val comment = comments!!.find {
-                it.id == commentRate.commentId
-            }
-            val rates = comment!!.rates.toMutableList()
-
             val createResult = commentRateRepository.deleteCommentRate(commentRate)
             if (createResult) {
-                val mutable = comments!!.toMutableList()
-                mutable.forEachIndexed {index, value ->
-                    if (value.id == comment.id) {
-                        rates.removeIf {it.userId == commentRate.userId}
-                        mutable[index] = value.copy(
-                            rates = rates,
-                        )
-                    }
-                }
-                comments = mutable.toList()
+                comments = commentRepository.getCommentsByBookId(book!!.id)
                 commentValidationEventChannel.send(CommentValidationEvent.Success)
                 return@launch
             }
@@ -419,6 +379,19 @@ class BookViewModel @Inject constructor(
 
             userRepository.updateUser(userManager.getUser())
         }
+    }
+
+    private fun recursiveSearchComment(id: UInt, comments: List<Comment>): Comment {
+        comments.forEach {comment ->
+            if (comment.replies.isNotEmpty()) {
+                return comment.replies.firstOrNull {it.id == id} ?: recursiveSearchComment(
+                    id,
+                    comment.replies,
+                )
+            }
+        }
+
+        return Comment()
     }
 
     sealed class CommentValidationEvent {

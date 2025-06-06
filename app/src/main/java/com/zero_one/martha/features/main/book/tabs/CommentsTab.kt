@@ -3,6 +3,7 @@ package com.zero_one.martha.features.main.book.tabs
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -11,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.zero_one.martha.data.domain.model.Comment
 import com.zero_one.martha.features.main.book.BookViewModel
@@ -21,7 +23,7 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun CommentsTab(
     comments: List<Comment>?,
-    onSaveComment: (String) -> Unit,
+    onSaveComment: (String, UInt) -> Unit,
     onUpdateComment: (UInt, String) -> Unit,
     onDeleteComment: (UInt) -> Unit,
     onRateComment: (UInt, Boolean?) -> Unit,
@@ -33,11 +35,13 @@ fun CommentsTab(
     var showCommentForm by remember {mutableStateOf(false)}
     var editId by remember {mutableStateOf(0u)}
     var editText by remember {mutableStateOf("")}
+    var parentId by remember {mutableStateOf(0u)}
 
     TextButton(
         onClick = {
             editId = 0u
             editText = ""
+            parentId = 0u
             showCommentForm = true
         },
     ) {
@@ -48,8 +52,12 @@ fun CommentsTab(
         CommentFormModal(
             editId = editId,
             editText = editText,
+            parentId = parentId,
             commentEvents = commentEvents,
             onDismiss = {
+                editId = 0u
+                editText = ""
+                parentId = 0u
                 showCommentForm = false
             },
             onSaveComment = onSaveComment,
@@ -68,23 +76,31 @@ fun CommentsTab(
         return
     }
 
+    val listState = rememberLazyListState()
     LazyColumn(
+        state = listState,
         verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.End,
     ) {
         items(comments, key = {it.uuid}) {comment ->
             CommentItem(
                 comment = comment,
-                onDeleteComment = {
-                    onDeleteComment(comment.id)
+                onDeleteComment = {id ->
+                    onDeleteComment(id)
                 },
-                onUpdateComment = {
-                    editId = comment.id
-                    editText = comment.text
+                onUpdateComment = {id, text, parent ->
+                    editId = id
+                    editText = text
+                    parentId = parent
                     showCommentForm = true
                 },
                 onRateComment = onRateComment,
                 userId = userId,
                 userRole = userRole,
+                onReplyComment = {id ->
+                    parentId = id
+                    showCommentForm = true
+                },
             )
         }
     }

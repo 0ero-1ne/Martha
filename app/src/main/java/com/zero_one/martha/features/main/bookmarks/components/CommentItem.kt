@@ -52,13 +52,15 @@ fun CommentItem(
     comment: Comment,
     userId: UInt,
     userRole: String,
-    onUpdateComment: () -> Unit,
+    level: Int = 0,
+    onUpdateComment: (UInt, String, UInt) -> Unit,
     onDeleteComment: (UInt) -> Unit,
     onRateComment: (UInt, Boolean?) -> Unit,
+    onReplyComment: (id: UInt) -> Unit,
 ) {
     Box(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(1f - (level * 0.03).toFloat())
             .clip(RoundedCornerShape(10.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(10.dp))
             .padding(10.dp),
@@ -109,7 +111,7 @@ fun CommentItem(
                             contentDescription = "Edit comment button",
                             modifier = Modifier
                                 .clickable {
-                                    onUpdateComment()
+                                    onUpdateComment(comment.id, comment.text, comment.parentId)
                                 }
                                 .size(20.dp),
                         )
@@ -145,8 +147,18 @@ fun CommentItem(
                 modifier = Modifier
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
+                Row {
+                    Text(
+                        text = "Reply",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
+                            .clickable {
+                                onReplyComment(comment.id)
+                            },
+                    )
+                }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -220,6 +232,22 @@ fun CommentItem(
                     )
                 }
             }
+        }
+    }
+    if (comment.replies.isNotEmpty()) {
+        comment.replies.forEach {reply ->
+            CommentItem(
+                modifier = Modifier
+                    .padding(top = 10.dp),
+                comment = reply,
+                userId = userId,
+                userRole = userRole,
+                level = level + 1,
+                onUpdateComment = onUpdateComment,
+                onDeleteComment = onDeleteComment,
+                onRateComment = onRateComment,
+                onReplyComment = onReplyComment,
+            )
         }
     }
 }
