@@ -25,6 +25,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +43,7 @@ import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.Chapter
 import com.zero_one.martha.data.domain.model.SavedBook
+import com.zero_one.martha.ui.components.NotAuthDialog
 
 @Composable
 fun BookHeader(
@@ -50,9 +55,11 @@ fun BookHeader(
     isAuth: () -> Boolean,
     onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit,
     onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit,
+    onNavigateToLoginPage: () -> Unit,
     savedBook: SavedBook,
     chapters: List<Chapter>
 ) {
+    var notAuthDialogState by remember {mutableStateOf(false)}
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -107,8 +114,13 @@ fun BookHeader(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     OutlinedButton(
-                        enabled = isAuth(),
-                        onClick = onOpenBookmarksModal,
+                        onClick = {
+                            if (isAuth()) {
+                                onOpenBookmarksModal()
+                            } else {
+                                notAuthDialogState = true
+                            }
+                        },
                         shape = RoundedCornerShape(10.dp),
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                         modifier = Modifier.weight(1f),
@@ -120,7 +132,13 @@ fun BookHeader(
                         )
                     }
                     OutlinedButton(
-                        onClick = onOpenRatingModal,
+                        onClick = {
+                            if (isAuth()) {
+                                onOpenRatingModal()
+                            } else {
+                                notAuthDialogState = true
+                            }
+                        },
                         shape = RoundedCornerShape(10.dp),
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                         modifier = Modifier.weight(1f),
@@ -128,7 +146,7 @@ fun BookHeader(
                         Icon(
                             imageVector = if (userRating == 0) Icons.Default.StarBorder
                             else Icons.Default.Star,
-                            contentDescription = "Bookmark icon",
+                            contentDescription = "Star icon",
                         )
                     }
                 }
@@ -143,9 +161,13 @@ fun BookHeader(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             OutlinedButton(
-                enabled = isAuth() && chapters.isNotEmpty(),
+                enabled = chapters.isNotEmpty(),
                 onClick = {
-                    onNavigateToReader(book.id, savedBook.readerChapter)
+                    if (isAuth()) {
+                        onNavigateToReader(book.id, savedBook.readerChapter)
+                    } else {
+                        notAuthDialogState = true
+                    }
                 },
                 shape = RoundedCornerShape(10.dp),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
@@ -153,7 +175,7 @@ fun BookHeader(
                     .weight(1f),
             ) {
                 val text = if (!isAuth())
-                    "Not auth"
+                    "Start"
                 else {
                     if (savedBook.readerChapter == 0u)
                         "Start"
@@ -173,9 +195,13 @@ fun BookHeader(
                     )
             }
             OutlinedButton(
-                enabled = isAuth() && chapters.isNotEmpty(),
+                enabled = chapters.isNotEmpty(),
                 onClick = {
-                    onNavigateToPlayer(book.id, savedBook.audioChapter)
+                    if (isAuth()) {
+                        onNavigateToPlayer(book.id, savedBook.audioChapter)
+                    } else {
+                        notAuthDialogState = true
+                    }
                 },
                 shape = RoundedCornerShape(10.dp),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
@@ -183,7 +209,7 @@ fun BookHeader(
                     .weight(1f),
             ) {
                 val text = if (!isAuth())
-                    "Not auth"
+                    "Start"
                 else {
                     if (savedBook.audioChapter == 0u)
                         "Start"
@@ -202,6 +228,14 @@ fun BookHeader(
                         style = MaterialTheme.typography.bodyLarge,
                     )
             }
+        }
+        if (notAuthDialogState) {
+            NotAuthDialog(
+                onDismiss = {
+                    notAuthDialogState = false
+                },
+                onNavigateToLoginPage = onNavigateToLoginPage,
+            )
         }
     }
 }

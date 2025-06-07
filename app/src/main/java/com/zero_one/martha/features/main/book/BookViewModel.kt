@@ -47,7 +47,10 @@ class BookViewModel @Inject constructor(
     var book: Book? by mutableStateOf(null)
     var chapters: List<Chapter>? by mutableStateOf(null)
     var chaptersSortType: Boolean by mutableStateOf(true)
-    var comments: List<Comment>? by mutableStateOf(null)
+
+    private val _comments = MutableStateFlow<List<Comment>?>(null)
+    val comments = _comments.asStateFlow()
+
     var bookmarkFolderName by mutableStateOf("")
     private var savedBook by mutableStateOf(SavedBook())
 
@@ -67,7 +70,7 @@ class BookViewModel @Inject constructor(
 
             book = bookRepository.getBookById(bookId)
             chapters = chapterRepository.getChaptersByBookId(bookId)
-            comments = commentRepository.getCommentsByBookId(bookId)
+            _comments.update {commentRepository.getCommentsByBookId(bookId)}
 
             userManager.getUser().savedBooks.forEach {(key, value) ->
                 value.forEach {
@@ -113,13 +116,7 @@ class BookViewModel @Inject constructor(
                 return@launch
             }
 
-            if (result.parentId != 0u) {
-                comments = commentRepository.getCommentsByBookId(book!!.id)
-            } else {
-                val mutable = comments!!.toMutableList()
-                mutable.add(0, result)
-                comments = mutable.toList()
-            }
+            _comments.update {commentRepository.getCommentsByBookId(book!!.id)}
             commentValidationEventChannel.send(CommentValidationEvent.Success)
         }
     }
@@ -128,7 +125,7 @@ class BookViewModel @Inject constructor(
         viewModelScope.launch {
             val deleteResult = commentRepository.deleteComment(commentId)
             if (deleteResult) {
-                comments = commentRepository.getCommentsByBookId(book!!.id)
+                _comments.update {commentRepository.getCommentsByBookId(book!!.id)}
                 commentValidationEventChannel.send(CommentValidationEvent.Success)
                 return@launch
             }
@@ -138,7 +135,7 @@ class BookViewModel @Inject constructor(
 
     fun updateComment(commentId: UInt, text: String) {
         viewModelScope.launch {
-            var comment = recursiveSearchComment(commentId, comments!!)
+            var comment = recursiveSearchComment(commentId, _comments.value!!)
 
             comment = comment.copy(
                 text = text,
@@ -150,20 +147,7 @@ class BookViewModel @Inject constructor(
                 return@launch
             }
 
-            if (updateCommentResult.parentId != 0u) {
-                comments = commentRepository.getCommentsByBookId(book!!.id)
-                commentValidationEventChannel.send(CommentValidationEvent.Success)
-                return@launch
-            }
-            val mutable = comments!!.toMutableList()
-            mutable.forEachIndexed {index, value ->
-                if (value.id == updateCommentResult.id) {
-                    mutable[index] = value.copy(
-                        text = updateCommentResult.text,
-                    )
-                }
-            }
-            comments = mutable.toList()
+            _comments.update {commentRepository.getCommentsByBookId(book!!.id)}
             commentValidationEventChannel.send(CommentValidationEvent.Success)
         }
     }
@@ -171,7 +155,7 @@ class BookViewModel @Inject constructor(
     fun onRateComment(commentId: UInt, rating: Boolean?) {
         viewModelScope.launch {
             val user = userManager.getUser()
-            val comment = recursiveSearchComment(commentId, comments!!)
+            val comment = recursiveSearchComment(commentId, _comments.value!!)
 
             val commentRate =
                 comment.rates.firstOrNull {it.commentId == commentId && it.userId == user.id}
@@ -204,7 +188,7 @@ class BookViewModel @Inject constructor(
                 }
             }
 
-            comments = commentRepository.getCommentsByBookId(book!!.id)
+            _comments.update {commentRepository.getCommentsByBookId(book!!.id)}
             return@launch
         }
     }

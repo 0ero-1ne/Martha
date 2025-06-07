@@ -1,4 +1,4 @@
-package com.zero_one.martha.features.main.bookmarks.components
+package com.zero_one.martha.features.main.book.ui
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -44,6 +44,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Comment
+import com.zero_one.martha.ui.components.NotAuthDialog
 import io.dokar.expandabletext.ExpandableText
 
 @Composable
@@ -57,6 +58,8 @@ fun CommentItem(
     onDeleteComment: (UInt) -> Unit,
     onRateComment: (UInt, Boolean?) -> Unit,
     onReplyComment: (id: UInt) -> Unit,
+    onNavigateToLoginPage: () -> Unit,
+    isAuth: () -> Boolean,
 ) {
     Box(
         modifier = modifier
@@ -65,8 +68,9 @@ fun CommentItem(
             .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(10.dp))
             .padding(10.dp),
     ) {
-        val maxLines by remember {mutableIntStateOf(2)}
+        val maxLines by remember {mutableIntStateOf(3)}
         var expanded by remember {mutableStateOf(false)}
+        var notAuthDialogState by remember {mutableStateOf(false)}
 
         Column(
             modifier = Modifier
@@ -155,7 +159,11 @@ fun CommentItem(
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
                             .clickable {
-                                onReplyComment(comment.id)
+                                if (isAuth()) {
+                                    onReplyComment(comment.id)
+                                } else {
+                                    notAuthDialogState = true
+                                }
                             },
                     )
                 }
@@ -171,6 +179,10 @@ fun CommentItem(
                         contentDescription = "Like comment button",
                         modifier = Modifier
                             .clickable {
+                                if (!isAuth()) {
+                                    notAuthDialogState = true
+                                    return@clickable
+                                }
                                 if (userId != 0u) {
                                     if (commentRate == null) {
                                         onRateComment(comment.id, true)
@@ -211,6 +223,10 @@ fun CommentItem(
                         contentDescription = "Dislike comment button",
                         modifier = Modifier
                             .clickable {
+                                if (!isAuth()) {
+                                    notAuthDialogState = true
+                                    return@clickable
+                                }
                                 if (userId != 0u) {
                                     if (commentRate == null) {
                                         onRateComment(comment.id, false)
@@ -233,7 +249,17 @@ fun CommentItem(
                 }
             }
         }
+
+        if (notAuthDialogState) {
+            NotAuthDialog(
+                onDismiss = {
+                    notAuthDialogState = false
+                },
+                onNavigateToLoginPage = onNavigateToLoginPage,
+            )
+        }
     }
+
     if (comment.replies.isNotEmpty()) {
         comment.replies.forEach {reply ->
             CommentItem(
@@ -247,6 +273,8 @@ fun CommentItem(
                 onDeleteComment = onDeleteComment,
                 onRateComment = onRateComment,
                 onReplyComment = onReplyComment,
+                onNavigateToLoginPage = onNavigateToLoginPage,
+                isAuth = isAuth,
             )
         }
     }

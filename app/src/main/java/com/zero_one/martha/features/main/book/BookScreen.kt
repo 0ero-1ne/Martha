@@ -47,6 +47,7 @@ fun BookScreen(
     onNavigateToLoginPage: () -> Unit
 ) {
     val user = viewModel.user.collectAsState(User())
+    val comments = viewModel.comments.collectAsState()
 
     Scaffold(
         topBar = {
@@ -114,6 +115,7 @@ fun BookScreen(
                 isAuth = viewModel::isAuth,
                 onNavigateToReader = onNavigateToReader,
                 onNavigateToPlayer = onNavigateToPlayer,
+                onNavigateToLoginPage = onNavigateToLoginPage,
                 savedBook = user.value.savedBooks[viewModel.bookmarkFolderName]?.firstOrNull {
                     it.bookId == viewModel.book!!.id
                 } ?: SavedBook(),
@@ -140,39 +142,35 @@ fun BookScreen(
                 state = pagerState,
                 pageSpacing = 16.dp,
             ) {page ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                ) {
-                    when (page) {
-                        0 -> AboutTab(
-                            book = viewModel.book!!,
-                        )
+                when (page) {
+                    0 -> AboutTab(
+                        book = viewModel.book!!,
+                    )
 
-                        1 -> ChaptersTab(
-                            chapters = viewModel.chapters!!,
-                            sortType = viewModel.chaptersSortType,
-                            changeSortType = {
-                                viewModel.changeSortType()
-                            },
-                            onNavigateToReader = onNavigateToReader,
-                            onNavigateToPlayer = onNavigateToPlayer,
-                            onNavigateToLoginPage = onNavigateToLoginPage,
-                            isAuth = viewModel::isAuth,
-                        )
+                    1 -> ChaptersTab(
+                        chapters = viewModel.chapters!!,
+                        sortType = viewModel.chaptersSortType,
+                        changeSortType = {
+                            viewModel.changeSortType()
+                        },
+                        onNavigateToReader = onNavigateToReader,
+                        onNavigateToPlayer = onNavigateToPlayer,
+                        onNavigateToLoginPage = onNavigateToLoginPage,
+                        isAuth = viewModel::isAuth,
+                    )
 
-                        2 -> CommentsTab(
-                            comments = viewModel.comments,
-                            onSaveComment = viewModel::saveComment,
-                            onUpdateComment = viewModel::updateComment,
-                            onDeleteComment = viewModel::deleteComment,
-                            onRateComment = viewModel::onRateComment,
-                            commentEvents = viewModel.commentValidationEvents,
-                            isAuth = viewModel::isAuth,
-                            userId = user.value.id,
-                            userRole = user.value.role,
-                        )
-                    }
+                    2 -> CommentsTab(
+                        comments = comments.value,
+                        onSaveComment = viewModel::saveComment,
+                        onUpdateComment = viewModel::updateComment,
+                        onDeleteComment = viewModel::deleteComment,
+                        onRateComment = viewModel::onRateComment,
+                        onNavigateToLoginPage = onNavigateToLoginPage,
+                        commentEvents = viewModel.commentValidationEvents,
+                        isAuth = viewModel::isAuth,
+                        userId = user.value.id,
+                        userRole = user.value.role,
+                    )
                 }
             }
 

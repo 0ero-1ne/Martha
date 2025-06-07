@@ -35,7 +35,7 @@ fun NavGraphBuilder.mainNavigationGraph(
     rootNavController: NavController
 ) {
     navigation<MainNavigationGraph>(
-        startDestination = BookRoute(1u),
+        startDestination = HomeRoute,
     ) {
         composable<HomeRoute> {
             HomeScreen(

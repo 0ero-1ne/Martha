@@ -88,7 +88,7 @@ class BookRepositoryImpl @Inject constructor(
             id = networkBook.id,
             title = networkBook.title,
             description = networkBook.description,
-            status = networkBook.description,
+            status = networkBook.status,
             year = networkBook.year,
             views = networkBook.views,
             cover = networkBook.cover,
