@@ -15,8 +15,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,14 +36,14 @@ fun NotAuthDialog(
                 .padding(16.dp),
         ) {
             Text(
-                text = "Oops, you can't do it now",
+                text = stringResource(R.string.auth_dialog_1),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(bottom = 10.dp),
             )
             Text(
-                text = "You need to login to continue the surface",
+                text = stringResource(R.string.auth_dialog_2),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .padding(bottom = 10.dp),
@@ -56,7 +58,7 @@ fun NotAuthDialog(
                         onDismiss()
                     },
                 ) {
-                    Text("Dismiss")
+                    Text(stringResource(R.string.auth_dialog_dismiss))
                 }
                 TextButton(
                     onClick = {
@@ -64,7 +66,7 @@ fun NotAuthDialog(
                         onDismiss()
                     },
                 ) {
-                    Text("Go to login")
+                    Text(stringResource(R.string.auth_dialog_login))
                 }
             }
         }

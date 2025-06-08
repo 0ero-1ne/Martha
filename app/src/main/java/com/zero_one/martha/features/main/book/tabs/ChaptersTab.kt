@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.outlined.SwapVert
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -120,7 +119,6 @@ fun ChaptersTab(
                     Icon(Icons.Outlined.SwapVert, "Swap sorting icon")
                     Text(stringResource(R.string.chapters_sort))
                 }
-                HorizontalDivider(Modifier.padding(top = 16.dp))
             }
             items(
                 items = sortedChapters.value,

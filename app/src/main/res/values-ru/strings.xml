@@ -17,7 +17,7 @@
     <string name="ended_folder">Прочитанные</string>
     <string name="reading_folder">В процессе</string>
     <string name="stopped_folder">Брошенные</string>
-    <string name="planned_folder">В паланах</string>
+    <string name="planned_folder">В планах</string>
     <string name="favorites_folder">Избранные</string>
     <string name="no_books_in_folder">Нет сохранённых книг в этой папке</string>
     <string name="managing_folders">Управление папками</string>
@@ -107,4 +107,10 @@
     <string name="no_comments">Нет комментариев</string>
     <string name="chapters_sort">Сортировать</string>
     <string name="no_chapters">Нет глав</string>
+
+    <!-- Auth dialog -->
+    <string name="auth_dialog_1">Упс, что-то пошло не так</string>
+    <string name="auth_dialog_2">Авторизуйтесь для доступа к этой функции</string>
+    <string name="auth_dialog_dismiss">Отмена</string>
+    <string name="auth_dialog_login">Войти</string>
 </resources>

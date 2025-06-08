@@ -175,7 +175,7 @@ fun BookHeader(
                 modifier = Modifier
                     .weight(1f),
             ) {
-                val text = if (!isAuth() || chapters.isEmpty())
+                val text = if (!isAuth())
                     stringResource(R.string.book_start)
                 else {
                     if (savedBook.readerChapter == 0u)
@@ -208,10 +208,10 @@ fun BookHeader(
                 modifier = Modifier
                     .weight(1f),
             ) {
-                val text = if (!isAuth() || chapters.isEmpty())
+                val text = if (!isAuth())
                     stringResource(R.string.book_start)
                 else {
-                    if (savedBook.readerChapter == 0u)
+                    if (savedBook.audioChapter == 0u)
                         stringResource(R.string.book_start)
                     else stringResource(R.string.book_continue)
                 }

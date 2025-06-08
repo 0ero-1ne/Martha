@@ -96,8 +96,8 @@
     <string name="pager_comments_tab">Comments</string>
     <string name="about_tags_title">Tags</string>
     <string name="about_description_title">Description</string>
-    <string name="book_continue">Start</string>
-    <string name="book_start">Continue</string>
+    <string name="book_continue">Continue</string>
+    <string name="book_start">Start</string>
     <string name="leave_rate">Leave a rate</string>
     <string name="leave_rate_button">Rate</string>
     <string name="leave_comment">Leave a comment</string>
@@ -106,4 +106,10 @@
     <string name="no_comments">No comments</string>
     <string name="chapters_sort">Sort</string>
     <string name="no_chapters">No chapters</string>
+
+    <!-- Auth dialog -->
+    <string name="auth_dialog_1">Oops, you can\'t do it now</string>
+    <string name="auth_dialog_2">You need to login to continue the surface</string>
+    <string name="auth_dialog_dismiss">Dismiss</string>
+    <string name="auth_dialog_login">Go to login</string>
 </resources>
