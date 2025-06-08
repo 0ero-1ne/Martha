@@ -10,6 +10,7 @@ import com.zero_one.martha.data.source.network.models.Tag
 import com.zero_one.martha.data.source.network.models.User
 import com.zero_one.martha.data.source.network.models.auth.AuthTokens
 import com.zero_one.martha.data.source.network.models.auth.AuthUser
+import com.zero_one.martha.data.source.network.models.auth.ChangePassword
 import com.zero_one.martha.data.source.network.models.auth.UpdateToken
 import retrofit2.Response
 import retrofit2.http.Body
@@ -30,6 +31,9 @@ interface RetrofitAPI: NetworkAPI {
 
     @POST(value = "auth/refresh")
     override suspend fun refresh(@Body refreshToken: UpdateToken): Response<AuthTokens?>
+
+    @POST(value = "auth/change_password")
+    override suspend fun changePassword(@Body changePassword: ChangePassword): Response<String>
 
     // User
     @GET(value = "users/single")

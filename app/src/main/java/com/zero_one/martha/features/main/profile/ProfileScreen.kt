@@ -49,6 +49,7 @@ fun ProfileScreen(
     onNavigateToHomePage: () -> Unit,
     onNavigateToLoginPage: () -> Unit,
     onNavigateToBookmarks: (folderName: String) -> Unit,
+    onNavigateToEditPage: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier
@@ -145,7 +146,9 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         OutlinedButton(
-                            onClick = {},
+                            onClick = {
+                                onNavigateToEditPage()
+                            },
                             shape = RoundedCornerShape(16.dp),
                             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                             modifier = Modifier.weight(1f),

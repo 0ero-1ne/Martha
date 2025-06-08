@@ -4,9 +4,11 @@ import com.google.gson.GsonBuilder
 import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.data.source.datastore.user.tokens.TokensManager
 import com.zero_one.martha.data.source.network.api.NetworkAPI
+import com.zero_one.martha.data.source.network.api.StorageAPI
 import com.zero_one.martha.data.source.network.api.authenticator.TokensAuthenticator
 import com.zero_one.martha.data.source.network.api.authenticator.TokensInterceptor
 import com.zero_one.martha.data.source.network.api.retrofit.RetrofitAPI
+import com.zero_one.martha.data.source.network.api.retrofit.RetrofitStorageAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -70,5 +72,33 @@ object NetworkModule {
             .client(httpClient)
             .build()
             .create(RetrofitAPI::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStorageAPI(): StorageAPI {
+        return Retrofit
+            .Builder()
+            .baseUrl(BuildConfig.STORAGE_URL)
+            .addConverterFactory(
+                GsonConverterFactory.create(
+                    GsonBuilder().create(),
+                ),
+            )
+            .client(
+                OkHttpClient
+                    .Builder()
+                    .addInterceptor(
+                        HttpLoggingInterceptor().apply {
+                            level = HttpLoggingInterceptor.Level.BODY
+                        },
+                    )
+                    .callTimeout(10, TimeUnit.SECONDS)
+                    .connectTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS)
+                    .build(),
+            )
+            .build()
+            .create(RetrofitStorageAPI::class.java)
     }
 }

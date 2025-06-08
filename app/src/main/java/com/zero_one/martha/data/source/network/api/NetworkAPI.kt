@@ -9,6 +9,7 @@ import com.zero_one.martha.data.source.network.models.Tag
 import com.zero_one.martha.data.source.network.models.User
 import com.zero_one.martha.data.source.network.models.auth.AuthTokens
 import com.zero_one.martha.data.source.network.models.auth.AuthUser
+import com.zero_one.martha.data.source.network.models.auth.ChangePassword
 import com.zero_one.martha.data.source.network.models.auth.UpdateToken
 import retrofit2.Response
 
@@ -17,6 +18,7 @@ interface NetworkAPI {
     suspend fun login(authUser: AuthUser): Response<AuthTokens?>
     suspend fun signup(authUser: AuthUser): Response<String?>
     suspend fun refresh(refreshToken: UpdateToken): Response<AuthTokens?>
+    suspend fun changePassword(changePassword: ChangePassword): Response<String>
 
     // User
     suspend fun getUser(): Response<User?>

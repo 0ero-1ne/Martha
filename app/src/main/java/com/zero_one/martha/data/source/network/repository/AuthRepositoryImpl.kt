@@ -7,6 +7,7 @@ import com.zero_one.martha.data.source.datastore.user.UserManager
 import com.zero_one.martha.data.source.datastore.user.tokens.TokensManager
 import com.zero_one.martha.data.source.network.api.NetworkAPI
 import com.zero_one.martha.data.source.network.models.auth.AuthUser
+import com.zero_one.martha.data.source.network.models.auth.ChangePassword
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -51,6 +52,27 @@ class AuthRepositoryImpl @Inject constructor(
             return errorMessage?.substring(1, errorMessage.length - 1)
         } catch (err: Exception) {
             Log.e("AuthRepositoryImpl", "Signup method", err)
+            return "No response, try again later"
+        }
+    }
+
+    override suspend fun changePassword(oldPassword: String, newPassword: String): String? {
+        try {
+            val response = api.changePassword(
+                ChangePassword(
+                    oldPassword = oldPassword,
+                    newPassword = newPassword,
+                ),
+            )
+
+            if (response.isSuccessful) {
+                return null
+            }
+
+            val errorMessage = response.errorBody()?.string()
+            return errorMessage?.substring(1, errorMessage.length - 1)
+        } catch (e: Exception) {
+            Log.e("AuthRepositoryImpl", "changePassword", e)
             return "No response, try again later"
         }
     }

@@ -35,19 +35,32 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUser(user: User): User? {
+    override suspend fun updateUser(user: User): UpdateUserResult {
         try {
             val updatedUserResult = api.updateUser(userToNetworkUser(user))
 
             if (updatedUserResult.isSuccessful && updatedUserResult.body() != null) {
                 userManager.setUser(networkUserToUser(updatedUserResult.body()!!))
-                return userManager.getUser()
+                return UpdateUserResult(
+                    status = true,
+                    user = userManager.getUser(),
+                    message = "",
+                )
             }
 
-            return null
+            val errorMessage = updatedUserResult.errorBody()?.string()
+            return UpdateUserResult(
+                status = false,
+                user = null,
+                message = errorMessage?.substring(1, errorMessage.length - 1) ?: "",
+            )
         } catch (e: Exception) {
             Log.e("UserRepositoryImpl", "updateUser method", e)
-            return null
+            return UpdateUserResult(
+                status = false,
+                user = userManager.getUser(),
+                message = "",
+            )
         }
     }
 
@@ -110,4 +123,9 @@ class UserRepositoryImpl @Inject constructor(
         )
     }
 
+    data class UpdateUserResult(
+        val status: Boolean,
+        val user: User?,
+        val message: String
+    )
 }

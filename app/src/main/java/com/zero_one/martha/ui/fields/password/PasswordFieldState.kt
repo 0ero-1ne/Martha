@@ -16,7 +16,6 @@ class PasswordFieldState(initialValue: String) {
         private set
 
     var error: String? by mutableStateOf(null)
-        private set
 
     fun onValueChanged(password: String) {
         value = password

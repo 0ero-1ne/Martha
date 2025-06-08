@@ -22,6 +22,9 @@ import com.zero_one.martha.features.main.home.HomeViewModel
 import com.zero_one.martha.features.main.profile.ProfileRoute
 import com.zero_one.martha.features.main.profile.ProfileScreen
 import com.zero_one.martha.features.main.profile.ProfileViewModel
+import com.zero_one.martha.features.main.profile.edit.EditProfileRoute
+import com.zero_one.martha.features.main.profile.edit.EditProfileScreen
+import com.zero_one.martha.features.main.profile.edit.EditProfileViewModel
 import com.zero_one.martha.features.player.PlayerRoute
 import com.zero_one.martha.features.reader.ReaderRoute
 import kotlinx.serialization.Serializable
@@ -60,6 +63,19 @@ fun NavGraphBuilder.mainNavigationGraph(
                 onNavigateToBookmarks = {folderName ->
                     navController.navigateUp()
                     navController.navigate(BookmarksRoute(folderName = folderName))
+                },
+                onNavigateToEditPage = {
+                    navController.navigate(EditProfileRoute)
+                },
+            )
+        }
+        composable<EditProfileRoute> {
+            val viewModel = hiltViewModel<EditProfileViewModel>()
+
+            EditProfileScreen(
+                viewModel = viewModel,
+                onNavigateToBack = {
+                    navController.navigateUp()
                 },
             )
         }

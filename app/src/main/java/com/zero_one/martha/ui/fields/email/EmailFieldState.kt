@@ -18,7 +18,6 @@ class EmailFieldState(initialValue: String) {
         private set
 
     var error: String? by mutableStateOf(null)
-        private set
 
     val isValid: Boolean by derivedStateOf {
         isEmailValid(value)
