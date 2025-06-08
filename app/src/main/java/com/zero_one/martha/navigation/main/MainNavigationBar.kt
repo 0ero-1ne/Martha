@@ -40,7 +40,7 @@ fun MainNavigationBar(
     val topLevelRoutes = listOf(
         TopLevelRoute(
             "Bookmarks",
-            BookmarksRoute,
+            BookmarksRoute(),
             Icons.Filled.Bookmarks,
             Icons.Outlined.Bookmarks,
         ),

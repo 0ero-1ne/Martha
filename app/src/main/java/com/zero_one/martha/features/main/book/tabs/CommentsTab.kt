@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -77,7 +78,11 @@ fun CommentsTab(
         }
 
         if (comments.isEmpty()) {
-            Text("No comments...")
+            Text(
+                text = "No comments...",
+                modifier = Modifier
+                    .padding(top = 64.dp),
+            )
         }
 
         if (showCommentForm) {
@@ -101,8 +106,14 @@ fun CommentsTab(
         AnimatedVisibility(
             visible = firstCommentVisibility > 0,
             modifier = Modifier
+                .clip(CircleShape)
                 .zIndex(2f)
-                .align(Alignment.BottomCenter),
+                .align(Alignment.BottomCenter)
+                .clickable {
+                    scope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                },
             enter = fadeIn(),
             exit = fadeOut(),
         ) {
@@ -118,17 +129,12 @@ fun CommentsTab(
                     imageVector = Icons.Default.ArrowUpward,
                     contentDescription = "Scroll to first comment",
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .clickable {
-                            scope.launch {
-                                listState.animateScrollToItem(0)
-                            }
-                        },
                 )
             }
         }
 
         LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
             state = listState,
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.End,

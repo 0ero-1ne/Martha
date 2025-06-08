@@ -1,8 +1,10 @@
 package com.zero_one.martha.features.main.bookmarks
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.SavedBook
 import com.zero_one.martha.data.domain.repository.BookRepository
@@ -21,6 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookmarksViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val userManager: UserManager,
     private val userRepository: UserRepository,
     private val bookRepository: BookRepository
@@ -40,8 +43,12 @@ class BookmarksViewModel @Inject constructor(
             initialValue = null,
         )
 
+    var initFolderName: String = ""
+
     init {
         init()
+        val data = savedStateHandle.toRoute<BookmarksRoute>()
+        initFolderName = data.folderName
     }
 
     private fun init() {

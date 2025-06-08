@@ -1,7 +1,14 @@
 package com.zero_one.martha.features.main.bookmarks
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -9,13 +16,17 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -27,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,9 +48,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.features.main.bookmarks.components.BottomSheet
 import com.zero_one.martha.features.main.bookmarks.components.SavedBookItem
@@ -152,7 +166,9 @@ fun BookmarksScreen(
                         .weight(5f),
                     pagerState = pagerState,
                     tabs = pages,
+                    initFolderName = viewModel.initFolderName,
                 )
+
                 IconButton(
                     modifier = Modifier
                         .weight(1f),
@@ -182,11 +198,9 @@ fun BookmarksScreen(
                     pageSpacing = 5.dp,
                 ) {page ->
                     val columns by remember {mutableIntStateOf(3)}
-                    Column(
+                    Box(
                         modifier = Modifier
                             .fillMaxSize(),
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.Top,
                     ) {
                         val folderString = bookmarks.value!!.keys.elementAt(page)
                         val savedBooks = bookmarks.value!![folderString]!!
@@ -204,6 +218,52 @@ fun BookmarksScreen(
                                 )
                             }
                             return@HorizontalPager
+                        }
+
+                        val listState = rememberLazyListState()
+                        val firstBookVisibility by remember {
+                            derivedStateOf {listState.firstVisibleItemIndex}
+                        }
+
+                        Column(
+                            Modifier
+                                .clip(CircleShape)
+                                .wrapContentSize()
+                                .align(Alignment.BottomCenter)
+                                .zIndex(2f)
+                                .clickable {
+                                    scope.launch {
+                                        listState.animateScrollToItem(0)
+                                    }
+                                },
+                        ) {
+                            AnimatedVisibility(
+                                visible = firstBookVisibility > 0,
+                                enter = fadeIn(),
+                                exit = fadeOut(),
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .background(
+                                            MaterialTheme.colorScheme.background,
+                                            CircleShape,
+                                        )
+                                        .border(
+                                            1.dp,
+                                            MaterialTheme.colorScheme.primary,
+                                            CircleShape,
+                                        )
+                                        .zIndex(2f)
+                                        .padding(10.dp),
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowUpward,
+                                        contentDescription = "Scroll to first book",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                    )
+                                }
+                            }
                         }
 
                         LazyVerticalGrid(

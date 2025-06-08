@@ -28,6 +28,23 @@ class CommentRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getUserComments(userId: UInt): List<Comment> {
+        try {
+            val commentsResult = api.getUserComments(userId)
+
+            if (commentsResult.isSuccessful && commentsResult.body() != null) {
+                return commentsResult.body()!!.map {
+                    networkCommentToComment(it)
+                }
+            }
+
+            return emptyList()
+        } catch (e: Exception) {
+            Log.e("CommentRepositoryImpl", "getUserComments", e)
+            return emptyList()
+        }
+    }
+
     override suspend fun saveComment(comment: Comment): Comment {
         try {
             Log.d(

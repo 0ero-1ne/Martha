@@ -27,7 +27,8 @@ import kotlinx.coroutines.launch
 fun CustomScrollableTabRow(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    tabs: Set<String>
+    tabs: Set<String>,
+    initFolderName: String
 ) {
     val scope = rememberCoroutineScope()
     var previousTabIndex by rememberSaveable {mutableIntStateOf(0)}
@@ -45,6 +46,14 @@ fun CustomScrollableTabRow(
         if (scrollFraction < 0) {
             previousTabIndex = pagerState.currentPage
             targetTabIndex = previousTabIndex - 1
+        }
+    }
+
+    LaunchedEffect(tabs) {
+        if (tabs.isNotEmpty() && initFolderName.isNotEmpty()) {
+            scope.launch {
+                pagerState.animateScrollToPage(tabs.indexOf(initFolderName))
+            }
         }
     }
 

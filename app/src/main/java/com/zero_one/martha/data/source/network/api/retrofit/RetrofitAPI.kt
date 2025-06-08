@@ -62,6 +62,9 @@ interface RetrofitAPI: NetworkAPI {
     override suspend fun getChapterById(@Path("id") chapterId: UInt): Response<Chapter>
 
     // Comment
+    @GET(value = "comments")
+    override suspend fun getUserComments(@Query("user_id") userId: UInt): Response<List<Comment>>
+
     @GET(value = "comments/book/{id}")
     override suspend fun getCommentsByBookId(@Path("id") bookId: UInt): Response<List<Comment>>
 

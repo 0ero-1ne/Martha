@@ -44,7 +44,10 @@ fun AboutShortInfo(
             text = prettyCount(book.views),
         )
 
-        val rating = book.rates.sumOf {it.rating}.toFloat() / book.rates.size.toFloat()
+        var rating = book.rates.sumOf {it.rating}.toFloat() / book.rates.size.toFloat()
+        if (rating.isNaN()) {
+            rating = 0f
+        }
         val ratingString = String.format(Locale.US, "%.2f", rating)
         ShortInfoItem(
             title = "Rating",
