@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
@@ -43,6 +44,8 @@ import com.zero_one.martha.R
 import com.zero_one.martha.ui.components.CustomTopBar
 import com.zero_one.martha.ui.forms.signup.SignupForm
 import com.zero_one.martha.ui.forms.signup.rememberSignupFormState
+import com.zero_one.martha.utils.parseEmailFieldError
+import com.zero_one.martha.utils.parsePasswordFieldError
 import kotlinx.coroutines.launch
 
 @Composable
@@ -98,7 +101,7 @@ fun SignupScreen(
 
                         SignupViewModel.SignupValidationEvent.Error -> {
                             scope.launch {
-                                snackbarHostState.showSnackbar(viewModel.signupErrorMessage)
+                                snackbarHostState.showSnackbar(context.resources.getString(R.string.server_error))
                             }
                         }
                     }
@@ -128,7 +131,7 @@ fun SignupScreen(
                         .weight(1f),
                 )
                 Text(
-                    text = "Signup",
+                    text = stringResource(R.string.signup_title),
                     style = MaterialTheme.typography.displayLarge,
                 )
                 Spacer(
@@ -156,6 +159,15 @@ fun SignupScreen(
 
                         if (formState.isValid) {
                             onSignupClick(formState.email.value, formState.password.value)
+                        } else {
+                            formState.email.error = parseEmailFieldError(
+                                formState.email.error,
+                                context,
+                            )
+                            formState.password.error = parsePasswordFieldError(
+                                formState.password.error,
+                                context,
+                            )
                         }
                     },
                 ) {
@@ -165,7 +177,7 @@ fun SignupScreen(
                         )
                     } else {
                         Text(
-                            text = "Signup",
+                            text = stringResource(R.string.signup_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                         )
@@ -186,14 +198,14 @@ fun SignupScreen(
                         .padding(
                             end = 5.dp,
                         ),
-                    text = "Already has account?",
+                    text = stringResource(R.string.signup_to_login_1),
                 )
                 Text(
                     modifier = Modifier
                         .clickable {
                             onNavigateToBack()
                         },
-                    text = "Login",
+                    text = stringResource(R.string.signup_to_login_2),
                     color = if (isSystemInDarkTheme())
                         Color(0xFF9874AA)
                     else
@@ -205,7 +217,7 @@ fun SignupScreen(
                         .padding(
                             start = 5.dp,
                         ),
-                    text = "now!",
+                    text = stringResource(R.string.signup_to_login_3),
                 )
             }
         }

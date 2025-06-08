@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Марта</string>
+
+    <!-- Navigation bar -->
+    <string name="bookmarks_tab">Закладки</string>
+    <string name="home_tab">Главная</string>
+    <string name="catalog_tab">Каталог</string>
+    <string name="profile_tab">Профиль</string>
+
+    <!-- Main page -->
+    <string name="popular_now">Популярные сейчас</string>
+    <string name="new_books">Новые книги</string>
+    <string name="books_for_you">Для вас</string>
+
+    <!-- Bookmarks page -->
+    <string name="ended_folder">Прочитанные</string>
+    <string name="reading_folder">В процессе</string>
+    <string name="stopped_folder">Брошенные</string>
+    <string name="planned_folder">В паланах</string>
+    <string name="favorites_folder">Избранные</string>
+    <string name="no_books_in_folder">Нет сохранённых книг в этой папке</string>
+    <string name="managing_folders">Управление папками</string>
+    <string name="enter_folder_name_placeholder">Введите название папки</string>
+    <string name="error_empty_folder_name">Название папки не может быть пустым</string>
+    <string name="error_invalid_folder_name">Такое название уже используется</string>
+
+    <!-- Catalog page -->
+    <string name="search_placeholder">Найти книгу</string>
+    <string name="filters_title">Фильтры</string>
+    <string name="tiles_title">Сетка</string>
+    <string name="filters_tags_title">Теги</string>
+    <string name="filters_use_title">Применить фильтры</string>
+    <string name="no_books_by_query">Ничего не найдено</string>
+
+    <!-- Profile page -->
+    <string name="karma_great">У вас отличная карма</string>
+    <string name="karma_normal">У вас хорошая карма</string>
+    <string name="karma_bad">У вас плохая карма</string>
+    <string name="karma_no_activity">Вы неактивны в комментариях</string>
+    <string name="not_authorized">Вы не авторизованы</string>
+    <string name="authorize_message_profile">Авторизуйтесь для управления аккаунтом</string>
+    <string name="authorize_message_bookmarks">Авторизуйтесь для управления закладками</string>
+    <string name="authorize_button">Войти</string>
+
+    <!-- Edit profile page -->
+    <string name="profile_edit_choose_image">Выбрать фото</string>
+    <string name="profile_edit_save_image">Сохранить фото</string>
+    <string name="profile_edit_pager_general">Общее</string>
+    <string name="profile_edit_pager_password">Пароль</string>
+    <string name="profile_edit_save_button">Сохранить</string>
+    <string name="profile_edit_save_password_button">Сменить пароль</string>
+    <string name="profile_edit_success_general_message">Пользователь успешно обновлён</string>
+    <string name="profile_edit_success_password_message">Пароль успешно обновлён</string>
+    <string name="profile_edit_success_image_message">Изображение успешно обновлено</string>
+    <string name="profile_edit_error_email_message">Данный email уже используется</string>
+    <string name="profile_edit_error_username_message">Имя пользователя уже используется</string>
+    <string name="profile_edit_error_old_password_message">Неверный текущий пароль</string>
+
+    <!-- Form fields -->
+    <string name="email_placeholder">Введите email</string>
+    <string name="password_placeholder">Введите пароль</string>
+    <string name="username_placeholder">Введите имя пользователя</string>
+    <string name="comment_placeholder">Введите комментарий</string>
+    <string name="empty_comment">Пустой комментарий</string>
+    <string name="empty_email">Пустой email</string>
+    <string name="invalid_email">Неверный формат email</string>
+    <string name="empty_password">Пустой пароль</string>
+    <string name="invalid_password">Пароль должен содержать мимниму одну букву, цифру и специальный знак</string>
+    <string name="invalid_length_password">Пароль должен содержать минимум 8 символов, но не больше 64</string>
+    <string name="empty_username">Пустое имя пользователя</string>
+    <string name="invalid_username">Имя пользователя должно содержать только буквы, цифры, \"-\" и \"_\"</string>
+    <string name="invalid_length_username">Имя пользователя должно содержать минимум 6 символов</string>
+
+    <!-- Auth pages -->
+    <string name="login_title">Вход</string>
+    <string name="signup_title">Регистрация</string>
+    <string name="login_to_signup_1">Ещё нет аккаунта?</string>
+    <string name="login_to_signup_2">Создайте его</string>
+    <string name="login_to_signup_3">сейчас!</string>
+    <string name="signup_to_login_1">Уже есть аккаунт?</string>
+    <string name="signup_to_login_2">Войдите</string>
+    <string name="signup_to_login_3">сейчас!</string>
+    <string name="server_error">Ошибка сервера, попробуйте позже</string>
+    <string name="invalid_password_or_email">Неверный email или пароль</string>
+
+    <!-- Book page -->
+    <string name="about_short_year">Год</string>
+    <string name="about_short_status">Статус</string>
+    <string name="about_short_views">Просмотры</string>
+    <string name="about_short_rating">Рейтинг</string>
+    <string name="status_ongoing">Выходит</string>
+    <string name="status_ended">Завершён</string>
+    <string name="status_stopped">Остановлен</string>
+    <string name="pager_about_tab">О книге</string>
+    <string name="pager_chapters_tab">Главы</string>
+    <string name="pager_comments_tab">Комментарии</string>
+    <string name="about_tags_title">Теги</string>
+    <string name="about_description_title">Описание</string>
+    <string name="book_continue">Продолжить</string>
+    <string name="book_start">Начать</string>
+    <string name="leave_rate">Оставить оценку</string>
+    <string name="leave_rate_button">Оценить</string>
+    <string name="leave_comment">Оставить комментарий</string>
+    <string name="update_comment">Обновить комментарий</string>
+    <string name="reply_comment">Ответить</string>
+    <string name="no_comments">Нет комментариев</string>
+    <string name="chapters_sort">Сортировать</string>
+    <string name="no_chapters">Нет глав</string>
+</resources>

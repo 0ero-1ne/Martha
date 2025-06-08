@@ -63,6 +63,9 @@ fun BookmarkItem(
             )
             Text(
                 text = savedBook,
+                maxLines = 1,
+                modifier = Modifier
+                    .fillMaxSize(),
                 overflow = TextOverflow.Ellipsis,
             )
         }

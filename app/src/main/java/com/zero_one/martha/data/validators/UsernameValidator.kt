@@ -2,7 +2,7 @@ package com.zero_one.martha.data.validators
 
 fun validateUsername(username: String): UsernameValidationResult {
     val badCharacters = "&*()=+{[]}\\|/?'\";:,.^%#№@!~`"
-    val hasDigitsAndLetters = username.any {it.isDigit()} && username.any {it.isLetter()}
+    val hasDigitsAndLetters = username.any {it.isDigit()} || username.any {it.isLetter()}
     return when {
         username.isEmpty() -> UsernameValidationResult.EMPTY
         username.length < 6 -> UsernameValidationResult.INVALID_LENGTH

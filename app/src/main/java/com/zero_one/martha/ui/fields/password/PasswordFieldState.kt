@@ -25,9 +25,9 @@ class PasswordFieldState(initialValue: String) {
     fun signupValidate(): Boolean {
         error = when (validatePassword(value)) {
             PasswordValidationResult.VALID -> null
-            PasswordValidationResult.INVALID_LENGTH -> "Password length must be 8 or more"
-            PasswordValidationResult.INVALID -> "Password must contain letters and digits"
-            PasswordValidationResult.EMPTY -> "Password is blank"
+            PasswordValidationResult.INVALID_LENGTH -> "invalid_length"
+            PasswordValidationResult.INVALID -> "invalid"
+            PasswordValidationResult.EMPTY -> "empty"
         }
 
         return error == null
@@ -36,7 +36,7 @@ class PasswordFieldState(initialValue: String) {
     fun loginValidate(): Boolean {
         error = when (validatePassword(value)) {
             PasswordValidationResult.VALID -> null
-            PasswordValidationResult.EMPTY -> "Password is blank"
+            PasswordValidationResult.EMPTY -> "empty"
             PasswordValidationResult.INVALID_LENGTH -> null
             PasswordValidationResult.INVALID -> null
         }

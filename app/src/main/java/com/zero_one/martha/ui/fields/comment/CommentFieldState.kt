@@ -18,7 +18,6 @@ class CommentFieldState(initialValue: String) {
         private set
 
     var error: String? by mutableStateOf(null)
-        private set
 
     val isValid: Boolean by derivedStateOf {
         isCommentValid(value)
@@ -31,7 +30,7 @@ class CommentFieldState(initialValue: String) {
 
     fun validate() {
         error = when (validateComment(value)) {
-            CommentValidationResult.EMPTY -> "Comment is blank"
+            CommentValidationResult.EMPTY -> "empty"
             CommentValidationResult.VALID -> null
         }
     }

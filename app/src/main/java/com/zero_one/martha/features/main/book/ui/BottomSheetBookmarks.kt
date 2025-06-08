@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.utils.parseSystemFolderName
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +58,7 @@ fun BottomSheetBookmarks(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(it)
+                        Text(parseSystemFolderName(it))
                         Icon(
                             imageVector = if (currentFolderName == it) Icons.Rounded.Bookmark
                             else Icons.Default.BookmarkBorder,

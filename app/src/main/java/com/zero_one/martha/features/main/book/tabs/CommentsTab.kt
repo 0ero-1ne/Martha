@@ -34,8 +34,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Comment
 import com.zero_one.martha.features.main.book.BookViewModel
 import com.zero_one.martha.features.main.book.ui.CommentFormModal
@@ -79,7 +81,7 @@ fun CommentsTab(
 
         if (comments.isEmpty()) {
             Text(
-                text = "No comments...",
+                text = stringResource(R.string.no_comments),
                 modifier = Modifier
                     .padding(top = 64.dp),
             )
@@ -158,7 +160,7 @@ fun CommentsTab(
                         contentDescription = "Create comment",
                         modifier = Modifier.padding(end = 10.dp),
                     )
-                    Text("Leave comment")
+                    Text(stringResource(R.string.leave_comment))
                 }
             }
             items(comments, key = {it.uuid}) {comment ->

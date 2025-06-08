@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.zero_one.martha.modifier.smoothTabIndicatorOffset
+import com.zero_one.martha.utils.parseSystemFolderName
 import kotlinx.coroutines.launch
 
 @Composable
@@ -85,7 +86,7 @@ fun CustomScrollableTabRow(
                     },
                     unselectedContentColor = MaterialTheme.colorScheme.outline,
                     text = {
-                        Text(title)
+                        Text(parseSystemFolderName(title))
                     },
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp)),

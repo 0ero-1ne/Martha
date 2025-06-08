@@ -16,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import com.zero_one.martha.features.main.home.components.BookItem
 
 @Composable
@@ -41,7 +43,7 @@ fun HomeScreen(
             val newBooks by viewModel.newBooks.collectAsState()
 
             Text(
-                text = "Popular now".uppercase(),
+                text = stringResource(R.string.popular_now).uppercase(),
                 style = MaterialTheme.typography.titleLarge,
             )
 
@@ -66,7 +68,7 @@ fun HomeScreen(
             }
 
             Text(
-                text = "New books".uppercase(),
+                text = stringResource(R.string.new_books).uppercase(),
                 style = MaterialTheme.typography.titleLarge,
             )
 

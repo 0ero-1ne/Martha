@@ -6,7 +6,6 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +30,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -53,6 +51,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -101,7 +100,7 @@ fun EditProfileScreen(
                 when (event) {
                     EditProfileViewModel.EditValidationEvent.EditSuccess -> {
                         scope.launch {
-                            snackbarHostState.showSnackbar("User was successfully updated")
+                            snackbarHostState.showSnackbar(context.resources.getString(R.string.profile_edit_success_general_message))
                             fileUri = null
                         }
                     }
@@ -110,7 +109,7 @@ fun EditProfileScreen(
                         changePasswordFormState.oldPassword.onValueChanged("")
                         changePasswordFormState.newPassword.onValueChanged("")
                         scope.launch {
-                            snackbarHostState.showSnackbar("Password was successfully updated")
+                            snackbarHostState.showSnackbar(context.resources.getString(R.string.profile_edit_success_password_message))
                             fileUri = null
                         }
                     }
@@ -118,40 +117,43 @@ fun EditProfileScreen(
                     EditProfileViewModel.EditValidationEvent.ImageSuccess -> {
                         fileUri = null
                         scope.launch {
-                            snackbarHostState.showSnackbar("Image was successfully updated")
+                            snackbarHostState.showSnackbar(context.resources.getString(R.string.profile_edit_success_image_message))
                         }
                     }
 
                     EditProfileViewModel.EditValidationEvent.EditError -> {
                         if (viewModel.editErrorMessage.contains("Email")) {
-                            editFormState.email.error = viewModel.editErrorMessage
+                            editFormState.email.error =
+                                context.resources.getString(R.string.profile_edit_error_email_message)
                             return@collect
                         }
 
                         if (viewModel.editErrorMessage.contains("Username")) {
-                            editFormState.username.error = viewModel.editErrorMessage
+                            editFormState.username.error =
+                                context.resources.getString(R.string.profile_edit_error_username_message)
                             return@collect
                         }
 
                         scope.launch {
-                            snackbarHostState.showSnackbar(viewModel.editErrorMessage)
+                            snackbarHostState.showSnackbar(context.resources.getString(R.string.server_error))
                         }
                     }
 
                     EditProfileViewModel.EditValidationEvent.PasswordError -> {
                         if (viewModel.editErrorMessage.contains("old password")) {
-                            changePasswordFormState.oldPassword.error = viewModel.editErrorMessage
+                            changePasswordFormState.oldPassword.error =
+                                context.resources.getString(R.string.profile_edit_error_old_password_message)
                             return@collect
                         }
 
                         scope.launch {
-                            snackbarHostState.showSnackbar(viewModel.editErrorMessage)
+                            snackbarHostState.showSnackbar(context.resources.getString(R.string.server_error))
                         }
                     }
 
                     EditProfileViewModel.EditValidationEvent.ImageError -> {
                         scope.launch {
-                            snackbarHostState.showSnackbar(viewModel.editErrorMessage)
+                            snackbarHostState.showSnackbar(context.resources.getString(R.string.server_error))
                         }
                     }
                 }
@@ -165,7 +167,7 @@ fun EditProfileScreen(
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
                     bottom = paddingValues.calculateBottomPadding() + 16.dp,
-                    top = paddingValues.calculateTopPadding() + 16.dp,
+                    top = paddingValues.calculateTopPadding(),
                 ),
         ) {
             val user = viewModel.user.collectAsState()
@@ -254,7 +256,7 @@ fun EditProfileScreen(
                             modifier = Modifier
                                 .padding(end = 5.dp),
                         )
-                        Text("Choose image")
+                        Text(stringResource(R.string.profile_edit_choose_image))
                     }
                     OutlinedButton(
                         enabled = !viewModel.isLoading && fileUri != null,
@@ -282,32 +284,26 @@ fun EditProfileScreen(
                             modifier = Modifier
                                 .padding(end = 5.dp),
                         )
-                        Text("Save image")
+                        Text(stringResource(R.string.profile_edit_save_image))
                     }
                 }
             }
 
-            HorizontalDivider(Modifier.padding(vertical = 24.dp))
+            Spacer(Modifier.height(24.dp))
 
             val pagerState = rememberPagerState(
                 pageCount = {
                     2
                 },
             )
-            val tabs = listOf("General", "Password")
+            val tabs = listOf(
+                context.resources.getString(R.string.profile_edit_pager_general),
+                context.resources.getString(R.string.profile_edit_pager_password),
+            )
 
             CustomTabRow(
                 pagerState = pagerState,
                 tabs = tabs.toSet(),
-                modifier = Modifier
-                    .clip(
-                        RoundedCornerShape(16.dp),
-                    )
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.primary,
-                        RoundedCornerShape(16.dp),
-                    ),
             )
 
             Spacer(modifier = Modifier.height(32.dp))

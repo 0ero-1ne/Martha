@@ -16,11 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.zero_one.martha.R
 import com.zero_one.martha.features.main.bookmarks.BookmarksRoute
 import com.zero_one.martha.features.main.catalog.CatalogRoute
 import com.zero_one.martha.features.main.home.HomeRoute
@@ -39,25 +41,25 @@ fun MainNavigationBar(
 ) {
     val topLevelRoutes = listOf(
         TopLevelRoute(
-            "Bookmarks",
+            stringResource(R.string.bookmarks_tab),
             BookmarksRoute(),
             Icons.Filled.Bookmarks,
             Icons.Outlined.Bookmarks,
         ),
         TopLevelRoute(
-            "Home",
+            stringResource(R.string.home_tab),
             HomeRoute,
             Icons.Filled.Home,
             Icons.Outlined.Home,
         ),
         TopLevelRoute(
-            "Catalog",
+            stringResource(R.string.catalog_tab),
             CatalogRoute,
             Icons.Filled.LocalLibrary,
             Icons.Outlined.LocalLibrary,
         ),
         TopLevelRoute(
-            "Me",
+            stringResource(R.string.profile_tab),
             ProfileRoute,
             Icons.Filled.Person,
             Icons.Outlined.Person,

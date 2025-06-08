@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
@@ -43,6 +44,8 @@ import com.zero_one.martha.R
 import com.zero_one.martha.ui.components.CustomTopBar
 import com.zero_one.martha.ui.forms.login.LoginForm
 import com.zero_one.martha.ui.forms.login.rememberLoginFormState
+import com.zero_one.martha.utils.parseEmailFieldError
+import com.zero_one.martha.utils.parsePasswordFieldError
 import kotlinx.coroutines.launch
 
 @Composable
@@ -97,8 +100,16 @@ fun LoginScreen(
                         }
 
                         LoginViewModel.LoginValidationEvent.Error -> {
+                            if (viewModel.loginErrorMessage.contains("password")) {
+                                formState.email.error = parseEmailFieldError(
+                                    context.resources.getString(R.string.invalid_password_or_email),
+                                    context,
+                                )
+                                return@collect
+                            }
+
                             scope.launch {
-                                snackbarHostState.showSnackbar(viewModel.loginErrorMessage)
+                                snackbarHostState.showSnackbar(context.resources.getString(R.string.server_error))
                             }
                         }
                     }
@@ -128,7 +139,7 @@ fun LoginScreen(
                         .weight(1f),
                 )
                 Text(
-                    text = "Login",
+                    text = stringResource(R.string.login_title),
                     style = MaterialTheme.typography.displayLarge,
                 )
                 Spacer(
@@ -156,6 +167,15 @@ fun LoginScreen(
 
                         if (formState.isValid) {
                             onLoginClick(formState.email.value, formState.password.value)
+                        } else {
+                            formState.email.error = parseEmailFieldError(
+                                formState.email.error,
+                                context,
+                            )
+                            formState.password.error = parsePasswordFieldError(
+                                formState.password.error,
+                                context,
+                            )
                         }
                     },
                 ) {
@@ -165,7 +185,7 @@ fun LoginScreen(
                         )
                     } else {
                         Text(
-                            text = "Login",
+                            text = stringResource(R.string.login_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                         )
@@ -186,14 +206,14 @@ fun LoginScreen(
                         .padding(
                             end = 5.dp,
                         ),
-                    text = "Still has no account?",
+                    text = stringResource(R.string.login_to_signup_1),
                 )
                 Text(
                     modifier = Modifier
                         .clickable {
                             onNavigateToSignupScreen()
                         },
-                    text = "Signup",
+                    text = stringResource(R.string.login_to_signup_2),
                     color = if (isSystemInDarkTheme())
                         Color(0xFF9874AA)
                     else
@@ -205,7 +225,7 @@ fun LoginScreen(
                         .padding(
                             start = 5.dp,
                         ),
-                    text = "now!",
+                    text = stringResource(R.string.login_to_signup_3),
                 )
             }
         }

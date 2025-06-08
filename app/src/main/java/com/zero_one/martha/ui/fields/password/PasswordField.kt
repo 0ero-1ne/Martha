@@ -20,10 +20,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import com.zero_one.martha.modifier.clearFocusOnKeyboardDismiss
 
 @Composable
@@ -76,7 +78,7 @@ fun PasswordField(
         ),
         shape = RoundedCornerShape(16.dp),
         placeholder = {
-            Text("Enter the password")
+            Text(stringResource(R.string.password_placeholder))
         },
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -86,6 +88,7 @@ fun PasswordField(
     )
     Text(
         text = state.error ?: "",
+        maxLines = 2,
         modifier = Modifier
             .padding(
                 start = 16.dp,

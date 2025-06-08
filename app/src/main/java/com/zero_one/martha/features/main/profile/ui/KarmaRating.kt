@@ -18,16 +18,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zero_one.martha.R
 
 @Composable
 fun KarmaRating(
     upvotes: Int,
     downvotes: Int
 ) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -49,13 +52,13 @@ fun KarmaRating(
         )
     }
 
-    var karmaText = "No activity in comments"
+    var karmaText = context.resources.getString(R.string.karma_no_activity)
     if (upvotes > downvotes) {
-        karmaText = "You have a great karma"
+        karmaText = context.resources.getString(R.string.karma_great)
     } else if (downvotes > upvotes) {
-        karmaText = "You have a bad karma"
+        karmaText = context.resources.getString(R.string.karma_bad)
     } else if (upvotes != 0) {
-        karmaText = "You have a good karma"
+        karmaText = context.resources.getString(R.string.karma_normal)
     }
 
     Text(

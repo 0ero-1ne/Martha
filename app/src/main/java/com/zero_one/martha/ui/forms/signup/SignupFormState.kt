@@ -21,7 +21,7 @@ class SignupFormState(
 
     fun validate() {
         email.validate()
-        password.loginValidate()
+        password.signupValidate()
     }
 }
 

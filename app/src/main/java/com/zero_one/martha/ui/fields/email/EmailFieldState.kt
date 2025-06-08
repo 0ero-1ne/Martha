@@ -30,8 +30,8 @@ class EmailFieldState(initialValue: String) {
 
     fun validate() {
         error = when (validateEmail(value)) {
-            EmailValidationResult.EMPTY -> "Email is blank"
-            EmailValidationResult.INVALID -> "Email is invalid"
+            EmailValidationResult.EMPTY -> "empty"
+            EmailValidationResult.INVALID -> "invalid"
             EmailValidationResult.VALID -> null
         }
     }

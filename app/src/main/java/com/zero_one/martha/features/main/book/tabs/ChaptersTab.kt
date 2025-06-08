@@ -31,8 +31,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Chapter
 import com.zero_one.martha.features.main.book.ui.ChaptersListRow
 import kotlinx.coroutines.launch
@@ -67,7 +69,7 @@ fun ChaptersTab(
         val scope = rememberCoroutineScope()
 
         if (sortedChapters.value.isEmpty()) {
-            Text("No chapters...")
+            Text(stringResource(R.string.no_chapters))
             return
         }
 
@@ -116,7 +118,7 @@ fun ChaptersTab(
                     horizontalArrangement = Arrangement.Start,
                 ) {
                     Icon(Icons.Outlined.SwapVert, "Swap sorting icon")
-                    Text("Sort")
+                    Text(stringResource(R.string.chapters_sort))
                 }
                 HorizontalDivider(Modifier.padding(top = 16.dp))
             }

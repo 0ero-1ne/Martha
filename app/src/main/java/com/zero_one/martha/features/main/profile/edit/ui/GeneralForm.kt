@@ -9,11 +9,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import com.zero_one.martha.ui.forms.edit.EditForm
 import com.zero_one.martha.ui.forms.edit.EditFormState
+import com.zero_one.martha.utils.parseEmailFieldError
+import com.zero_one.martha.utils.parseUsernameFieldError
 
 @Composable
 fun GeneralForm(
@@ -22,6 +27,7 @@ fun GeneralForm(
     onSave: (email: String, username: String) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
     EditForm(
         state = editFormState,
     )
@@ -45,6 +51,15 @@ fun GeneralForm(
                     editFormState.email.value,
                     editFormState.username.value,
                 )
+            } else {
+                editFormState.username.error = parseUsernameFieldError(
+                    editFormState.username.error,
+                    context,
+                )
+                editFormState.email.error = parseEmailFieldError(
+                    editFormState.email.error,
+                    context,
+                )
             }
         },
     ) {
@@ -54,7 +69,7 @@ fun GeneralForm(
             )
         } else {
             Text(
-                text = "Save",
+                text = stringResource(R.string.profile_edit_save_button),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
             )

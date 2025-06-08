@@ -1,7 +1,6 @@
 package com.zero_one.martha.features.main.book.ui
 
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,10 +18,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import com.zero_one.martha.features.main.book.BookViewModel
 import com.zero_one.martha.ui.forms.comment.CommentForm
 import com.zero_one.martha.ui.forms.comment.rememberCommentFormState
+import com.zero_one.martha.utils.parseCommentFieldError
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,13 +80,6 @@ fun CommentFormModal(
                     .fillMaxWidth()
                     .padding(bottom = 5.dp),
             )
-            AnimatedVisibility(
-                visible = commentFormState.comment.error != null && isAuth(),
-            ) {
-                Text(
-                    text = commentFormState.comment.error ?: "",
-                )
-            }
             Button(
                 modifier = Modifier
                     .padding(top = 16.dp)
@@ -103,15 +98,24 @@ fun CommentFormModal(
                                 onSaveComment(commentFormState.comment.value.trim(), parentId)
                             }
                         }
+                    } else {
+                        commentFormState.comment.error = parseCommentFieldError(
+                            commentFormState.comment.error,
+                            context,
+                        )
                     }
                 },
                 shape = RoundedCornerShape(5.dp),
             ) {
                 val text = if (isAuth()) {
-                    if (editId == 0u) "Save" else "Update"
-                } else "Not authorized"
+                    if (editId == 0u)
+                        stringResource(R.string.leave_comment)
+                    else stringResource(R.string.update_comment)
+                } else stringResource(R.string.not_authorized)
                 Text(
-                    text = if (parentId == 0u) text else "Reply",
+                    text = if (parentId == 0u)
+                        text
+                    else stringResource(R.string.reply_comment),
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }

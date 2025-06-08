@@ -32,15 +32,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.R
 import com.zero_one.martha.features.main.profile.ui.BookmarkItem
 import com.zero_one.martha.features.main.profile.ui.KarmaRating
+import com.zero_one.martha.utils.parseSystemFolderName
 
 @Composable
 fun ProfileScreen(
@@ -62,12 +64,13 @@ fun ProfileScreen(
                     .fillMaxSize()
                     .padding(
                         top = paddingValues.calculateTopPadding() + 16.dp,
+                        bottom = paddingValues.calculateBottomPadding() + 16.dp,
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "You are not authorized",
+                    text = stringResource(R.string.not_authorized),
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Text(
@@ -75,7 +78,7 @@ fun ProfileScreen(
                         .padding(
                             top = 16.dp,
                         ),
-                    text = "Authorize to control your account",
+                    text = stringResource(R.string.authorize_message_profile),
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 OutlinedButton(
@@ -88,7 +91,7 @@ fun ProfileScreen(
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                 ) {
                     Text(
-                        text = "Login",
+                        text = stringResource(R.string.authorize_button),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -119,7 +122,7 @@ fun ProfileScreen(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(viewModel.user!!.image)
+                        .data("${BuildConfig.STORAGE_URL}images/${viewModel.user!!.image}")
                         .crossfade(true)
                         .build(),
                     contentDescription = "User ${viewModel.user!!.id} image",
@@ -134,7 +137,6 @@ fun ProfileScreen(
                     Text(
                         text = viewModel.user!!.username,
                         style = MaterialTheme.typography.titleLarge,
-                        textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(
@@ -203,7 +205,7 @@ fun ProfileScreen(
                     items(viewModel.user!!.savedBooks.keys.toList(), key = {it}) {savedBook ->
                         BookmarkItem(
                             onNavigateToBookmarks = onNavigateToBookmarks,
-                            savedBook = savedBook,
+                            savedBook = parseSystemFolderName(savedBook),
                             savedBookSize = viewModel.user!!.savedBooks[savedBook]?.size.toString(),
                         )
                     }

@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -174,12 +175,12 @@ fun BookHeader(
                 modifier = Modifier
                     .weight(1f),
             ) {
-                val text = if (!isAuth())
-                    "Start"
+                val text = if (!isAuth() || chapters.isEmpty())
+                    stringResource(R.string.book_start)
                 else {
                     if (savedBook.readerChapter == 0u)
-                        "Start"
-                    else "Continue"
+                        stringResource(R.string.book_start)
+                    else stringResource(R.string.book_continue)
                 }
 
                 Icon(
@@ -188,11 +189,10 @@ fun BookHeader(
                     modifier = Modifier
                         .padding(end = 5.dp),
                 )
-                if (chapters.isNotEmpty())
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
             }
             OutlinedButton(
                 enabled = chapters.isNotEmpty(),
@@ -208,12 +208,12 @@ fun BookHeader(
                 modifier = Modifier
                     .weight(1f),
             ) {
-                val text = if (!isAuth())
-                    "Start"
+                val text = if (!isAuth() || chapters.isEmpty())
+                    stringResource(R.string.book_start)
                 else {
-                    if (savedBook.audioChapter == 0u)
-                        "Start"
-                    else "Continue"
+                    if (savedBook.readerChapter == 0u)
+                        stringResource(R.string.book_start)
+                    else stringResource(R.string.book_continue)
                 }
 
                 Icon(
@@ -222,11 +222,10 @@ fun BookHeader(
                     modifier = Modifier
                         .padding(end = 5.dp),
                 )
-                if (chapters.isNotEmpty())
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
             }
         }
         if (notAuthDialogState) {

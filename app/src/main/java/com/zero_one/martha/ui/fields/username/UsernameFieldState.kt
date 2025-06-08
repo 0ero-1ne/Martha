@@ -31,9 +31,9 @@ class UsernameFieldState(initialValue: String) {
     fun validate(): Boolean {
         error = when (validateUsername(value)) {
             UsernameValidationResult.VALID -> null
-            UsernameValidationResult.INVALID_LENGTH -> "Username length must be 6 or more"
-            UsernameValidationResult.INVALID -> "Username must contain only letters, digits, \"-\" and \"_\""
-            UsernameValidationResult.EMPTY -> "Username is blank"
+            UsernameValidationResult.INVALID_LENGTH -> "invalid_length"
+            UsernameValidationResult.INVALID -> "invalid"
+            UsernameValidationResult.EMPTY -> "empty"
         }
 
         return error == null

@@ -27,7 +27,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.BookRate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +55,7 @@ fun BottomSheetRating(
                 .padding(16.dp),
         ) {
             Text(
-                text = "Leave a rate",
+                text = stringResource(R.string.leave_rate),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .padding(bottom = 10.dp),
@@ -97,7 +99,7 @@ fun BottomSheetRating(
                 shape = RoundedCornerShape(5.dp),
             ) {
                 Text(
-                    text = "Rate",
+                    text = stringResource(R.string.leave_rate_button),
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }

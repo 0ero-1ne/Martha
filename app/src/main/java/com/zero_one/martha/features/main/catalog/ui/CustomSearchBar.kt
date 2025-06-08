@@ -24,11 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import com.zero_one.martha.modifier.clearFocusOnKeyboardDismiss
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,7 +92,7 @@ fun CustomSearchBar(
                             Icon(Icons.Outlined.Close, "Clear query icon")
                         }
                 },
-                placeholder = {Text("Search the book")},
+                placeholder = {Text(stringResource(R.string.search_placeholder))},
                 interactionSource = interactionSource,
                 visualTransformation = VisualTransformation.None,
                 contentPadding = OutlinedTextFieldDefaults.contentPadding(

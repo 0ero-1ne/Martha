@@ -49,10 +49,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.features.main.bookmarks.components.BottomSheet
 import com.zero_one.martha.features.main.bookmarks.components.SavedBookItem
@@ -91,7 +93,7 @@ fun BookmarksScreen(
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Text(
-                        text = "You are not authorized",
+                        text = stringResource(R.string.not_authorized),
                         style = MaterialTheme.typography.titleLarge,
                     )
                     Text(
@@ -99,7 +101,7 @@ fun BookmarksScreen(
                             .padding(
                                 top = 16.dp,
                             ),
-                        text = "Authorize to see bookmarks",
+                        text = stringResource(R.string.authorize_message_bookmarks),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     OutlinedButton(
@@ -112,7 +114,7 @@ fun BookmarksScreen(
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                     ) {
                         Text(
-                            text = "Login",
+                            text = stringResource(R.string.authorize_button),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
@@ -213,7 +215,7 @@ fun BookmarksScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 Text(
-                                    text = "No saved books in folder",
+                                    text = stringResource(R.string.no_books_in_folder),
                                     style = MaterialTheme.typography.titleMedium,
                                 )
                             }

@@ -1,3 +1,109 @@
 <resources>
     <string name="app_name">Martha</string>
+
+    <!-- Navigation bar -->
+    <string name="bookmarks_tab">Bookmarks</string>
+    <string name="home_tab">Home</string>
+    <string name="catalog_tab">Catalog</string>
+    <string name="profile_tab">Me</string>
+
+    <!-- Main page -->
+    <string name="popular_now">Popular now</string>
+    <string name="new_books">New books</string>
+    <string name="books_for_you">For you</string>
+
+    <!-- Bookmarks page -->
+    <string name="ended_folder">Ended</string>
+    <string name="reading_folder">Reading</string>
+    <string name="stopped_folder">Stopped</string>
+    <string name="planned_folder">Planned</string>
+    <string name="favorites_folder">Favorites</string>
+    <string name="no_books_in_folder">No saved books in folder</string>
+    <string name="managing_folders">Managing folders</string>
+    <string name="enter_folder_name_placeholder">Enter the folder name</string>
+    <string name="error_empty_folder_name">Empty folder name value</string>
+    <string name="error_invalid_folder_name">Folder name already in use</string>
+
+    <!-- Catalog page -->
+    <string name="search_placeholder">Search the book</string>
+    <string name="filters_title">Filters</string>
+    <string name="tiles_title">Tiles</string>
+    <string name="filters_tags_title">Tags</string>
+    <string name="filters_use_title">Use filters</string>
+    <string name="no_books_by_query">No books by query</string>
+
+    <!-- Profile page -->
+    <string name="karma_great">You have a great karma</string>
+    <string name="karma_normal">You have a good karma</string>
+    <string name="karma_bad">You have a bad karma</string>
+    <string name="karma_no_activity">No activity in comments</string>
+    <string name="not_authorized">You are not authorized</string>
+    <string name="authorize_message_profile">Authorize to control your account</string>
+    <string name="authorize_message_bookmarks">Authorize to control your bookmarks</string>
+    <string name="authorize_button">Login</string>
+
+    <!-- Edit profile page -->
+    <string name="profile_edit_choose_image">Choose image</string>
+    <string name="profile_edit_save_image">Save image</string>
+    <string name="profile_edit_pager_general">General</string>
+    <string name="profile_edit_pager_password">Password</string>
+    <string name="profile_edit_save_button">Save</string>
+    <string name="profile_edit_save_password_button">Change password</string>
+    <string name="profile_edit_success_general_message">User was successfully updated</string>
+    <string name="profile_edit_success_password_message">Password was successfully updated</string>
+    <string name="profile_edit_success_image_message">Image was successfully updated</string>
+    <string name="profile_edit_error_email_message">Email is already in use</string>
+    <string name="profile_edit_error_username_message">Username is already in use</string>
+    <string name="profile_edit_error_old_password_message">Invalid current password</string>
+
+    <!-- Form fields -->
+    <string name="email_placeholder">Enter the email</string>
+    <string name="password_placeholder">Enter the password</string>
+    <string name="username_placeholder">Enter the username</string>
+    <string name="comment_placeholder">Enter the comment</string>
+    <string name="empty_comment">Empty comment</string>
+    <string name="empty_email">Empty email</string>
+    <string name="invalid_email">Invalid email format</string>
+    <string name="empty_password">Empty password</string>
+    <string name="invalid_password">The password must contain at least one letter, number and special character</string>
+    <string name="invalid_length_password">The password must be at least 8 characters long, but no more than 64</string>
+    <string name="empty_username">Empty username</string>
+    <string name="invalid_username">Username must contain only letters, numbers, \"-\" and \"_\"</string>
+    <string name="invalid_length_username">Username must be at least 6 characters long</string>
+
+    <!-- Auth pages -->
+    <string name="login_title">Login</string>
+    <string name="signup_title">Signup</string>
+    <string name="login_to_signup_1">Still has no account?</string>
+    <string name="login_to_signup_2">Signup</string>
+    <string name="login_to_signup_3">now!</string>
+    <string name="signup_to_login_1">Already has account?</string>
+    <string name="signup_to_login_2">Login</string>
+    <string name="signup_to_login_3">now!</string>
+    <string name="server_error">Server error, try again later</string>
+    <string name="invalid_password_or_email">Invalid email or password</string>
+
+    <!-- Book page -->
+    <string name="about_short_year">Year</string>
+    <string name="about_short_status">Status</string>
+    <string name="about_short_views">Views</string>
+    <string name="about_short_rating">Rating</string>
+    <string name="status_ongoing">Ongoing</string>
+    <string name="status_ended">Ended</string>
+    <string name="status_stopped">Stopped</string>
+    <string name="pager_about_tab">About</string>
+    <string name="pager_chapters_tab">Chapters</string>
+    <string name="pager_comments_tab">Comments</string>
+    <string name="about_tags_title">Tags</string>
+    <string name="about_description_title">Description</string>
+    <string name="book_continue">Start</string>
+    <string name="book_start">Continue</string>
+    <string name="leave_rate">Leave a rate</string>
+    <string name="leave_rate_button">Rate</string>
+    <string name="leave_comment">Leave a comment</string>
+    <string name="update_comment">Update comment</string>
+    <string name="reply_comment">Reply</string>
+    <string name="no_comments">No comments</string>
+    <string name="chapters_sort">Sort</string>
+    <string name="no_chapters">No chapters</string>
 </resources>

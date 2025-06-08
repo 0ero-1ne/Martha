@@ -29,8 +29,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -48,6 +51,7 @@ fun BottomSheet(
     var inputValue by remember {mutableStateOf("")}
     var errorValue by remember {mutableStateOf("")}
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     ModalBottomSheet(
@@ -69,7 +73,7 @@ fun BottomSheet(
                 ),
         ) {
             Text(
-                text = "Managing folders",
+                text = stringResource(R.string.managing_folders),
                 style = MaterialTheme.typography.titleLarge,
             )
             Row(
@@ -105,10 +109,12 @@ fun BottomSheet(
                                     inputValue = ""
                                     keyboardController?.hide()
                                 } else {
-                                    errorValue = "Tab already exists"
+                                    errorValue =
+                                        context.resources.getString(R.string.error_invalid_folder_name)
                                 }
                             } else {
-                                errorValue = "Empty tab name"
+                                errorValue =
+                                    context.resources.getString(R.string.error_empty_folder_name)
                             }
                         },
                 )
@@ -117,7 +123,7 @@ fun BottomSheet(
                 Text(
                     text = errorValue,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onError,
+                    color = MaterialTheme.colorScheme.error,
                     modifier = Modifier
                         .padding(
                             top = 5.dp,

@@ -36,12 +36,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Comment
 import com.zero_one.martha.ui.components.NotAuthDialog
@@ -89,7 +91,7 @@ fun CommentItem(
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(comment.user.image)
+                            .data("${BuildConfig.STORAGE_URL}images/${comment.user.image}")
                             .crossfade(true)
                             .build(),
                         contentDescription = "Comment user image",
@@ -155,7 +157,7 @@ fun CommentItem(
             ) {
                 Row {
                     Text(
-                        text = "Reply",
+                        text = stringResource(R.string.reply_comment),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
                             .clickable {

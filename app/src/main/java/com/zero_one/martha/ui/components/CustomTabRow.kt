@@ -21,13 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.zero_one.martha.modifier.smoothTabIndicatorOffset
+import com.zero_one.martha.utils.parseSystemFolderName
 import kotlinx.coroutines.launch
 
 @Composable
 fun CustomTabRow(
     pagerState: PagerState,
     tabs: Set<String>,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
     var previousTabIndex by rememberSaveable {mutableIntStateOf(0)}
@@ -81,7 +82,7 @@ fun CustomTabRow(
                 unselectedContentColor = MaterialTheme.colorScheme.outline,
                 text = {
                     Text(
-                        text = title,
+                        text = parseSystemFolderName(title),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 },

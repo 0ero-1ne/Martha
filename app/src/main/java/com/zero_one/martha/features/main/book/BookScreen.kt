@@ -1,6 +1,5 @@
 package com.zero_one.martha.features.main.book
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -11,9 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,9 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.SavedBook
 import com.zero_one.martha.data.domain.model.User
 import com.zero_one.martha.features.main.book.tabs.AboutTab
@@ -75,7 +73,11 @@ fun BookScreen(
                     3
                 },
             )
-            val tabs = listOf("About", "Chapters", "Comments")
+            val tabs = listOf(
+                stringResource(R.string.pager_about_tab),
+                stringResource(R.string.pager_chapters_tab),
+                stringResource(R.string.pager_comments_tab),
+            )
 
             if (viewModel.book == null) {
                 CircularProgressIndicator()
@@ -125,13 +127,13 @@ fun BookScreen(
             CustomTabRow(
                 pagerState = pagerState,
                 tabs = tabs.toSet(),
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.primary,
-                        RoundedCornerShape(10.dp),
-                    ),
+                modifier = Modifier,
+                // .clip(RoundedCornerShape(10.dp))
+                // .border(
+                //     1.dp,
+                //     MaterialTheme.colorScheme.primary,
+                //     RoundedCornerShape(10.dp),
+                // ),
             )
 
             Spacer(modifier = Modifier.height(16.dp))

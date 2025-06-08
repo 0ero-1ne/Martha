@@ -10,10 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Book
+import com.zero_one.martha.utils.parseBookStatus
 import java.text.DecimalFormat
 import java.util.Locale
 import kotlin.math.floor
@@ -32,15 +35,15 @@ fun AboutShortInfo(
         horizontalArrangement = Arrangement.SpaceAround,
     ) {
         ShortInfoItem(
-            title = "Year",
+            title = stringResource(R.string.about_short_year),
             text = book.year.toString(),
         )
         ShortInfoItem(
-            title = "Status",
-            text = book.status,
+            title = stringResource(R.string.about_short_status),
+            text = parseBookStatus(book.status),
         )
         ShortInfoItem(
-            title = "Views",
+            title = stringResource(R.string.about_short_views),
             text = prettyCount(book.views),
         )
 
@@ -50,7 +53,7 @@ fun AboutShortInfo(
         }
         val ratingString = String.format(Locale.US, "%.2f", rating)
         ShortInfoItem(
-            title = "Rating",
+            title = stringResource(R.string.about_short_rating),
             text = ratingString.let {
                 if (it.endsWith("00")) {
                     ratingString.substringBefore(".")

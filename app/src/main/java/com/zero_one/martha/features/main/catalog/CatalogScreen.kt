@@ -31,9 +31,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import com.zero_one.martha.features.main.catalog.ui.BookCard
 import com.zero_one.martha.features.main.catalog.ui.CustomSearchBar
 import com.zero_one.martha.features.main.catalog.ui.FiltersMenu
@@ -111,7 +113,7 @@ fun CatalogScreen(
                         contentDescription = "Change grid cells count",
                         modifier = Modifier.padding(end = 5.dp),
                     )
-                    Text("Tiles: ${viewModel.columns}")
+                    Text("${stringResource(R.string.tiles_title)}: ${viewModel.columns}")
                 }
                 Box(modifier = Modifier.width(10.dp))
                 Row(
@@ -125,7 +127,7 @@ fun CatalogScreen(
                         contentDescription = "Open filter menu",
                         modifier = Modifier.padding(end = 5.dp),
                     )
-                    Text("Filters")
+                    Text(stringResource(R.string.filters_title))
                 }
             }
 
@@ -151,7 +153,7 @@ fun CatalogScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    Text("No books by query")
+                    Text(stringResource(R.string.no_books_by_query))
                 }
                 return@Scaffold
             }

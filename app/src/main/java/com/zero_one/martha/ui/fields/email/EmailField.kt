@@ -15,9 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import com.zero_one.martha.modifier.clearFocusOnKeyboardDismiss
 
 @Composable
@@ -57,7 +59,7 @@ fun EmailField(
         ),
         shape = RoundedCornerShape(16.dp),
         placeholder = {
-            Text("Enter the email")
+            Text(stringResource(R.string.email_placeholder))
         },
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -67,6 +69,7 @@ fun EmailField(
     )
     Text(
         text = state.error ?: "",
+        maxLines = 2,
         modifier = Modifier
             .padding(
                 start = 16.dp,

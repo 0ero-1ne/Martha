@@ -24,8 +24,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Tag
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +54,7 @@ fun FiltersMenu(
                 ),
         ) {
             Text(
-                text = "Tags",
+                text = stringResource(R.string.filters_tags_title),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(bottom = 10.dp),
             )
@@ -117,7 +119,7 @@ fun FiltersMenu(
                 shape = RoundedCornerShape(16.dp),
             ) {
                 Text(
-                    text = "Use filters",
+                    text = stringResource(R.string.filters_use_title),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleMedium,
                 )

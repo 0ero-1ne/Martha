@@ -18,7 +18,7 @@ class EditFormState(
     val isValid: Boolean by derivedStateOf {
         email.isValid && username.isValid
     }
-
+    
     fun validate() {
         email.validate()
         username.validate()
