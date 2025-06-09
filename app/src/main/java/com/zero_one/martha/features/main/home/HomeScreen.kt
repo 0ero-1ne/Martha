@@ -113,7 +113,7 @@ fun HomeScreen(
                 style = MaterialTheme.typography.titleLarge,
             )
 
-            if (newBooks == null) {
+            if (forYouBooks == null) {
                 CircularProgressIndicator()
             } else {
                 LazyRow(

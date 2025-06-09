@@ -107,11 +107,12 @@ fun CommentFormModal(
                 },
                 shape = RoundedCornerShape(5.dp),
             ) {
-                val text = if (isAuth()) {
-                    if (editId == 0u)
+                var text = stringResource(R.string.not_authorized)
+                if (isAuth()) {
+                    text = if (editId == 0u)
                         stringResource(R.string.leave_comment)
                     else stringResource(R.string.update_comment)
-                } else stringResource(R.string.not_authorized)
+                }
                 Text(
                     text = if (parentId == 0u)
                         text
