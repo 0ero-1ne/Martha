@@ -61,7 +61,6 @@ fun NavGraphBuilder.mainNavigationGraph(
                     rootNavController.navigate(LoginRoute)
                 },
                 onNavigateToBookmarks = {folderName ->
-                    navController.navigateUp()
                     navController.navigate(BookmarksRoute(folderName = folderName))
                 },
                 onNavigateToEditPage = {

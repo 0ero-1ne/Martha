@@ -1,5 +1,6 @@
 package com.zero_one.martha.features.main.bookmarks.components
 
+import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,12 +37,14 @@ import com.zero_one.martha.modifier.clearFocusOnKeyboardDismiss
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTextField(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     value: String,
+    isError: State<Boolean>,
     onValueChange: (String) -> Unit,
 ) {
     val interactionSource = remember {MutableInteractionSource()}
     val focusManager = LocalFocusManager.current
+    Log.d("error value", isError.value.toString())
 
     Box(
         modifier = modifier,
@@ -74,6 +78,7 @@ fun CustomTextField(
                 innerTextField = innerTextField,
                 enabled = true,
                 singleLine = true,
+                isError = isError.value,
                 leadingIcon = {
                     Icon(Icons.Outlined.Book, "Search icon")
                 },
@@ -97,11 +102,12 @@ fun CustomTextField(
                 container = {
                     OutlinedTextFieldDefaults.Container(
                         enabled = true,
-                        isError = false,
+                        isError = isError.value,
                         interactionSource = interactionSource,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color.DarkGray,
                             unfocusedBorderColor = Color.DarkGray,
+                            errorBorderColor = Color(0xFFC80000),
                         ),
                         shape = RoundedCornerShape(5.dp),
                         focusedBorderThickness = 1.dp,

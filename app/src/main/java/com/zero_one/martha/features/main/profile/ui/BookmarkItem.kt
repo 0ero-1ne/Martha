@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 fun BookmarkItem(
     onNavigateToBookmarks: (String) -> Unit,
     savedBook: String,
+    originalName: String,
     savedBookSize: String
 ) {
     Box(
@@ -43,7 +44,7 @@ fun BookmarkItem(
                 RoundedCornerShape(16.dp),
             )
             .clickable {
-                onNavigateToBookmarks(savedBook)
+                onNavigateToBookmarks(originalName)
             },
     ) {
         Column(
@@ -53,7 +54,7 @@ fun BookmarkItem(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                imageVector = folderIcon(savedBook),
+                imageVector = folderIcon(originalName),
                 contentDescription = "Bookmark folder",
                 modifier = Modifier
                     .padding(bottom = 6.dp)

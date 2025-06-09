@@ -206,6 +206,7 @@ fun ProfileScreen(
                         BookmarkItem(
                             onNavigateToBookmarks = onNavigateToBookmarks,
                             savedBook = parseSystemFolderName(savedBook),
+                            originalName = savedBook,
                             savedBookSize = viewModel.user!!.savedBooks[savedBook]?.size.toString(),
                         )
                     }
