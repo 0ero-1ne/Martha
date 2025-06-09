@@ -100,6 +100,11 @@ fun SignupScreen(
                         }
 
                         SignupViewModel.SignupValidationEvent.Error -> {
+                            if (viewModel.signupErrorMessage.contains("already")) {
+                                formState.email.error =
+                                    context.resources.getString(R.string.profile_edit_error_email_message)
+                                return@collect
+                            }
                             scope.launch {
                                 snackbarHostState.showSnackbar(context.resources.getString(R.string.server_error))
                             }
