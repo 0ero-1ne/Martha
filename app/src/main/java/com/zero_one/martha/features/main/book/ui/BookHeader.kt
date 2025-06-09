@@ -50,7 +50,7 @@ import com.zero_one.martha.ui.components.NotAuthDialog
 fun BookHeader(
     book: Book,
     folderName: String,
-    userRating: Int,
+    userRating: Int = 0,
     onOpenBookmarksModal: () -> Unit,
     onOpenRatingModal: () -> Unit,
     isAuth: () -> Boolean,
