@@ -16,10 +16,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Book
 
@@ -32,7 +34,7 @@ fun BookItem(
         Column {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(book.cover)
+                    .data("${BuildConfig.STORAGE_URL}images/${book.cover}")
                     .crossfade(true)
                     .build(),
                 contentDescription = "Book ${book.id} cover",
@@ -50,9 +52,13 @@ fun BookItem(
                         onBookClick(book.id)
                     },
             )
+
             Text(
                 text = book.title,
+                modifier = Modifier
+                    .width(130.dp),
                 style = MaterialTheme.typography.titleSmall,
+                overflow = TextOverflow.Ellipsis,
                 maxLines = 2,
                 minLines = 1,
             )

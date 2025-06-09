@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Book
 
@@ -36,7 +37,7 @@ fun BookCard(
         Column {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(book.cover)
+                    .data("${BuildConfig.STORAGE_URL}images/${book.cover}")
                     .crossfade(true)
                     .build(),
                 contentDescription = "Book ${book.id} cover",

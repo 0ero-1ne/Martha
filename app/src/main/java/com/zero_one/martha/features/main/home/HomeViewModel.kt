@@ -1,6 +1,5 @@
 package com.zero_one.martha.features.main.home
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zero_one.martha.data.domain.model.Book
@@ -14,7 +13,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val handle: SavedStateHandle,
     private val bookRepository: BookRepository
 ): ViewModel() {
     private val _popularBooks = MutableStateFlow<List<Book>?>(null)
@@ -23,9 +21,13 @@ class HomeViewModel @Inject constructor(
     private val _newBooks = MutableStateFlow<List<Book>?>(null)
     val newBooks = _newBooks.asStateFlow()
 
+    private val _forYouBooks = MutableStateFlow<List<Book>?>(null)
+    val forYouBooks = _forYouBooks.asStateFlow()
+
     init {
         initPopularBooks()
         initNewBooks()
+        initForYouBooks()
     }
 
     private fun initPopularBooks() {
@@ -39,6 +41,14 @@ class HomeViewModel @Inject constructor(
     private fun initNewBooks() {
         viewModelScope.launch {
             _newBooks.update {
+                bookRepository.getBooks()
+            }
+        }
+    }
+
+    private fun initForYouBooks() {
+        viewModelScope.launch {
+            _forYouBooks.update {
                 bookRepository.getBooks()
             }
         }

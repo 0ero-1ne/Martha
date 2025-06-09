@@ -110,7 +110,7 @@ fun PlayerScreen(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(viewModel.book!!.cover)
+                        .data("${BuildConfig.STORAGE_URL}images/${viewModel.book!!.cover}")
                         .crossfade(true)
                         .build(),
                     contentDescription = "Book ${viewModel.book!!.id} cover",

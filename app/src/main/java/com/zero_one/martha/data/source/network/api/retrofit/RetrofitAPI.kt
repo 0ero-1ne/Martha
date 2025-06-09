@@ -43,7 +43,7 @@ interface RetrofitAPI: NetworkAPI {
     override suspend fun updateUser(@Body user: User): Response<User?>
 
     // Book
-    @GET(value = "books")
+    @GET(value = "books?withBookRates=true")
     override suspend fun getBooks(): Response<List<Book>>
 
     @GET(value = "books/{id}?withTags=true&withAuthors=true&withComments=true&withBookRates=true")

@@ -9,6 +9,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.Chapter
 import com.zero_one.martha.data.domain.model.SavedBook
@@ -48,8 +49,6 @@ class ReaderViewModel @Inject constructor(
 
     private val _pages: MutableStateFlow<List<String>> = MutableStateFlow(listOf())
     val pages = _pages.asStateFlow()
-
-    private val url = "https://filesamples.com/samples/document/txt/sample3.txt"
 
     private var savedBook = SavedBook()
     private var folderName = ""
@@ -92,7 +91,8 @@ class ReaderViewModel @Inject constructor(
                 currentPage = savedBook.page
             }
 
-            loadFile()
+            val uri = "${BuildConfig.STORAGE_URL}chapters/${currentChapter!!.text}"
+            loadFile(uri)
         }
     }
 
@@ -100,9 +100,9 @@ class ReaderViewModel @Inject constructor(
         bufferedReader?.close()
     }
 
-    private fun loadFile() {
+    private fun loadFile(uri: String) {
         GlobalScope.launch {
-            bufferedReader = getFileBufferedReader(url)
+            bufferedReader = getFileBufferedReader(uri)
         }
     }
 

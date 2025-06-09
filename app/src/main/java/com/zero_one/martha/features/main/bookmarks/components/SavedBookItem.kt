@@ -38,6 +38,7 @@ import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.zero_one.martha.BuildConfig
 import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Book
 import com.zero_one.martha.data.domain.model.SavedBook
@@ -93,7 +94,7 @@ fun SavedBookItem(
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(book.cover)
+                    .data("${BuildConfig.STORAGE_URL}images/${book.cover}")
                     .crossfade(true)
                     .build(),
                 contentDescription = "Book ${book.id} cover",

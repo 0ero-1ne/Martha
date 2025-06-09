@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -36,11 +38,14 @@ fun HomeScreen(
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
                     bottom = paddingValues.calculateBottomPadding(),
+                    top = 16.dp,
                 )
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
         ) {
             val popularBooks by viewModel.popularBooks.collectAsState()
             val newBooks by viewModel.newBooks.collectAsState()
+            val forYouBooks by viewModel.forYouBooks.collectAsState()
 
             Text(
                 text = stringResource(R.string.popular_now).uppercase(),
@@ -58,7 +63,18 @@ fun HomeScreen(
                         ),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    items(popularBooks!!, key = {it.uuid}) {book ->
+                    items(
+                        popularBooks!!.sortedByDescending {book ->
+                            val rating =
+                                book.rates.sumOf {it.rating}.toFloat() / book.rates.size.toFloat()
+                            if (rating.isNaN()) {
+                                0f
+                            } else {
+                                rating
+                            }
+                        }.take(5),
+                        key = {it.uuid},
+                    ) {book ->
                         BookItem(
                             book = book,
                             onBookClick = onNavigateToBook,
@@ -83,7 +99,32 @@ fun HomeScreen(
                         ),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    items(newBooks!!, key = {it.uuid}) {book ->
+                    items(newBooks!!.sortedByDescending {it.id}.take(5), key = {it.uuid}) {book ->
+                        BookItem(
+                            book = book,
+                            onBookClick = onNavigateToBook,
+                        )
+                    }
+                }
+            }
+
+            Text(
+                text = stringResource(R.string.books_for_you).uppercase(),
+                style = MaterialTheme.typography.titleLarge,
+            )
+
+            if (newBooks == null) {
+                CircularProgressIndicator()
+            } else {
+                LazyRow(
+                    modifier = Modifier
+                        .padding(
+                            top = 16.dp,
+                            bottom = 16.dp,
+                        ),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(forYouBooks!!.shuffled().take(5), key = {it.uuid}) {book ->
                         BookItem(
                             book = book,
                             onBookClick = onNavigateToBook,
