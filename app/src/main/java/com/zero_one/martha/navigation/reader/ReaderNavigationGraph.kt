@@ -36,6 +36,14 @@ fun NavGraphBuilder.readerNavigationGraph(
                 onNavigateToBack = {
                     rootNavController.navigateUp()
                 },
+                onNavigateToReader = {bookId, chapterId ->
+                    rootNavController.navigate(
+                        ReaderRoute(
+                            bookId = bookId,
+                            chapterId = chapterId,
+                        ),
+                    )
+                },
             )
         }
     }

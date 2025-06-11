@@ -4,32 +4,22 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.automirrored.filled.Toc
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,23 +30,22 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.zero_one.martha.features.reader.ui.readerTextStyle
+import com.zero_one.martha.ui.components.CustomTopBarWithDropdownMenu
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ReaderScreen(
     viewModel: ReaderViewModel,
-    onNavigateToBack: () -> Unit
+    onNavigateToBack: () -> Unit,
+    onNavigateToReader: (bookId: UInt, chapterId: UInt) -> Unit
 ) {
     BackHandler(
         onBack = {
@@ -101,89 +90,70 @@ fun ReaderScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-    ) {paddingValues ->
-        AnimatedVisibility(
-            visible = menuState,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier
-                .zIndex(2f),
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
-                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
-                        top = paddingValues.calculateTopPadding(),
-                    )
-                    .clip(RoundedCornerShape(10.dp)),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceContainer),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(
-                        onClick = {
-                            viewModel.destroy()
-                            onNavigateToBack()
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "Exit reader",
-                            tint = Color.Black,
-                        )
-                    }
-
-                    viewModel.currentChapter.let {
-                        if (it == null)
-                            CircularProgressIndicator()
-                        else
-                            Text(
-                                text = it.title,
-                                style = LocalTextStyle.current.copy(
-                                    color = Color.Black,
-                                ),
+        topBar = {
+            AnimatedVisibility(menuState) {
+                CustomTopBarWithDropdownMenu(
+                    onNavigateToBack = {
+                        viewModel.destroy()
+                        onNavigateToBack()
+                    },
+                    title = if (viewModel.currentChapter != null)
+                        viewModel.currentChapter!!.title
+                    else "",
+                    content = {
+                        IconButton(
+                            onClick = {
+                                chaptersExpanded = !chaptersExpanded
+                            },
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Default.Toc,
+                                contentDescription = "More chapters button",
                             )
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                    viewModel.book.let {
-                        if (it == null)
-                            CircularProgressIndicator()
-                        else {
-                            IconButton(
-                                onClick = {
-                                    chaptersExpanded = !chaptersExpanded
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Menu,
-                                    contentDescription = "More chapters",
-                                    tint = Color.Black,
-                                )
+                        }
+                        DropdownMenu(
+                            expanded = chaptersExpanded,
+                            onDismissRequest = {
+                                chaptersExpanded = false
+                            },
+                        ) {
+                            if (viewModel.book == null) {
+                                CircularProgressIndicator()
+                            } else {
+                                viewModel.book!!.chapters.sortedBy {it.serial}.forEach {chapter ->
+                                    if (chapter.text != "") {
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(chapter.title)
+                                            },
+                                            onClick = {
+                                                viewModel.destroy()
+                                                onNavigateToBack()
+                                                onNavigateToReader(viewModel.book!!.id, chapter.id)
+                                            },
+                                        )
+                                    }
+                                }
                             }
                         }
-                    }
-                }
+                    },
+                )
             }
-        }
-        Column(
+        },
+    ) {paddingValues ->
+        Box(
             modifier = Modifier
                 .padding(
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
-                    top = paddingValues.calculateTopPadding(),
                     bottom = paddingValues.calculateBottomPadding() + 16.dp,
+                    top = 32.dp,
                 )
                 .fillMaxSize(),
         ) {
             if (viewModel.bufferedReader == null) {
                 CircularProgressIndicator()
-                return@Column
+                return@Box
             }
 
             if (isCounting) {
