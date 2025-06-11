@@ -99,7 +99,7 @@ fun AboutTab(
             color = MaterialTheme.colorScheme.primary,
             overflow = TextOverflow.Ellipsis,
             fontSize = 16.sp,
-            collapsedMaxLines = 6,
+            collapsedMaxLines = 7,
             modifier = Modifier
                 .animateContentSize()
                 .clickable {expandableDescription = !expandableDescription},

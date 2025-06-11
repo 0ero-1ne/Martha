@@ -7,6 +7,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -41,6 +42,7 @@ fun CustomTopBar(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun CustomTopBarWithDropdownMenu(
+    toSurfaceColor: Boolean = false,
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
     onNavigateToBack: () -> Unit,
     title: String = "",
@@ -66,5 +68,9 @@ fun CustomTopBarWithDropdownMenu(
             content()
         },
         windowInsets = windowInsets,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = if (toSurfaceColor) MaterialTheme.colorScheme.surfaceContainer
+            else MaterialTheme.colorScheme.background,
+        ),
     )
 }

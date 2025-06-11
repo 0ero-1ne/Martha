@@ -62,6 +62,7 @@ fun CatalogScreen(
                 .padding(
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
+                    bottom = paddingValues.calculateBottomPadding() + 16.dp,
                 ),
         ) {
             if (showFiltersMenu) {

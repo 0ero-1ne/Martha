@@ -93,6 +93,7 @@ fun ReaderScreen(
         topBar = {
             AnimatedVisibility(menuState) {
                 CustomTopBarWithDropdownMenu(
+                    toSurfaceColor = true,
                     onNavigateToBack = {
                         viewModel.destroy()
                         onNavigateToBack()
