@@ -13,6 +13,8 @@ import androidx.compose.material.icons.rounded.Forward10
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Replay10
+import androidx.compose.material.icons.rounded.SkipNext
+import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -23,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.zero_one.martha.data.domain.model.Chapter
 import com.zero_one.martha.features.player.components.ChapterPlayerActions
 import com.zero_one.martha.features.player.components.ChapterPlayerState
 import com.zero_one.martha.ui.components.CustomIconButton
@@ -31,7 +34,10 @@ import com.zero_one.martha.ui.components.CustomIconButton
 fun PlayerControls(
     onAction: (ChapterPlayerActions) -> Unit,
     playerState: ChapterPlayerState,
-    isLoading: Boolean
+    isLoading: Boolean,
+    currentChapterSerial: Int,
+    chapters: List<Chapter>,
+    onNavigateToPlayer: (bookId: UInt, chapterId: UInt) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -43,6 +49,20 @@ fun PlayerControls(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
+        val currentChapterIndex = chapters.indexOfFirst {it.serial == currentChapterSerial}
+
+        CustomIconButton(
+            enabled = currentChapterIndex > 0,
+            modifier = Modifier
+                .padding(end = 16.dp),
+            onClick = {
+                val previousChapter = chapters[currentChapterIndex - 1]
+                onNavigateToPlayer(previousChapter.bookId, previousChapter.id)
+            },
+            imageVector = Icons.Rounded.SkipPrevious,
+            size = 36.dp,
+        )
+
         CustomIconButton(
             onClick = {
                 onAction(ChapterPlayerActions.Replay)
@@ -98,6 +118,18 @@ fun PlayerControls(
                 onAction(ChapterPlayerActions.Forward)
             },
             imageVector = Icons.Rounded.Forward10,
+            size = 36.dp,
+        )
+
+        CustomIconButton(
+            enabled = currentChapterIndex < chapters.size - 1,
+            modifier = Modifier
+                .padding(start = 16.dp),
+            onClick = {
+                val nextChapter = chapters[currentChapterIndex + 1]
+                onNavigateToPlayer(nextChapter.bookId, nextChapter.id)
+            },
+            imageVector = Icons.Rounded.SkipNext,
             size = 36.dp,
         )
     }

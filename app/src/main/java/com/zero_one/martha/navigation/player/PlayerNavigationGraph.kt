@@ -37,6 +37,14 @@ fun NavGraphBuilder.playerNavigationGraph(
                 onNavigateToBack = {
                     rootNavController.navigateUp()
                 },
+                onNavigateToPlayer = {bookId, chapterId ->
+                    rootNavController.navigate(
+                        PlayerRoute(
+                            bookId = bookId,
+                            chapterId = chapterId,
+                        ),
+                    )
+                },
             )
         }
     }

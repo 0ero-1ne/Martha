@@ -62,10 +62,10 @@ class PlayerViewModel @Inject constructor(
                 }
             }
 
-            if (currentChapter!!.id == savedBook.audioChapter) {
-                timeState = savedBook.audio
+            timeState = if (currentChapter!!.id == savedBook.audioChapter) {
+                savedBook.audio
             } else {
-                timeState = 0L
+                0L
             }
         }
     }
@@ -75,6 +75,10 @@ class PlayerViewModel @Inject constructor(
             val bookmarks = userManager.getUser().savedBooks.toMutableMap()
 
             if (currentChapter!!.id < savedBook.audioChapter) {
+                return@launch
+            }
+
+            if (timeState == 0L) {
                 return@launch
             }
 

@@ -18,12 +18,14 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CustomIconButton(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onClick: () -> Unit,
     imageVector: ImageVector,
     size: Dp,
     paddingValues: PaddingValues = PaddingValues(0.dp)
 ) {
     Button(
+        enabled = enabled,
         modifier = modifier
             .size(size + 10.dp)
             .padding(paddingValues),
