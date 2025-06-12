@@ -30,6 +30,7 @@
     <string name="filters_title">Фильтры</string>
     <string name="tiles_title">Сетка</string>
     <string name="filters_tags_title">Теги</string>
+    <string name="filters_year_title">Год</string>
     <string name="filters_use_title">Применить фильтры</string>
     <string name="no_books_by_query">Ничего не найдено</string>
 

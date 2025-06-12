@@ -55,7 +55,10 @@ interface RetrofitAPI: NetworkAPI {
     @GET(value = "books")
     override suspend fun getBooksByQuery(
         @Query("query") query: String,
-        @Query("tags") tags: String
+        @Query("tags") tags: String,
+        @Query("statuses") statuses: String,
+        @Query("start_year") startYear: Int,
+        @Query("end_year") endYear: Int,
     ): Response<List<Book>>
 
     // Chapter

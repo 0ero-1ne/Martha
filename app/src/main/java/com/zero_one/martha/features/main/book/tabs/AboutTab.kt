@@ -57,6 +57,7 @@ fun AboutTab(
             modifier = Modifier
                 .padding(top = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             book.tags.forEach {tag ->
                 Box(

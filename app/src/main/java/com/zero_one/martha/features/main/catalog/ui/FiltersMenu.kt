@@ -29,15 +29,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.zero_one.martha.R
 import com.zero_one.martha.data.domain.model.Tag
+import com.zero_one.martha.utils.parseBookStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FiltersMenu(
     tags: List<Tag>,
+    yearsLimits: Pair<Int, Int>,
+    yearCurrentValue: Pair<Int, Int>,
     onDismiss: () -> Unit,
     onAddTagFilter: (String) -> Unit,
     onRemoveTagFilter: (String) -> Unit,
+    onAddStatusFilter: (String) -> Unit,
+    onRemoveStatusFilter: (String) -> Unit,
+    onSetYearFilter: (start: Int, end: Int) -> Unit,
     tagFilters: State<List<String>>,
+    statusFilters: State<List<String>>,
     onApplyFilters: () -> Unit,
     state: SheetState,
 ) {
@@ -61,7 +68,8 @@ fun FiltersMenu(
 
             FlowRow(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
@@ -101,6 +109,77 @@ fun FiltersMenu(
                                     end = 12.dp,
                                 ),
                             text = tag.title,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+            }
+
+            Text(
+                text = stringResource(R.string.filters_year_title),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 5.dp),
+            )
+
+            YearPicker(
+                minValue = yearsLimits.first,
+                maxValue = yearsLimits.second,
+                yearCurrentValue = yearCurrentValue,
+                onValueChangeFinished = {start, end ->
+                    onSetYearFilter(start, end)
+                },
+            )
+
+            Text(
+                text = stringResource(R.string.about_short_status),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 5.dp, top = 16.dp),
+            )
+
+            val statuses = listOf("Ended", "Ongoing", "Stopped")
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                statuses.forEach {status ->
+                    val isCheckedState by remember {
+                        derivedStateOf {
+                            statusFilters.value.contains(status)
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null,
+                            ) {
+                                if (!isCheckedState) {
+                                    onAddStatusFilter(status)
+                                } else {
+                                    onRemoveStatusFilter(status)
+                                }
+                            }
+                            .border(
+                                width = if (!isCheckedState) 1.dp else 2.dp,
+                                color = if (!isCheckedState)
+                                    MaterialTheme.colorScheme.outline
+                                else MaterialTheme.colorScheme.primary,
+                                RoundedCornerShape(10.dp),
+                            ),
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(
+                                    top = 6.dp,
+                                    bottom = 6.dp,
+                                    start = 12.dp,
+                                    end = 12.dp,
+                                ),
+                            text = parseBookStatus(status),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }

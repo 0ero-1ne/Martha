@@ -30,7 +30,10 @@ interface NetworkAPI {
     suspend fun getBookForReader(id: UInt): Response<Book>
     suspend fun getBooksByQuery(
         query: String,
-        tags: String
+        tags: String,
+        statuses: String,
+        startYear: Int,
+        endYear: Int
     ): Response<List<Book>>
 
     // Chapter

@@ -68,6 +68,9 @@ class BookRepositoryImpl @Inject constructor(
             val booksResult = api.getBooksByQuery(
                 query = query,
                 tags = filters.tags.joinToString(","),
+                statuses = filters.statuses.joinToString(","),
+                startYear = filters.startYear,
+                endYear = filters.endYear,
             )
 
             if (booksResult.isSuccessful && booksResult.body() != null) {

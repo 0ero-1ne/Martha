@@ -29,6 +29,7 @@
     <string name="filters_title">Filters</string>
     <string name="tiles_title">Tiles</string>
     <string name="filters_tags_title">Tags</string>
+    <string name="filters_year_title">Tags</string>
     <string name="filters_use_title">Use filters</string>
     <string name="no_books_by_query">No books by query</string>
 
